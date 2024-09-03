@@ -11,7 +11,7 @@ export const theme = {
 
     gray: '#DDDDDD',
     lightGray: '#F1F1F1',
-    dartGray: '#464646',
+    darkGray: '#464646',
 
     success: '#BEE09C',
     error: '#E97979',

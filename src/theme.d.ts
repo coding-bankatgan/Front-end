@@ -10,9 +10,19 @@ declare module '@emotion/react' {
       white: string;
       gray: string;
       lightGray: string;
-      dartGray: string;
+      darkGray: string;
       success: string;
       error: string;
+    };
+    fontSizes: {
+      xxsmall: string;
+      xsmall: string;
+      base: string;
+      small: string;
+      medium: string;
+      large: string;
+      xlarge: string;
+      xxlarge: string;
     };
   }
 }
