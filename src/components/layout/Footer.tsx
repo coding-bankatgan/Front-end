@@ -10,6 +10,26 @@ const Footer = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
+  const [isFooterVisible, setIsFooterVisible] = useState(true);
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      if (window.scrollY < lastScrollY) {
+        setIsFooterVisible(true);
+      } else {
+        setIsFooterVisible(false);
+      }
+      lastScrollY = window.scrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const path = location.pathname.slice(1);
@@ -22,7 +42,7 @@ const Footer = () => {
   };
 
   return (
-    <FooterLayout>
+    <FooterLayout visible={isFooterVisible}>
       <IconWrapper onClick={() => handleClick('')} active={activeIcon === ''}>
         <HomeIcon />
       </IconWrapper>
@@ -39,8 +59,10 @@ const Footer = () => {
   );
 };
 
-const FooterLayout = styled.footer`
+const FooterLayout = styled.footer<{ visible: boolean }>`
   display: flex;
+  position: fixed;
+  bottom: 0;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -48,7 +70,10 @@ const FooterLayout = styled.footer`
   width: auto;
   height: 60px;
   padding: 0 25px;
+  background-color: ${({ theme }) => theme.colors.white};
   box-shadow: rgba(114, 114, 114, 0.2) 0px -1px 1px;
+  transition: transform 0.3s ease;
+  transform: translateY(${({ visible }) => (visible ? '0' : '100%')});
 `;
 
 const IconWrapper = styled.span<{ active: boolean }>`
