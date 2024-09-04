@@ -1,22 +1,26 @@
 import { ContentWrapper, PageLayout } from '@/styles/CommonStyles';
-import { Button } from '@/components/ui/button';
 import styled from '@emotion/styled';
+
+import Daily from './Daily';
+import Tab from './Tab';
 
 const Home = () => {
   return (
     <PageLayout>
       <ContentWrapper>
-        <ButtonStyled variant="outline">Button</ButtonStyled>
+        <Daily />
+        <Line />
+        <Tab />
       </ContentWrapper>
     </PageLayout>
   );
 };
 
-const ButtonStyled = styled(Button)`
+const Line = styled.div`
   width: 100%;
-  height: 45px;
-  border-radius: 25px;
-  background-color: ${({ theme }) => theme.colors.white};
+  height: 1px;
+  margin: 25px 0;
+  background-color: ${({ theme }) => theme.colors.gray};
 `;
 
 export default Home;
