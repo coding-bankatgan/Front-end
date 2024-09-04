@@ -67,7 +67,7 @@ const FooterLayout = styled.footer<{ visible: boolean }>`
   justify-content: space-between;
   align-items: center;
   min-width: 360px;
-  width: auto;
+  width: 100%;
   height: 60px;
   padding: 0 25px;
   background-color: ${({ theme }) => theme.colors.white};
