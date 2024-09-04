@@ -15,6 +15,8 @@ export const theme = {
 
     success: '#BEE09C',
     error: '#E97979',
+
+    focusShadow: 'rgba(255, 209, 140, 0.3)',
   },
   fontSizes: {
     xxsmall: '10px', // 매우 작은 텍스트 (예: 캡션, 서브텍스트)

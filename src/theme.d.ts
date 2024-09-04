@@ -13,6 +13,7 @@ declare module '@emotion/react' {
       darkGray: string;
       success: string;
       error: string;
+      focusShadow: string;
     };
     fontSizes: {
       xxsmall: string;
