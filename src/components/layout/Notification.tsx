@@ -14,6 +14,7 @@ const Notification = () => {
   return (
     <Sheet>
       <SheetTriggerStyled>
+        <span></span>
         <BellIcon />
       </SheetTriggerStyled>
       <SheetContentStyled>
@@ -41,7 +42,18 @@ const Notification = () => {
 };
 
 const SheetTriggerStyled = styled(SheetTrigger)`
+  position: relative;
   margin-right: 15px;
+
+  span {
+    position: absolute;
+    top: -3px;
+    right: -2px;
+    width: 7px;
+    height: 7px;
+    background-color: ${({ theme }) => theme.colors.error};
+    border-radius: 20px;
+  }
 `;
 
 const SheetContentStyled = styled(SheetContent)`
