@@ -39,14 +39,18 @@ const Header = () => {
 
 const HeaderLayout = styled.header`
   display: flex;
+  position: fixed;
+  top: 0;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   min-width: 360px;
-  width: auto;
+  width: 100%;
   height: 60px;
   padding: 0 10px 0 20px;
+  background-color: ${({ theme }) => theme.colors.white};
   box-shadow: rgba(114, 114, 114, 0.1) 0px 1px 5px;
+  z-index: 50;
 `;
 
 const Logo = styled.h1`

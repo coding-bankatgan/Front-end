@@ -51,11 +51,13 @@ const CardStyled = styled(Card)`
   width: 48.5%;
   margin-bottom: 10px;
   border-radius: 10px;
+  border: 1px solid ${({ theme }) => theme.colors.lightGray};
   overflow: hidden;
 `;
 
 const CardHeaderStyled = styled(CardHeader)`
   padding: 0;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
 `;
 
 const CardContentStyled = styled(CardContent)`
