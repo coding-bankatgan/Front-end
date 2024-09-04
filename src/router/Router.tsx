@@ -25,10 +25,11 @@ import {
 
 const Router = () => {
   const location = useLocation();
-  const hideHeaderPaths = ['/login', '/signup'];
+  const hideHeaderPaths = ['/login', '/signup', '/search'];
   const hideFooterPaths = [
     '/login',
     '/signup',
+    '/search',
     '/specialty-drink',
     '/create-post',
     '/mypage/edit',
