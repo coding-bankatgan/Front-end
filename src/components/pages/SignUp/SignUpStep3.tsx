@@ -81,10 +81,16 @@ const AlcoholList = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  overflow-y: scroll; // 스크롤 활성화
-  width: 100%; // 리스트가 가득 차도록 설정
+  overflow-y: scroll;
+  width: 100%;
 
-  gap: 10px; // 아이템 간 간격
+  gap: 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 interface AlcoholItemProps {

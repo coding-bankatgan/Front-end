@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import { useEffect, useState } from 'react';
 
 import SignUpStep1 from './SignUpStep1';
@@ -89,17 +87,6 @@ const SlideContainer = styled.div<{ currentSlide: number }>`
   display: flex;
   transition: transform 0.5s ease-in-out;
   transform: ${({ currentSlide }) => `translateX(-${currentSlide * 100}%)`};
-`;
-
-const Slide = styled.div`
-  min-width: 100%;
-  height: 100vh;
-  background-color: ${({ color }) => color};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  color: white;
 `;
 
 export const Button = styled.button`

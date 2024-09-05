@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Button, Input, Label, Star } from './SignUp';
 import { PrevContainer } from './SignUpStep2';
