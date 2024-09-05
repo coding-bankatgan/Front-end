@@ -3,7 +3,7 @@ export { default as Login } from './Login';
 export { default as NotFound } from './NotFound';
 export { default as Announcement } from './Announcement';
 export { default as FAQ } from './FAQ';
-export { default as Search } from './Search';
+export { default as Search } from './Search/Search';
 
 export { default as MyPage } from './MyPage/MyPage';
 export { default as EditMyPage } from './MyPage/EditMyPage';
