@@ -1,6 +1,5 @@
 import { ContentWrapper, PageLayout } from '@/styles/CommonStyles';
 import styled from '@emotion/styled';
-
 import Daily from './Daily';
 import Tab from './Tab';
 
@@ -16,7 +15,7 @@ const Home = () => {
   );
 };
 
-const Line = styled.div`
+export const Line = styled.div`
   width: 100%;
   height: 1px;
   margin: 25px 0;
