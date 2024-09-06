@@ -36,7 +36,6 @@ export const NoFooterLayout = styled.div`
   min-height: calc(100vh - 60px);
   height: auto;
   margin-top: 60px;
-  background-color: ${({ theme }) => theme.colors.primary};
 `;
 
 // 전체 레이아웃의 하위 자식
