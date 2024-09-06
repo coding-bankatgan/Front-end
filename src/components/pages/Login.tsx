@@ -1,25 +1,40 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { keyframes } from '@emotion/react';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
   const [isVisible, setIsVisible] = useState(true);
 
-  setTimeout(() => {
-    setIsVisible(false);
-  }, 2000);
+  const [showSignupComplete, setShowSignupComplete] = useState(false);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    if (queryParams.get('signup') === 'true') {
+      setIsVisible(false);
+      setShowSignupComplete(true);
+
+      setTimeout(() => {
+        setShowSignupComplete(false);
+      }, 3000);
+    } else {
+      setTimeout(() => {
+        setIsVisible(false);
+      }, 2000);
+    }
+  }, []);
 
   return (
     <AuthLayout>
+      {showSignupComplete && <Complete>회원가입이 완료되었습니다.</Complete>}
       <Container isVisible={isVisible}>
         <FirstLogo isVisible={isVisible}>
-          <LogoImage src="/오늘한잔.png" alt="1" />
+          <LogoImage src="/오늘한잔.png" alt="오늘한잔" />
           <Spinner />
         </FirstLogo>
       </Container>
       <ContentContainer>
-        <LogoImage src="/오늘한잔.png" alt="1" />
+        <LogoImage src="/오늘한잔.png" alt="오늘한잔" />
         <Heading>모두를 위한 특산주</Heading>
         <Label htmlFor="email">
           <Star>*</Star>아이디(이메일)
@@ -164,4 +179,17 @@ const SignupBtn = styled.button`
   border-radius: 50px;
   font-weight: bold;
   text-align: center;
+`;
+
+const Complete = styled.button`
+  position: absolute;
+  width: 310px;
+  padding: 10px;
+  background-color: ${({ theme }) => theme.colors.success};
+  border: 1px solid;
+  border-radius: 10px;
+  border-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.white};
+  top: 30px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
 `;
