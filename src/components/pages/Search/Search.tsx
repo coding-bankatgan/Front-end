@@ -57,7 +57,7 @@ const SearchFixed = styled.section`
   width: 100vw;
   height: auto;
   padding: 40px 20px 0;
-  background-color: ${({ theme }) => theme.colors.lightGray};
+  background-color: ${({ theme }) => theme.colors.brightGray};
   z-index: 10;
 `;
 
@@ -121,9 +121,9 @@ const BadgeStyled = styled(Badge)`
   padding: 6px 10px;
   margin: 0 5px 5px 0;
   background-color: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.secondary};
+  color: ${({ theme }) => theme.colors.primary};
   font-weight: normal;
-  border: 1px solid ${({ theme }) => theme.colors.secondary};
+  border: 1px solid ${({ theme }) => theme.colors.primary};
 `;
 
 export default Search;
