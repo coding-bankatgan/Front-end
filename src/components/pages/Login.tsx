@@ -2,12 +2,14 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { keyframes } from '@emotion/react';
 import { Link } from 'react-router-dom';
+import { login } from '@/auth';
 
 const Login = () => {
   const [isVisible, setIsVisible] = useState(true);
 
   const [showSignupComplete, setShowSignupComplete] = useState(false);
 
+  /** signup -> login 진입시 */
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     if (queryParams.get('signup') === 'true') {
@@ -24,6 +26,20 @@ const Login = () => {
     }
   }, []);
 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+    const password = (form.elements.namedItem('password') as HTMLInputElement).value;
+
+    try {
+      await login(email, password);
+    } catch (error) {
+      console.error('error');
+    }
+  };
+
   return (
     <AuthLayout>
       {showSignupComplete && <Complete>회원가입이 완료되었습니다.</Complete>}
@@ -33,7 +49,7 @@ const Login = () => {
           <Spinner />
         </FirstLogo>
       </Container>
-      <ContentContainer>
+      <FormContainer onSubmit={handleSubmit}>
         <LogoImage src="/오늘한잔.png" alt="오늘한잔" />
         <Heading>모두를 위한 특산주</Heading>
         <Label htmlFor="email">
@@ -44,12 +60,12 @@ const Login = () => {
           <Star>*</Star>패스워드
         </Label>
         <Input type="password" name="password" id="password" />
-        <LoginBtn>로그인</LoginBtn>
+        <LoginBtn type="submit">로그인</LoginBtn>
 
         <SignupBtn>
           <Link to={'/signup'}>회원가입</Link>
         </SignupBtn>
-      </ContentContainer>
+      </FormContainer>
     </AuthLayout>
   );
 };
@@ -122,7 +138,7 @@ const Container = styled.div<{ isVisible: boolean }>`
   transform: ${({ isVisible }) => (isVisible ? 'translateY(0)' : 'translateY(-100%)')};
 `;
 
-const ContentContainer = styled.div`
+const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
