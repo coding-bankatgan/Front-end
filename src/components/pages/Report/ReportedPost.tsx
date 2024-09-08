@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import styled from '@emotion/styled';
 import { Input } from '@/components/ui/input';
 
-const SpecialtyDrinkDetail = () => {
+const ReportedPost = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   const handleSelectChange = (value: string) => {
@@ -154,4 +154,4 @@ const ButtonStyled = styled.div`
   }
 `;
 
-export default SpecialtyDrinkDetail;
+export default ReportedPost;
