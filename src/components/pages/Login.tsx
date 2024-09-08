@@ -2,12 +2,15 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { keyframes } from '@emotion/react';
 import { Link } from 'react-router-dom';
+import { login } from '@/auth';
+import { Input } from '@/components/ui/input';
 
 const Login = () => {
   const [isVisible, setIsVisible] = useState(true);
 
   const [showSignupComplete, setShowSignupComplete] = useState(false);
 
+  /** signup -> login 진입시 */
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     if (queryParams.get('signup') === 'true') {
@@ -24,6 +27,20 @@ const Login = () => {
     }
   }, []);
 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+    const password = (form.elements.namedItem('password') as HTMLInputElement).value;
+
+    try {
+      await login(email, password);
+    } catch (error) {
+      console.error('error');
+    }
+  };
+
   return (
     <AuthLayout>
       {showSignupComplete && <Complete>회원가입이 완료되었습니다.</Complete>}
@@ -33,23 +50,19 @@ const Login = () => {
           <Spinner />
         </FirstLogo>
       </Container>
-      <ContentContainer>
+      <FormContainer onSubmit={handleSubmit}>
         <LogoImage src="/오늘한잔.png" alt="오늘한잔" />
         <Heading>모두를 위한 특산주</Heading>
-        <Label htmlFor="email">
-          <Star>*</Star>아이디(이메일)
-        </Label>
+        <Label htmlFor="email">아이디(이메일)</Label>
         <Input type="email" name="email" id="email" />
-        <Label htmlFor="password">
-          <Star>*</Star>패스워드
-        </Label>
+        <Label htmlFor="password">패스워드</Label>
         <Input type="password" name="password" id="password" />
-        <LoginBtn>로그인</LoginBtn>
+        <LoginBtn type="submit">로그인</LoginBtn>
 
         <SignupBtn>
           <Link to={'/signup'}>회원가입</Link>
         </SignupBtn>
-      </ContentContainer>
+      </FormContainer>
     </AuthLayout>
   );
 };
@@ -122,7 +135,7 @@ const Container = styled.div<{ isVisible: boolean }>`
   transform: ${({ isVisible }) => (isVisible ? 'translateY(0)' : 'translateY(-100%)')};
 `;
 
-const ContentContainer = styled.div`
+const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -132,6 +145,12 @@ const ContentContainer = styled.div`
   height: 100%;
   margin: 30px;
   background-color: ${({ theme }) => theme.colors.white};
+
+  input {
+    margin-bottom: 16px;
+    background-color: ${({ theme }) => theme.colors.lightGray};
+    font-size: ${({ theme }) => theme.fontSizes.small};
+  }
 `;
 
 const Heading = styled.p`
@@ -145,20 +164,12 @@ const Heading = styled.p`
 
 const Label = styled.label`
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
-`;
 
-const Input = styled.input`
-  width: 100%;
-  margin-bottom: 16px;
-  padding: 0.5rem;
-  background-color: ${({ theme }) => theme.colors.lightGray};
-  border-radius: 8px;
-  font-size: ${({ theme }) => theme.fontSizes.small};
-`;
-
-const Star = styled.span`
-  margin-right: 4px;
-  color: ${({ theme }) => theme.colors.tertiary};
+  &::before {
+    margin-right: 4px;
+    content: '*';
+    color: ${({ theme }) => theme.colors.tertiary};
+  }
 `;
 
 const LoginBtn = styled.button`
