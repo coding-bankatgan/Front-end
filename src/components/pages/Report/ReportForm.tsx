@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-const SpecialtyDrinkForm = () => {
+const ReportForm = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   const handleSelectChange = (value: string) => {
@@ -145,4 +145,4 @@ const FormBottomStyled = styled.div`
   }
 `;
 
-export default SpecialtyDrinkForm;
+export default ReportForm;
