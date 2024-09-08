@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-
 import SignUpStep1 from './SignUpStep1';
 import SignUpStep2 from './SignUpStep2';
 import SignUpStep3 from './SignUpStep3';
@@ -92,7 +91,7 @@ const SlideContainer = styled.div<{ currentSlide: number }>`
 export const Button = styled.button`
   width: 100%;
   bottom: 0;
-  background: ${({ theme }) => theme.colors.tertiary};
+  background-color: ${({ theme }) => theme.colors.tertiary};
   border-radius: 50px;
   color: ${({ theme }) => theme.colors.white};
   padding: 10px;
@@ -101,18 +100,9 @@ export const Button = styled.button`
 
 export const Label = styled.label`
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
-`;
-
-export const Input = styled.input`
-  width: 100%;
-  margin-bottom: 16px;
-  padding: 0.5rem;
-  background-color: ${({ theme }) => theme.colors.lightGray};
-  border-radius: 8px;
-  font-size: ${({ theme }) => theme.fontSizes.small};
-`;
-
-export const Star = styled.span`
-  margin-right: 4px;
-  color: ${({ theme }) => theme.colors.tertiary};
+  &::before {
+    margin-right: 4px;
+    content: '*';
+    color: ${({ theme }) => theme.colors.tertiary};
+  }
 `;

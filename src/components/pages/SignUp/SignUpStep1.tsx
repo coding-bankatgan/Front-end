@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
-import { Button, Input, Label, Star } from './SignUp';
+import { Button, Label } from './SignUp';
 import { PrevContainer } from './SignUpStep2';
+import { Input } from '@/components/ui/input';
 
 const SignUpStep1 = ({
   name,
@@ -41,9 +42,7 @@ const SignUpStep1 = ({
         <PrevContainer></PrevContainer>
         <Container>
           <Header>기본적인 정보를 입력해주세요.</Header>
-          <Label htmlFor="name">
-            <Star>*</Star>닉네임(이름)
-          </Label>
+          <Label htmlFor="name">닉네임(이름)</Label>
           <Input
             type="text"
             name="name"
@@ -51,9 +50,7 @@ const SignUpStep1 = ({
             value={name}
             onChange={e => setName(e.target.value)}
           />
-          <Label htmlFor="email">
-            <Star>*</Star>생년월일
-          </Label>
+          <Label htmlFor="email">생년월일</Label>
           <Input
             type="date"
             id="birthdate"
@@ -63,9 +60,7 @@ const SignUpStep1 = ({
               setDate(e.target.value);
             }}
           />
-          <Label htmlFor="email">
-            <Star>*</Star>아이디(이메일)
-          </Label>
+          <Label htmlFor="email">아이디(이메일)</Label>
           <Input
             type="email"
             name="email"
@@ -73,9 +68,7 @@ const SignUpStep1 = ({
             value={email}
             onChange={e => setEmail(e.target.value)}
           />
-          <Label htmlFor="password">
-            <Star>*</Star>패스워드
-          </Label>
+          <Label htmlFor="password">패스워드</Label>
           <Input
             type="password"
             name="password"
@@ -131,11 +124,18 @@ export const ScrollCont = styled.div`
 export const Container = styled.div`
   overflow-y: scroll;
   margin: 5px;
+  padding: 5px;
   scrollbar-width: none;
   -ms-overflow-style: none;
 
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  input {
+    margin-bottom: 16px;
+    background-color: ${({ theme }) => theme.colors.lightGray};
+    font-size: ${({ theme }) => theme.fontSizes.small};
   }
 `;
 

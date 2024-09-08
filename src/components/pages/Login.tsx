@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { keyframes } from '@emotion/react';
 import { Link } from 'react-router-dom';
 import { login } from '@/auth';
+import { Input } from '@/components/ui/input';
 
 const Login = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -52,13 +53,9 @@ const Login = () => {
       <FormContainer onSubmit={handleSubmit}>
         <LogoImage src="/오늘한잔.png" alt="오늘한잔" />
         <Heading>모두를 위한 특산주</Heading>
-        <Label htmlFor="email">
-          <Star>*</Star>아이디(이메일)
-        </Label>
+        <Label htmlFor="email">아이디(이메일)</Label>
         <Input type="email" name="email" id="email" />
-        <Label htmlFor="password">
-          <Star>*</Star>패스워드
-        </Label>
+        <Label htmlFor="password">패스워드</Label>
         <Input type="password" name="password" id="password" />
         <LoginBtn type="submit">로그인</LoginBtn>
 
@@ -148,6 +145,12 @@ const FormContainer = styled.form`
   height: 100%;
   margin: 30px;
   background-color: ${({ theme }) => theme.colors.white};
+
+  input {
+    margin-bottom: 16px;
+    background-color: ${({ theme }) => theme.colors.lightGray};
+    font-size: ${({ theme }) => theme.fontSizes.small};
+  }
 `;
 
 const Heading = styled.p`
@@ -161,20 +164,12 @@ const Heading = styled.p`
 
 const Label = styled.label`
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
-`;
 
-const Input = styled.input`
-  width: 100%;
-  margin-bottom: 16px;
-  padding: 0.5rem;
-  background-color: ${({ theme }) => theme.colors.lightGray};
-  border-radius: 8px;
-  font-size: ${({ theme }) => theme.fontSizes.small};
-`;
-
-const Star = styled.span`
-  margin-right: 4px;
-  color: ${({ theme }) => theme.colors.tertiary};
+  &::before {
+    margin-right: 4px;
+    content: '*';
+    color: ${({ theme }) => theme.colors.tertiary};
+  }
 `;
 
 const LoginBtn = styled.button`

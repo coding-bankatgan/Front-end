@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 import { Container, Gray2, Header, Orange2, ScrollCont, Step, Wrapper } from './SignUpStep1';
-import { Button, Input, Label, Star } from './SignUp';
+import { Button, Label } from './SignUp';
 import ArrowLeftIcon from '@/assets/icons/ArrowLeftIcon';
+import { Input } from '@/components/ui/input';
 
 const SignUpStep2 = ({
   nextSlide,
@@ -26,13 +27,9 @@ const SignUpStep2 = ({
             <br />
             입력해 주세요.
           </Header>
-          <Label htmlFor="email">
-            <Star>*</Star>도
-          </Label>
+          <Label htmlFor="email">도</Label>
           <Input type="text" />
-          <Label htmlFor="email">
-            <Star>*</Star>시
-          </Label>
+          <Label htmlFor="email">시</Label>
           <Input type="text" />
         </Container>
       </ScrollCont>
