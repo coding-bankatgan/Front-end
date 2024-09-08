@@ -4,7 +4,7 @@ import { Pagination } from '@/components/ui/pagination';
 import styled from '@emotion/styled';
 import ArrowLeftIcon from '@/assets/icons/ArrowLeftIcon';
 
-const SpecialtyDrinkBoard = () => {
+const ReportBoard = () => {
   return (
     <NoFooterLayoutSub>
       <ContentWrapper>
@@ -58,4 +58,4 @@ const ListContentStyled = styled.ul`
   }
 `;
 
-export default SpecialtyDrinkBoard;
+export default ReportBoard;
