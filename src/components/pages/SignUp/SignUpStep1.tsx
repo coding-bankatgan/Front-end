@@ -15,6 +15,7 @@ const SignUpStep1 = ({
   confirmPassword,
   setConfirmPassword,
   nextSlide,
+  confirmAlert,
 }: {
   name: string;
   setName: React.Dispatch<React.SetStateAction<string>>;
@@ -29,6 +30,7 @@ const SignUpStep1 = ({
   confirmPassword: string;
   setConfirmPassword: React.Dispatch<React.SetStateAction<string>>;
   nextSlide: () => void;
+  confirmAlert: boolean;
 }) => {
   const isMatch = password === confirmPassword && password !== '';
 
@@ -50,7 +52,11 @@ const SignUpStep1 = ({
             value={name}
             onChange={e => setName(e.target.value)}
           />
+          <AlertText>
+            {name === '' && confirmAlert && <p>닉네임(이름)을 입력해주세요.</p>}
+          </AlertText>
           <Label htmlFor="email">생년월일</Label>
+
           <Input
             type="date"
             id="birthdate"
@@ -60,6 +66,7 @@ const SignUpStep1 = ({
               setDate(e.target.value);
             }}
           />
+          <AlertText>{date === '' && confirmAlert && <p>생년월일을 선택해주세요.</p>}</AlertText>
           <Label htmlFor="email">아이디(이메일)</Label>
           <Input
             type="email"
@@ -68,6 +75,9 @@ const SignUpStep1 = ({
             value={email}
             onChange={e => setEmail(e.target.value)}
           />
+          <AlertText>
+            {email === '' && confirmAlert && <p>아이디(이메일)를 입력해주세요.</p>}
+          </AlertText>
           <Label htmlFor="password">패스워드</Label>
           <Input
             type="password"
@@ -76,6 +86,9 @@ const SignUpStep1 = ({
             value={password}
             onChange={e => setPassword(e.target.value)}
           />
+          <AlertText>
+            {password === '' && confirmAlert && <p>패스워드를 입력해주세요.</p>}
+          </AlertText>
           <Label htmlFor="confirmPassword">패스워드 확인</Label>
           <Input
             type="password"
@@ -84,10 +97,9 @@ const SignUpStep1 = ({
             onChange={e => setConfirmPassword(e.target.value)}
             required
           />
-
-          {password && confirmPassword && !isMatch && (
-            <p style={{ color: 'red', fontSize: '14px' }}>비밀번호가 일치하지 않습니다.</p>
-          )}
+          <AlertText>
+            {password && confirmPassword && !isMatch && <p>패스워드가 일치하지 않습니다.</p>}
+          </AlertText>
           <AlarmText>
             *회원가입시 작성한 이메일로 주기마다
             <br />
@@ -101,6 +113,15 @@ const SignUpStep1 = ({
 };
 
 export default SignUpStep1;
+
+const AlertText = styled.p`
+  height: 5px;
+  margin-bottom: 12px;
+  p {
+    font-size: ${({ theme }) => theme.fontSizes.xsmall};
+    color: ${({ theme }) => theme.colors.error};
+  }
+`;
 
 export const Wrapper = styled.div`
   display: flex;
@@ -133,7 +154,7 @@ export const Container = styled.div`
   }
 
   input {
-    margin-bottom: 16px;
+    margin-bottom: 2px;
     background-color: ${({ theme }) => theme.colors.lightGray};
     font-size: ${({ theme }) => theme.fontSizes.small};
   }
@@ -146,6 +167,7 @@ export const Header = styled.h2`
 `;
 
 export const AlarmText = styled.p`
+  margin-top: 10px;
   color: ${({ theme }) => theme.colors.gray};
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
 `;
