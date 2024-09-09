@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 
 const Login = () => {
   const [isVisible, setIsVisible] = useState(true);
-
+  const [showLoginError, setShowLoginError] = useState(false);
   const [showSignupComplete, setShowSignupComplete] = useState(false);
 
   /** signup -> login 진입시 */
@@ -37,13 +37,18 @@ const Login = () => {
     try {
       await login(email, password);
     } catch (error) {
-      console.error('error');
+      console.error('에러 테스트');
+      setShowLoginError(true);
+      setTimeout(() => {
+        setShowLoginError(false);
+      }, 5000);
     }
   };
 
   return (
     <AuthLayout>
       {showSignupComplete && <Complete>회원가입이 완료되었습니다.</Complete>}
+      {showLoginError && <Error>이메일 또는 패스워드를 확인해주세요.</Error>}
       <Container isVisible={isVisible}>
         <FirstLogo isVisible={isVisible}>
           <LogoImage src="/오늘한잔.png" alt="오늘한잔" />
@@ -197,6 +202,19 @@ const Complete = styled.button`
   width: 310px;
   padding: 10px;
   background-color: ${({ theme }) => theme.colors.success};
+  border: 1px solid;
+  border-radius: 10px;
+  border-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.white};
+  top: 30px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+`;
+
+const Error = styled.button`
+  position: absolute;
+  width: 310px;
+  padding: 10px;
+  background-color: ${({ theme }) => theme.colors.error};
   border: 1px solid;
   border-radius: 10px;
   border-color: ${({ theme }) => theme.colors.white};

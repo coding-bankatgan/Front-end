@@ -20,6 +20,7 @@ export const login = async (email: string, password: string) => {
     // displaySub;
   } catch (error) {
     console.error('로그인 실패:', error);
+    throw error;
   }
 };
 

@@ -17,7 +17,9 @@ export const handlers = [
     if (email === 'man@naver.com' && password === 'man123456') {
       return HttpResponse.json({ token: mockJwtToken });
     } else {
-      return HttpResponse.json({ message: '등록되지 않은 이메일 또는 비밀번호 오류' });
+      throw new HttpResponse(null, {
+        status: 401,
+      });
     }
   }),
 ];
