@@ -63,10 +63,9 @@ const Login = () => {
         <Label htmlFor="password">패스워드</Label>
         <Input type="password" name="password" id="password" />
         <LoginBtn type="submit">로그인</LoginBtn>
-
-        <SignupBtn>
-          <Link to={'/signup'}>회원가입</Link>
-        </SignupBtn>
+        <Link to={'/signup'}>
+          <SignupBtn>회원가입</SignupBtn>
+        </Link>
       </FormContainer>
     </AuthLayout>
   );
@@ -155,6 +154,10 @@ const FormContainer = styled.form`
     margin-bottom: 16px;
     background-color: ${({ theme }) => theme.colors.lightGray};
     font-size: ${({ theme }) => theme.fontSizes.small};
+  }
+
+  a {
+    width: 100%;
   }
 `;
 
