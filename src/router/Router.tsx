@@ -56,7 +56,7 @@ const Router = () => {
         <Route path="/mypage/follow-tag-list" element={<FollowTagList />} />
         <Route path="/mypage/my-posts" element={<MyPosts />} />
 
-        <Route path="/post" element={<Post />} />
+        <Route path="/post/:id" element={<Post />} />
         <Route path="/create-post" element={<CreatePost />} />
 
         <Route path="/report" element={<ReportBoard />} />
