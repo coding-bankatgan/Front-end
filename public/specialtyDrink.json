@@ -9,7 +9,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "독산 30",
-    "type": "리큐르",
+    "type": "LIQUEUR",
     "degree": 30,
     "sweetness": 5,
     "cost": 30000,
@@ -27,7 +27,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "무주구천동산머루주",
-    "type": "과실주",
+    "type": "FRUIT WINE",
     "degree": 16,
     "sweetness": 10,
     "cost": 30000,
@@ -45,11 +45,11 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "여민락주",
-    "type": "약주",
+    "type": "YAKJU",
     "degree": 16,
     "sweetness": 8,
     "cost": 30000,
-    "description": "조선시대 임금님께 진상하던 여주쌀과 국산 누룩, 천연 암반수를 사용",
+    "description": "조선시대 임금님께 GIN상하던 여주쌀과 국산 누룩, 천연 암반수를 사용",
     "image_url": "https://thesool.com/common/imageView.do?targetId=PR00000283&targetNm=PRODUCT",
     "created_at": "2024-09-09"
   },
@@ -63,7 +63,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "천상문",
-    "type": "청주",
+    "type": "CHEONGJU",
     "degree": 18,
     "sweetness": 5,
     "cost": 30000,
@@ -81,7 +81,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "생 옥수수 동동주",
-    "type": "동동주",
+    "type": "DONGDONGJU",
     "degree": 6,
     "sweetness": 6,
     "cost": 30000,
@@ -99,7 +99,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "야관문 쌀 막걸리",
-    "type": "막걸리",
+    "type": "MAKGEOLLI",
     "degree": 6,
     "sweetness": 5,
     "cost": 30000,
@@ -117,7 +117,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "두레앙 일반증류주",
-    "type": "증류주",
+    "type": "DISTILLED SPIRITS",
     "degree": 35,
     "sweetness": 3,
     "cost": 30000,
@@ -135,7 +135,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "민속주 안동소주",
-    "type": "민속주",
+    "type": "FOLK LIQUOR",
     "degree": 45,
     "sweetness": 2,
     "cost": 30000,
@@ -153,7 +153,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "두레앙 브랜디",
-    "type": "브랜디",
+    "type": "BRANDY",
     "degree": 35,
     "sweetness": 6,
     "cost": 30000,
@@ -171,7 +171,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "부자진 오미자 진",
-    "type": "진",
+    "type": "GIN",
     "degree": 44,
     "sweetness": 5,
     "cost": 30000,
@@ -189,7 +189,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "선비 보드카",
-    "type": "보드카",
+    "type": "VODKA",
     "degree": 40,
     "sweetness": 5,
     "cost": 30000,
@@ -207,7 +207,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "오크와인",
-    "type": "와인",
+    "type": "WINE",
     "degree": 12,
     "sweetness": 5,
     "cost": 30000,
@@ -225,7 +225,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "토끼 소주",
-    "type": "소주",
+    "type": "SOJU",
     "degree": 23,
     "sweetness": 1,
     "cost": 30000,
@@ -243,7 +243,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "해남진양주",
-    "type": "양주",
+    "type": "LIQUOR",
     "degree": 16,
     "sweetness": 5,
     "cost": 30000,
@@ -261,11 +261,11 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "설궁",
-    "type": "위스키",
+    "type": "WHISKEY",
     "degree": 30,
     "sweetness": 5,
     "cost": 30000,
-    "description": "천연 원재료를 침출, 숙성시켜서 프랑스산 브랜디, 브랙커런트를 함께 주정에 혼합하여 만든 위스키",
+    "description": "천연 원재료를 침출, 숙성시켜서 프랑스산 BRANDY, 브랙커런트를 함께 주정에 혼합하여 만든 위스키",
     "image_url": "https://thesool.com/common/imageView.do?targetId=PR00000601&targetNm=PRODUCT",
     "created_at": "2024-09-09"
   },
@@ -279,7 +279,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "금군 아카시아주",
-    "type": "리큐르",
+    "type": "LIQUEUR",
     "degree": 11,
     "sweetness": 5,
     "cost": 30000,
@@ -297,7 +297,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "볼빨간미자",
-    "type": "리큐르",
+    "type": "LIQUEUR",
     "degree": 16,
     "sweetness": 7,
     "cost": 30000,
@@ -315,7 +315,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "혼디주",
-    "type": "과실주",
+    "type": "FRUIT WINE",
     "degree": 12,
     "sweetness": 8,
     "cost": 30000,
@@ -333,7 +333,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "퓨레떼 라이트 스파클링",
-    "type": "샴페인",
+    "type": "CHAMPAGNE",
     "degree": 8,
     "sweetness": 10,
     "cost": 30000,
@@ -351,7 +351,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "너브내 스파클링 화이트",
-    "type": "샴페인",
+    "type": "CHAMPAGNE",
     "degree": 12,
     "sweetness": 9,
     "cost": 30000,
@@ -369,7 +369,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "애피소드 애플",
-    "type": "샴페인",
+    "type": "CHAMPAGNE",
     "degree": 43,
     "sweetness": 8,
     "cost": 30000,
@@ -387,7 +387,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "신애유자",
-    "type": "과실주",
+    "type": "FRUIT WINE",
     "degree": 5,
     "sweetness": 8,
     "cost": 30000,
@@ -405,7 +405,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "어떤유자 06",
-    "type": "과실주",
+    "type": "FRUIT WINE",
     "degree": 6,
     "sweetness": 8,
     "cost": 30000,
@@ -423,7 +423,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "보리수헤는밤",
-    "type": "약주",
+    "type": "YAKJU",
     "degree": 8,
     "sweetness": 7,
     "cost": 30000,
@@ -441,7 +441,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "복순도가 약주",
-    "type": "약주",
+    "type": "YAKJU",
     "degree": 10,
     "sweetness": 5,
     "cost": 30000,
@@ -459,7 +459,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "양촌 우렁이쌀 청주",
-    "type": "청주",
+    "type": "CHEONGJU",
     "degree": 14,
     "sweetness": 43,
     "cost": 30000,
@@ -477,7 +477,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "동학 1957",
-    "type": "청주",
+    "type": "CHEONGJU",
     "degree": 13,
     "sweetness": 43,
     "cost": 30000,
@@ -495,7 +495,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "연천 율무 동동주",
-    "type": "동동주",
+    "type": "DONGDONGJU",
     "degree": 14,
     "sweetness": 5,
     "cost": 30000,
@@ -513,7 +513,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "양촌 생 동동주",
-    "type": "동동주",
+    "type": "DONGDONGJU",
     "degree": 10,
     "sweetness": 2,
     "cost": 30000,
@@ -531,7 +531,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "심술6 막걸리",
-    "type": "막걸리",
+    "type": "MAKGEOLLI",
     "degree": 6,
     "sweetness": 4,
     "cost": 30000,
@@ -549,7 +549,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "보스토끼",
-    "type": "막걸리",
+    "type": "MAKGEOLLI",
     "degree": 9,
     "sweetness": 4,
     "cost": 30000,
@@ -567,7 +567,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "황금보리 증류주 25",
-    "type": "증류주",
+    "type": "DISTILLED SPIRITS",
     "degree": 25,
     "sweetness": 1,
     "cost": 30000,
@@ -585,7 +585,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "천지향 증류주",
-    "type": "증류주",
+    "type": "DISTILLED SPIRITS",
     "degree": 40,
     "sweetness": 2,
     "cost": 30000,
@@ -603,7 +603,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "퍼플 진",
-    "type": "진",
+    "type": "GIN",
     "degree": 36,
     "sweetness": 6,
     "cost": 30000,
@@ -621,7 +621,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "고리진",
-    "type": "진",
+    "type": "GIN",
     "degree": 47,
     "sweetness": 2,
     "cost": 30000,
@@ -639,7 +639,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "녹천 소곡화주 480ml",
-    "type": "민속주",
+    "type": "FOLK LIQUOR",
     "degree": 41,
     "sweetness": 1,
     "cost": 30000,
@@ -657,7 +657,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "뉴룩 오리지널",
-    "type": "민속주",
+    "type": "FOLK LIQUOR",
     "degree": 4,
     "sweetness": 43,
     "cost": 30000,
@@ -675,7 +675,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "양촌감 보드카",
-    "type": "보드카",
+    "type": "VODKA",
     "degree": 32,
     "sweetness": 1,
     "cost": 30000,
@@ -693,7 +693,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "고도리 징기스칸 브랜디",
-    "type": "브랜디",
+    "type": "BRANDY",
     "degree": 40,
     "sweetness": 2,
     "cost": 30000,
@@ -711,7 +711,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "복숭아와인",
-    "type": "와인",
+    "type": "WINE",
     "degree": 12,
     "sweetness": 8,
     "cost": 30000,
@@ -729,7 +729,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "세인트하우스 모과와인",
-    "type": "와인",
+    "type": "WINE",
     "degree": 12,
     "sweetness": 6,
     "cost": 30000,
@@ -747,7 +747,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "우곡소주",
-    "type": "소주",
+    "type": "SOJU",
     "degree": 25,
     "sweetness": 1,
     "cost": 30000,
@@ -765,7 +765,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "불소주",
-    "type": "소주",
+    "type": "SOJU",
     "degree": 41,
     "sweetness": 1,
     "cost": 30000,
@@ -783,7 +783,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "맥주",
-    "type": "맥주",
+    "type": "BEER",
     "degree": 9,
     "sweetness": 5,
     "cost": 30000,
@@ -801,7 +801,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "고량주",
-    "type": "고량주",
+    "type": "GAOLIANG LIQUOR",
     "degree": 40,
     "sweetness": 1,
     "cost": 30000,
@@ -819,7 +819,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "럼주",
-    "type": "럼주",
+    "type": "RUM",
     "degree": 41,
     "sweetness": 1,
     "cost": 30000,
@@ -837,7 +837,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "테킬라",
-    "type": "테킬라",
+    "type": "TEQUILA",
     "degree": 38,
     "sweetness": 43,
     "cost": 30000,
@@ -855,7 +855,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "사케",
-    "type": "사케",
+    "type": "SAKE",
     "degree": 21,
     "sweetness": 43,
     "cost": 30000,
@@ -873,7 +873,7 @@
       "created_at": "2024-08-28T00:00:00Z"
     },
     "name": "기타",
-    "type": "기타",
+    "type": "OTHER",
     "degree": 16,
     "sweetness": 5,
     "cost": 30000,

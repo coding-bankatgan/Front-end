@@ -1,5 +1,6 @@
 import axios from 'axios';
 import create from 'zustand';
+import { mapDrinkType } from '@/data/drinkTypes';
 
 interface specialtyDrink {
   id: number;
@@ -28,7 +29,7 @@ export const useSpecialtyStore = create<SpecialtyState>((set, get) => ({
   fetchDrinks: async () => {
     try {
       const response = await axios.get<specialtyDrink[]>('/specialtyDrink.json');
-      const drinksType = Array.from(new Set(response.data.map(item => item.type)));
+      const drinksType = Array.from(new Set(response.data.map(item => mapDrinkType(item.type))));
       console.log(drinksType);
       if (Array.isArray(drinksType)) {
         set({
