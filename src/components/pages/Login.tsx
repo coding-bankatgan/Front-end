@@ -1,14 +1,19 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { keyframes } from '@emotion/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { login } from '@/auth';
 import { Input } from '@/components/ui/input';
+import { useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import GoogleIcon from '@/assets/icons/GoogleIcon';
 
 const Login = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [showLoginError, setShowLoginError] = useState(false);
   const [showSignupComplete, setShowSignupComplete] = useState(false);
+  const navigate = useNavigate();
 
   /** signup -> login 진입시 */
   useEffect(() => {
@@ -45,6 +50,45 @@ const Login = () => {
     }
   };
 
+  /** google 로그인 인증 */
+  const sendAuthCode = async (authCode: string) => {
+    try {
+      const response = await axios.post('/api/auth/google', {
+        code: authCode,
+      });
+      console.log(response);
+
+      const { access_token, refresh_token } = response.data.mockTokens;
+
+      Cookies.set('access_token', access_token, { expires: 7 });
+      Cookies.set('refresh_token', refresh_token, { expires: 7 });
+
+      return { access_token, refresh_token };
+    } catch (error) {
+      console.error('Failed to send Auth Code:', error);
+      throw error;
+    }
+  };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async response => {
+      const authCode = response.code;
+
+      try {
+        // Auth Code를 보내고 토큰을 받음
+        const tokens = await sendAuthCode(authCode);
+        console.log('Tokens stored:', tokens);
+        navigate('/');
+      } catch (error) {
+        console.error('Login Failed:', error);
+      }
+    },
+    onError: error => {
+      console.error('Login Failed:', error);
+    },
+    flow: 'auth-code',
+  });
+
   return (
     <AuthLayout>
       {showSignupComplete && <Complete>회원가입이 완료되었습니다.</Complete>}
@@ -66,6 +110,9 @@ const Login = () => {
         <Link to={'/signup'}>
           <SignupBtn>회원가입</SignupBtn>
         </Link>
+        <GoogleBtn onClick={googleLogin}>
+          <GoogleIcon /> Google로 로그인
+        </GoogleBtn>
       </FormContainer>
     </AuthLayout>
   );
@@ -198,6 +245,25 @@ const SignupBtn = styled.button`
   border-radius: 50px;
   font-weight: bold;
   text-align: center;
+`;
+
+const GoogleBtn = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 44px;
+  padding: 10px;
+  background-color: ${({ theme }) => theme.colors.white};
+  border: 2px solid ${({ theme }) => theme.colors.tertiary};
+  border-radius: 50px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 12px;
+  svg {
+    width: 30px;
+    height: 100%;
+  }
 `;
 
 const Complete = styled.button`

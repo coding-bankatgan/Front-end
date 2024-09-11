@@ -28,4 +28,18 @@ export const handlers = [
   http.post('/mypage/edit', async () => {
     return HttpResponse.json({ specialtyDrink });
   }),
+
+  http.post('/api/auth/google', async ({ request }) => {
+    const { code } = (await request.json()) as { code: string };
+    console.log(code);
+
+    const mockTokens = {
+      access_token: code,
+      refresh_token: code,
+    };
+
+    return HttpResponse.json({
+      mockTokens,
+    });
+  }),
 ];
