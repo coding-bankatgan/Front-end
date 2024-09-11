@@ -12,12 +12,13 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [selectedAlcohols, setSelectedAlcohols] = useState<string[]>([]);
+  const [confirmAlert, setConfirmAlert] = useState(false);
 
   const isMatch = password === confirmPassword && password !== '';
 
   const nextSlide = () => {
     if (date === '' || name === '' || email === '' || password === '') {
-      alert('남은 칸들을 다 입력해주세요');
+      setConfirmAlert(true);
       return;
     }
     if (currentSlide === 0 && !isMatch) return;
@@ -54,6 +55,7 @@ const SignUp = () => {
           confirmPassword={confirmPassword}
           setConfirmPassword={setConfirmPassword}
           nextSlide={nextSlide}
+          confirmAlert={confirmAlert}
         ></SignUpStep1>
         <SignUpStep2 nextSlide={nextSlide} prevSlide={prevSlide}></SignUpStep2>
         <SignUpStep3
@@ -62,8 +64,6 @@ const SignUp = () => {
           selectedAlcohols={selectedAlcohols}
         ></SignUpStep3>
       </SlideContainer>
-      {/* {currentSlide !== 0 && <Button onClick={prevSlide}>&lt;</Button>}
-      {currentSlide !== 2 && <Button onClick={nextSlide}>&gt;</Button>} */}
     </SlideWrapper>
   );
 };
