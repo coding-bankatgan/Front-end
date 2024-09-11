@@ -1,4 +1,5 @@
 import { http, HttpResponse } from 'msw';
+import specialtyDrink from '../../public/specialtyDrink.json';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -21,5 +22,10 @@ export const handlers = [
         status: 401,
       });
     }
+  }),
+
+  /** 마이페이지 회원정보수정 API */
+  http.post('/mypage/edit', async () => {
+    return HttpResponse.json({ specialtyDrink });
   }),
 ];
