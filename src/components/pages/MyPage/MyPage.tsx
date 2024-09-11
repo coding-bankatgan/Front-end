@@ -6,8 +6,10 @@ import MyPageTab from './MyPageTab';
 import ExProfileImg from '@/assets/ExProfileImg';
 import SettingIcon from '@/assets/icons/SettingIcon';
 import HandIcon from '@/assets/icons/HandIcon';
+import { useSpecialtyStore } from '@/store/useSpecialtyStore';
 
 const MyPage = () => {
+  const { selectedDrinks } = useSpecialtyStore();
   return (
     <PageLayout>
       <ContentWrapper>
@@ -19,9 +21,9 @@ const MyPage = () => {
         </ImgWrapper>
         <BadgeWrapper>
           <HandIcon />
-          <BadgeStyled>Badge</BadgeStyled>
-          <BadgeStyled>Badge</BadgeStyled>
-          <BadgeStyled>Badge</BadgeStyled>
+          {selectedDrinks.map(drink => (
+            <BadgeStyled key={drink}>{drink}</BadgeStyled>
+          ))}
         </BadgeWrapper>
         <MyPageTab />
       </ContentWrapper>
