@@ -1,6 +1,6 @@
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,6 +18,7 @@ import styled from '@emotion/styled';
 
 import ExProfileImg from '@/assets/ExProfileImg';
 import SettingIcon from '@/assets/icons/SettingIcon';
+import { useSpecialtyStore } from '@/store/useSpecialtyStore';
 
 const EditMyPage = () => {
   const [password, setpassword] = useState('');
@@ -87,6 +88,20 @@ const EditMyPage = () => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
 
+  const { alldrinks, selectedDrinks, fetchDrinks, toggleDrinkSelection, setSelectedDrinks } =
+    useSpecialtyStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchDrinks();
+    console.log(selectedDrinks);
+  }, [fetchDrinks]);
+
+  const handleSave = () => {
+    setSelectedDrinks(selectedDrinks);
+    navigate('/mypage');
+  };
+
   return (
     <NoFooterLayout>
       <ContentWrapper>
@@ -151,13 +166,13 @@ const EditMyPage = () => {
           </ComboboxWrapper>
           <Label htmlFor="">선호주종</Label>
           <AlcoholList>
-            {alcohols.map((alcohol: string) => (
+            {alldrinks.map(drink => (
               <AlcoholItem
-                key={alcohol}
-                isSelected={selectedAlcohols.includes(alcohol)}
-                onClick={() => handleSelect(alcohol)}
+                key={drink}
+                isSelected={selectedDrinks.includes(drink)}
+                onClick={() => toggleDrinkSelection(drink)}
               >
-                {alcohol}
+                {drink}
               </AlcoholItem>
             ))}
           </AlcoholList>
@@ -176,7 +191,7 @@ const EditMyPage = () => {
           <Link to="/mypage">
             <Button>취소</Button>
           </Link>
-          <Link to="/mypage">
+          <Link to="/mypage" onClick={handleSave}>
             <Button>저장</Button>
           </Link>
         </ConfirmWrapper>
