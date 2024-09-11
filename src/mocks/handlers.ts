@@ -1,4 +1,6 @@
 import { http, HttpResponse } from 'msw';
+import cardItem from '../../public/cardItem.json';
+import cardItemDetail from '../../public/cardItemDetail.json';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -19,5 +21,15 @@ export const handlers = [
     } else {
       return HttpResponse.json({ message: '등록되지 않은 이메일 또는 비밀번호 오류' });
     }
+  }),
+
+  /** 전체 게시글 조회 API */
+  http.get('/posts', async () => {
+    return HttpResponse.json(cardItem);
+  }),
+
+  /** 특정 게시글 조회 API */
+  http.get('/posts/detail', async () => {
+    return HttpResponse.json(cardItemDetail);
   }),
 ];
