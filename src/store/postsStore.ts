@@ -13,13 +13,21 @@ export interface Post {
   drink: {
     id: number;
     name: string;
+    drinkType: string;
+    degree: number;
+    sweetness: number;
+    cost: number;
+    description: string,
     imageUrl: string;
+    createdAt: string;
   };
   type: 'REVIEW' | 'ADVERTISEMENT';
   content: string;
+  rating: number;
   tags: Tag[];
   viewCount: number;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface PostsState {
