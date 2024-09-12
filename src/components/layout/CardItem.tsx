@@ -26,7 +26,7 @@ const CardItem = ({ post }: CardItemProps) => {
   return (
     <CardStyled onClick={() => navigate(`/post/${post.id}`)}>
       <CardHeaderStyled>
-        <img src={post.drink.imageUrl} alt={post.drink.name} />
+        <img src={post.imageUrl} alt={post.drink.name} />
       </CardHeaderStyled>
       <CardContentStyled>
         <ContentTop>
