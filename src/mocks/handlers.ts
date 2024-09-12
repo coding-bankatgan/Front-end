@@ -1,4 +1,6 @@
 import { http, HttpResponse } from 'msw';
+import cardItem from '../../public/cardItem.json';
+import cardItemDetail from '../../public/cardItemDetail.json';
 import specialtyDrink from '../../public/specialtyDrink.json';
 import regions from '../../public/regions.json';
 
@@ -24,6 +26,15 @@ export const handlers = [
       });
     }
   }),
+
+  /** 전체 게시글 조회 API */
+  http.get('/posts', async () => {
+    return HttpResponse.json(cardItem);
+  }),
+
+  /** 특정 게시글 조회 API */
+  http.get('/posts/detail', async () => {
+    return HttpResponse.json(cardItemDetail);
 
   /** 마이페이지 회원정보수정 API */
   http.post('/mypage/edit', async () => {
