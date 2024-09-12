@@ -8,45 +8,82 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import SendIcon from '@/assets/icons/SendIcon';
 import WarningIcon from '@/assets/icons/WarningIcon';
+import { useParams } from 'react-router-dom';
+import dayjs from 'dayjs';
+import { usePostsDetailStore } from '@/store/postsDetailStore';
+import { useEffect } from 'react';
+
+const typeMap = {
+  ADVERTISEMENT: '광고',
+  REVIEW: '리뷰',
+};
 
 const Post = () => {
+  const { postsDetail, fetchPostsDetail } = usePostsDetailStore();
+  console.log('ffffff', postsDetail);
+  const { id } = useParams();
+  const postId = Number(id);
+
+  useEffect(() => {
+    fetchPostsDetail();
+  }, [fetchPostsDetail]);
+
+  if (postsDetail.length === 0) {
+    return <p>로딩 중...</p>;
+  }
+
+  const post = postsDetail.find(post => post.id === postId);
+
+  if (!post) {
+    return <p>게시글을 찾을 수 없습니다.</p>;
+  }
+
   return (
     <PageLayoutStyled>
       <PostWrapper>
+        <PostTitleSection>
+          <b>
+            <span>{typeMap[post?.type]}</span>
+            {post?.drink.name}
+          </b>
+        </PostTitleSection>
         <UserPost>
-          <span>#리뷰</span>
           <Nickname>
             <ExProfileImg />
-            닉네임
+            {post?.memberName}
           </Nickname>
-          <img src="https://picsum.photos/seed/picsum/320/270" alt="주류 이름" />
-          <Desc>
-            가나다라 마바사 아자차카 타파하 가나다라 마바사 아자차카 타파하. 이 텍스트는 한국어
-            레이아웃을 테스트하기 위한 샘플 텍스트입니다.디자인 작업을 할 때 글꼴, 문단, 간격 등을
-            확인하기 위해 사용됩니다. 가나다라 마바사 아자차카 타파하.
-          </Desc>
-          <Info>
-            <b>특산주 정보</b>
-            <li>이름 : OOO</li>
-            <li>주종 : OOO</li>
-            <li>맛 : OOO</li>
-            <li>도수 : OOO</li>
-            <li>평점 : OOO</li>
-            <li>평균 평점 : OOO</li>
-          </Info>
-          <MetaData>
-            <span>2000.01.01</span>
-            <span>
-              <ViewIcon /> 1,000
-            </span>
-          </MetaData>
-          <TagWrapper>
-            {Array.from({ length: 5 }, (_, idx) => (
-              <AlertDialogTag key={idx} />
-            ))}
-          </TagWrapper>
+          <Img>
+            <img src={post?.imageUrl} alt={post?.drink.name} />
+          </Img>
+          <Desc>{post?.content}</Desc>
+          <EtcWrap>
+            <Info>
+              <li>
+                <span>주종:</span> 막걸리
+              </li>
+              <li>
+                <span>도수:</span> {post?.drink.degree}
+              </li>
+              <li>
+                <span>당도:</span> {post?.drink.sweetness}
+              </li>
+              <li>
+                <span>평점:</span> {post?.rating}
+              </li>
+            </Info>
+            <TagWrapper>
+              {post?.tags.map(tag => (
+                <AlertDialogTag key={tag.tagId}>{tag.tagName}</AlertDialogTag>
+              ))}
+            </TagWrapper>
+            <MetaData>
+              <span>{dayjs(post?.createdAt).format('YYYY-MM-DD')}</span>
+              <span>
+                <ViewIcon /> {post?.viewCount.toLocaleString()}
+              </span>
+            </MetaData>
+          </EtcWrap>
         </UserPost>
-        <Line />
         <CommentWrapper>
           <Write>
             <div>
@@ -92,12 +129,30 @@ const PostWrapper = styled.div`
   width: 100%;
   min-height: calc(100vh - 180px);
   height: auto;
-  margin: 20px;
-  background-color: ${({ theme }) => theme.colors.white};
-  border-radius: 15px;
-  box-shadow:
-    rgba(17, 17, 26, 0.05) 0px 1px 0px,
-    rgba(17, 17, 26, 0.05) 0px 0px 8px;
+`;
+
+const PostTitleSection = styled.div`
+  width: 100%;
+  background-color: ${({ theme }) => theme.colors.brightGray};
+
+  b {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    font-size: ${({ theme }) => theme.fontSizes.base};
+
+    span {
+      display: inline-block;
+      margin-right: 5px;
+      padding: 2px 10px;
+      background-color: ${({ theme }) => theme.colors.secondary};
+      color: ${({ theme }) => theme.colors.white};
+      font-size: ${({ theme }) => theme.fontSizes.xsmall};
+      font-weight: normal;
+      border-radius: 20px;
+    }
+  }
 `;
 
 const UserPost = styled.section`
@@ -106,26 +161,30 @@ const UserPost = styled.section`
   justify-content: flex-start;
   align-items: flex-start;
   width: 100%;
-
-  > span:nth-of-type(1) {
-    margin: 10px 0 5px 10px;
-    color: ${({ theme }) => theme.colors.secondary};
-    font-size: ${({ theme }) => theme.fontSizes.small};
-  }
+  background-color: ${({ theme }) => theme.colors.white};
 
   img {
-    width: 100%;
-    min-height: 270px;
-    height: auto;
+    width: auto;
+    height: 270px;
   }
 `;
 
-const Nickname = styled.span`
+const Img = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-top: 1px solid ${({ theme }) => theme.colors.brightGray};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.brightGray};
+`;
+
+const Nickname = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  font-size: ${({ theme }) => theme.fontSizes.small};
-  margin: 10px 0 10px 10px;
+  width: 100%;
+  padding: 10px 20px;
+  font-size: ${({ theme }) => theme.fontSizes.base};
 
   svg {
     width: 30px;
@@ -135,19 +194,51 @@ const Nickname = styled.span`
 `;
 
 const Desc = styled.p`
-  padding: 10px;
+  width: 100%;
+  min-height: 50px;
+  height: auto;
+  margin: 10px 0;
+  padding: 5px 20px 20px 20px;
   line-height: 21px;
 `;
 
+const EtcWrap = styled.div`
+  width: 100%;
+  height: auto;
+  padding: 0 20px 10px 20px;
+`;
+
 const Info = styled.ul`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   height: auto;
   padding: 10px;
-  background-color: ${({ theme }) => theme.colors.clearGray};
+  background-color: ${({ theme }) => theme.colors.brightGray};
   font-size: ${({ theme }) => theme.fontSizes.base};
+  border-radius: 10px;
 
   li {
-    line-height: 20px;
+    width: 20%;
+  }
+
+  li:nth-of-type(1) {
+    width: 27%;
+  }
+`;
+
+const TagWrapper = styled.div`
+  width: 100%;
+  margin: 10px 0 20px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    height: 0;
   }
 `;
 
@@ -156,8 +247,6 @@ const MetaData = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin-top: 10px;
-  padding: 0 10px;
 
   span {
     color: ${({ theme }) => theme.colors.gray};
@@ -177,15 +266,13 @@ const MetaData = styled.div`
   }
 `;
 
-const TagWrapper = styled.div`
-  margin-top: 15px;
-  padding: 0 10px;
-`;
-
 const CommentWrapper = styled.section`
   width: 100%;
   min-height: 200px;
   height: auto;
+  margin-top: 10px;
+  padding: 20px;
+  background: ${({ theme }) => theme.colors.white};
 `;
 
 const Write = styled.div`
@@ -201,6 +288,10 @@ const Write = styled.div`
     font-size: ${({ theme }) => theme.fontSizes.base};
     border-radius: 10px;
     resize: none;
+
+    &:hover {
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    }
   }
 
   button {
@@ -222,6 +313,7 @@ const Write = styled.div`
       width: 18px;
       height: 18px;
       margin: 0;
+      color: ${({ theme }) => theme.colors.white};
     }
   }
 
@@ -230,7 +322,6 @@ const Write = styled.div`
     justify-content: center;
     align-items: center;
     width: 100%;
-    padding: 0 20px;
   }
 `;
 
@@ -240,19 +331,19 @@ const Comments = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  min-height: 150px;
+  min-height: 100px;
   height: auto;
   margin: 20px 0;
 `;
 
 const Comment = styled.div`
   display: flex;
-  width: 90%;
-  min-height: 30px;
+  width: 100%;
+  min-height: 50px;
   height: auto;
   padding: 10px;
   background: ${({ theme }) => theme.colors.clearGray};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
 
   &:first-of-type {
     border-radius: 10px 10px 0 0;
@@ -264,9 +355,10 @@ const Comment = styled.div`
   }
 
   svg {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     margin-right: 10px;
+    margin-top: -5px;
   }
 `;
 
@@ -296,7 +388,7 @@ const ReportBtn = styled.span`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin: 40px 15px 15px 0;
+  margin: 30px 0 10px 0;
   color: ${({ theme }) => theme.colors.error};
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
