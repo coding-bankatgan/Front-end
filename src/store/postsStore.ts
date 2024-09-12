@@ -17,7 +17,8 @@ export interface Post {
     degree: number;
     sweetness: number;
     cost: number;
-    description: string,
+    averageRating: number;
+    description: string;
     imageUrl: string;
     createdAt: string;
   };
@@ -25,6 +26,7 @@ export interface Post {
   content: string;
   rating: number;
   tags: Tag[];
+  imageUrl: string;
   viewCount: number;
   createdAt: string;
   updatedAt: string;
