@@ -6,6 +6,7 @@ import { globalStyles } from './styles/globalStyles';
 import Router from './router/Router';
 import { BrowserRouter } from 'react-router-dom';
 import { theme } from './styles/theme';
+import ScrollToTop from './utils/ScrollToTop';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <Global styles={[resetStyles, globalStyles]} />
         <BrowserRouter>
+          <ScrollToTop />
           <Router />
         </BrowserRouter>
       </ThemeProvider>
