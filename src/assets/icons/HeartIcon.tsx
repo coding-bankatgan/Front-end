@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 interface HeartIconProps {
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
   liked: boolean;
 }
 

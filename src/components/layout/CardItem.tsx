@@ -5,42 +5,51 @@ import HeartIcon from '@/assets/icons/HeartIcon';
 import { Badge } from '@/components/ui/badge';
 import ExProfileImg from '@/assets/ExProfileImg';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
+import { Post } from '@/store/postsStore';
 
-const CardItem = () => {
+interface CardItemProps {
+  post: Post;
+}
+
+const CardItem = ({ post }: CardItemProps) => {
   const [liked, setLiked] = useState(false);
 
-  const toggleLike = () => {
+  const navigate = useNavigate();
+
+  const toggleLike = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setLiked(!liked);
   };
 
   return (
-    <CardStyled>
+    <CardStyled onClick={() => navigate(`/post/${post.id}`)}>
       <CardHeaderStyled>
-        <img src="https://picsum.photos/seed/picsum/155/135" alt="주류 이름" />
+        <img src={post.drink.imageUrl} alt={post.drink.name} />
       </CardHeaderStyled>
       <CardContentStyled>
         <ContentTop>
           <span>
             <ExProfileImg />
-            닉네임
+            {post.memberName}
           </span>
-          <HeartIcon onClick={toggleLike} liked={liked} />
+          <HeartIcon onClick={e => toggleLike(e)} liked={liked} />
         </ContentTop>
-        <p>
-          이 특산주는 이러쿵 저러쿵~ 넘 맛있고 최고다 또 먹고싶다 돈만 있으면 쟁여서 먹고싶다.
-          꿈에서도 생각나는 맛이다~
-        </p>
+        <DrinkName>{post.drink.name}</DrinkName>
+        <p>{post.content}</p>
         <TagWrapper>
-          {Array.from({ length: 3 }, (_, idx) => (
-            <Badge key={idx}>#태그입력</Badge>
+          {post.tags.map(tag => (
+            <Badge key={tag.tagId}>#{tag.tagName}</Badge>
           ))}
         </TagWrapper>
       </CardContentStyled>
       <CardFooterStyled>
+        <span>{dayjs(post.createdAt).format('YYYY-MM-DD')}</span>
         <span>
-          <ViewIcon /> 1,000
+          <ViewIcon />
+          {post.viewCount.toLocaleString()}
         </span>
-        <span>2000.01.01</span>
       </CardFooterStyled>
     </CardStyled>
   );
@@ -56,8 +65,17 @@ const CardStyled = styled(Card)`
 `;
 
 const CardHeaderStyled = styled(CardHeader)`
+  min-width: 135px;
+  width: auto;
+  height: 155px;
   padding: 0;
   border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
+
+  img {
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+  }
 `;
 
 const CardContentStyled = styled(CardContent)`
@@ -65,6 +83,7 @@ const CardContentStyled = styled(CardContent)`
 
   p {
     display: -webkit-box;
+    height: 35px;
     margin-top: 5px;
     font-size: ${({ theme }) => theme.fontSizes.xsmall};
     text-align: justify;
@@ -83,7 +102,7 @@ const ContentTop = styled.div`
 
   span {
     display: flex;
-    font-size: ${({ theme }) => theme.fontSizes.xsmall};
+    font-size: ${({ theme }) => theme.fontSizes.base};
 
     svg {
       width: 20px;
@@ -97,6 +116,11 @@ const ContentTop = styled.div`
     height: 16px;
     color: ${({ theme }) => theme.colors.gray};
   }
+`;
+
+const DrinkName = styled.span`
+  background: linear-gradient(to top, #e9d7cb 40%, transparent 15%);
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
 `;
 
 const TagWrapper = styled.div`
@@ -114,8 +138,12 @@ const TagWrapper = styled.div`
     margin-right: 4px;
     background-color: ${({ theme }) => theme.colors.primary};
     color: ${({ theme }) => theme.colors.white};
-    font-size: ${({ theme }) => theme.fontSizes.xxsmall};
+    font-size: ${({ theme }) => theme.fontSizes.xsmall};
     font-weight: normal;
+
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.primary};
+    }
   }
 
   div:nth-last-of-type(1) {
@@ -129,6 +157,11 @@ const CardFooterStyled = styled(CardFooter)`
   padding: 5px 10px;
 
   span:nth-of-type(1) {
+    color: ${({ theme }) => theme.colors.gray};
+    font-size: ${({ theme }) => theme.fontSizes.xxsmall};
+  }
+
+  span:nth-of-type(2) {
     display: flex;
     align-items: center;
     color: ${({ theme }) => theme.colors.gray};
@@ -139,11 +172,6 @@ const CardFooterStyled = styled(CardFooter)`
       height: 14px;
       margin-right: 3px;
     }
-  }
-
-  span:nth-of-type(2) {
-    color: ${({ theme }) => theme.colors.gray};
-    font-size: ${({ theme }) => theme.fontSizes.xxsmall};
   }
 `;
 

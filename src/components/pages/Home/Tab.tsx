@@ -1,41 +1,81 @@
 import styled from '@emotion/styled';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import CardItemList from '../../layout/CardItemList';
+import { usePostsStore } from '@/store/postsStore';
+import { useEffect, useState } from 'react';
+import CardItem from '@/components/layout/CardItem';
 
 const Tab = () => {
+  const { posts, fetchPosts } = usePostsStore();
+  const [selectedTab, setSelectedTab] = useState('all');
+  const [sortOrder, setSortOrder] = useState('recent');
+
+  // useLayoutEffect(() => {
+  //   fetchPosts();
+  // }, [fetchPosts]);
+
+  useEffect(() => {
+    window.onload = () => {
+      fetchPosts();
+    };
+  }, [fetchPosts]);
+
+  const filteredPosts = Array.isArray(posts)
+    ? selectedTab === 'all'
+      ? posts
+      : posts.filter(
+          post => post.type === (selectedTab === 'advertisement' ? 'ADVERTISEMENT' : 'REVIEW'),
+        )
+    : [];
+
+  const sortedPosts = filteredPosts.sort((a, b) => {
+    if (sortOrder === 'recent') {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    } else if (sortOrder === 'views') {
+      return b.viewCount - a.viewCount;
+    }
+    return 0;
+  });
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOrder(e.target.value);
+  };
+
+  console.log('Filtered Posts:', filteredPosts);
+  console.log('Sorted Posts:', sortedPosts);
+  console.log('Selected Tab:', selectedTab);
+
   return (
     <TabsStyled defaultValue="all" className="w-[100%]">
       <TabsListStyled>
-        <TabsTrigger value="all">전체</TabsTrigger>
-        <TabsTrigger value="advertisement">광고</TabsTrigger>
-        <TabsTrigger value="review">리뷰</TabsTrigger>
+        <TabsTrigger value="all" onClick={() => setSelectedTab('all')}>
+          전체
+        </TabsTrigger>
+        <TabsTrigger value="advertisement" onClick={() => setSelectedTab('advertisement')}>
+          광고
+        </TabsTrigger>
+        <TabsTrigger value="review" onClick={() => setSelectedTab('review')}>
+          리뷰
+        </TabsTrigger>
       </TabsListStyled>
-      <Select>
-        <SelectTrigger className="w-[100px]">
-          <SelectValue placeholder="최신 순" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="light">최신 순</SelectItem>
-          <SelectItem value="dark">조회수 순</SelectItem>
-        </SelectContent>
-      </Select>
-      <TabsContentStyled value="all">
-        <CardItemList />
+      <SelectStyled value={sortOrder} onChange={handleSelectChange}>
+        <option value="recent">최신 순</option>
+        <option value="views">조회수 순</option>
+      </SelectStyled>
+      <TabsContentStyled value={selectedTab}>
+        {sortedPosts.length > 0 ? (
+          sortedPosts.map(post => <CardItem key={post.id} post={post} />)
+        ) : (
+          <p>아무것도 없어요</p>
+        )}
       </TabsContentStyled>
-      <TabsContentStyled value="advertisement">광고</TabsContentStyled>
-      <TabsContentStyled value="review">리뷰</TabsContentStyled>
     </TabsStyled>
   );
 };
 
 const TabsStyled = styled(Tabs)`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   > button {
     height: 30px;
     margin-left: auto;
@@ -64,10 +104,31 @@ const TabsListStyled = styled(TabsList)`
 `;
 
 const TabsContentStyled = styled(TabsContent)`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
   width: 100%;
   min-height: 200px;
   height: auto;
   margin-top: 20px;
+`;
+
+const SelectStyled = styled.select`
+  width: 100px;
+  height: 35px;
+  margin-left: auto;
+  margin-top: 20px;
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  border: 1px solid ${({ theme }) => theme.colors.lightGray};
+  border-radius: 5px;
+
+  &:focus,
+  &:active {
+    border-color: ${({ theme }) => theme.colors.focusShadow};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    outline: none;
+  }
 `;
 
 export default Tab;
