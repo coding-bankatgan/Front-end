@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { usePostsStore } from '@/store/postsStore';
+import { usePostsStore } from '@/store/usePostsStore';
 import { useEffect, useState } from 'react';
 import CardItem from '@/components/layout/CardItem';
 
@@ -39,10 +39,6 @@ const Tab = () => {
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOrder(e.target.value);
   };
-
-  console.log('Filtered Posts:', filteredPosts);
-  console.log('Sorted Posts:', sortedPosts);
-  console.log('Selected Tab:', selectedTab);
 
   return (
     <TabsStyled defaultValue="all" className="w-[100%]">

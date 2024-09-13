@@ -7,7 +7,7 @@ import ExProfileImg from '@/assets/ExProfileImg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { Post } from '@/store/postsStore';
+import { Post } from '@/store/usePostsStore';
 
 interface CardItemProps {
   post: Post;
