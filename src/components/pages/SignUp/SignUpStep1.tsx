@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import { Button, Label } from './SignUp';
 import { PrevContainer } from './SignUpStep2';
 import { Input } from '@/components/ui/input';
+import dayjs from 'dayjs';
+import { keyframes } from '@emotion/react';
 
 const SignUpStep1 = ({
   name,
@@ -16,21 +18,31 @@ const SignUpStep1 = ({
   setConfirmPassword,
   nextSlide,
   confirmAlert,
+  dateConfirm,
+  emailConfirm,
+  validatedEmail,
+  validatedText,
+  validatedPassword,
+  validatedLoading,
 }: {
   name: string;
   setName: React.Dispatch<React.SetStateAction<string>>;
-
   date: string;
   setDate: React.Dispatch<React.SetStateAction<string>>;
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
   password: string;
   setPassword: React.Dispatch<React.SetStateAction<string>>;
-
   confirmPassword: string;
   setConfirmPassword: React.Dispatch<React.SetStateAction<string>>;
   nextSlide: () => void;
   confirmAlert: boolean;
+  dateConfirm: boolean;
+  emailConfirm: boolean;
+  validatedEmail: boolean;
+  validatedText: string;
+  validatedPassword: boolean;
+  validatedLoading: boolean;
 }) => {
   const isMatch = password === confirmPassword && password !== '';
 
@@ -44,7 +56,14 @@ const SignUpStep1 = ({
         <PrevContainer></PrevContainer>
         <Container>
           <Header>기본적인 정보를 입력해주세요.</Header>
-          <Label htmlFor="name">닉네임(이름)</Label>
+          <Label htmlFor="name">
+            닉네임(이름)
+            {
+              <Validation>
+                {name.length < 2 || name.length > 7 ? '※2~7자로 해주세요.' : ''}
+              </Validation>
+            }
+          </Label>
           <Input
             type="text"
             name="name"
@@ -53,7 +72,10 @@ const SignUpStep1 = ({
             onChange={e => setName(e.target.value)}
           />
           <AlertText>{name === '' && confirmAlert && '닉네임(이름)을 입력해주세요.'}</AlertText>
-          <Label htmlFor="email">생년월일</Label>
+          <Label htmlFor="email">
+            생년월일
+            {<Validation>{dateConfirm && '※올바른 날짜를 입력해주세요'}</Validation>}
+          </Label>
 
           <Input
             type="date"
@@ -65,7 +87,21 @@ const SignUpStep1 = ({
             }}
           />
           <AlertText>{date === '' && confirmAlert && '생년월일을 선택해주세요.'}</AlertText>
-          <Label htmlFor="email">아이디(이메일)</Label>
+          <Label htmlFor="email">
+            아이디(이메일)
+            {!validatedLoading && !validatedEmail && (
+              <Validation>이미 등록된 이메일 입니다.</Validation>
+            )}
+            {validatedText !== '' && (
+              <>
+                <CheckEmail>※중복 확인 중</CheckEmail>
+                <Loading />
+              </>
+            )}
+            {!validatedLoading && validatedEmail && (
+              <ConFirmed>사용가능한 이메일 입니다.</ConFirmed>
+            )}
+          </Label>
           <Input
             type="email"
             name="email"
@@ -73,7 +109,10 @@ const SignUpStep1 = ({
             value={email}
             onChange={e => setEmail(e.target.value)}
           />
-          <AlertText>{email === '' && confirmAlert && '아이디(이메일)를 입력해주세요.'}</AlertText>
+          <AlertText>
+            {email === '' && confirmAlert && '올바른 아이디(이메일)를 입력해주세요.'}
+            {!emailConfirm && '올바른 아이디(이메일)를 입력해주세요.'}
+          </AlertText>
           <Label htmlFor="password">패스워드</Label>
           <Input
             type="password"
@@ -82,7 +121,13 @@ const SignUpStep1 = ({
             value={password}
             onChange={e => setPassword(e.target.value)}
           />
-          <AlertText>{password === '' && confirmAlert && '패스워드를 입력해주세요.'}</AlertText>
+          <AlertText>
+            {
+              <Validation>
+                {!validatedPassword && '※8~15자로 대소문자,숫자,특수문자를 포함하여야 합니다.'}
+              </Validation>
+            }
+          </AlertText>
           <Label htmlFor="confirmPassword">패스워드 확인</Label>
           <Input
             type="password"
@@ -114,6 +159,42 @@ const AlertText = styled.p`
 
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
   color: ${({ theme }) => theme.colors.error};
+`;
+
+const Validation = styled.span`
+  margin-left: 4px;
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  color: ${({ theme }) => theme.colors.error};
+`;
+
+const CheckEmail = styled.span`
+  margin-left: 4px;
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  color: ${({ theme }) => theme.colors.darkGray};
+`;
+const ConFirmed = styled.span`
+  margin-left: 4px;
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  color: ${({ theme }) => theme.colors.success};
+`;
+
+const spin = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% { 
+    transform: rotate(360deg);
+  }
+`;
+
+const Loading = styled.div`
+  margin-left: 3px;
+  width: 15px;
+  height: 15px;
+  border: 3px solid ${props => props.theme.colors.gray};
+  border-top-color: ${props => props.theme.colors.tertiary};
+  border-radius: 50%;
+  animation: ${spin} 1s linear infinite;
 `;
 
 export const Wrapper = styled.div`
