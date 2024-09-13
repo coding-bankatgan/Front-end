@@ -1,6 +1,5 @@
 import { PageLayout } from '@/styles/CommonStyles';
 import styled from '@emotion/styled';
-import { Line } from '../Home/Home';
 import ExProfileImg from '@/assets/ExProfileImg';
 import ViewIcon from './../../../assets/icons/ViewIcon';
 import AlertDialogTag from '@/components/layout/AlertDialogTag';
@@ -10,8 +9,10 @@ import SendIcon from '@/assets/icons/SendIcon';
 import WarningIcon from '@/assets/icons/WarningIcon';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { usePostsDetailStore } from '@/store/postsDetailStore';
+import { usePostsCommentStore } from '@/store/usePostsCommentStore';
 import { useEffect } from 'react';
+import { usePostsDetailStore } from '@/store/usePostsDetailStore';
+import Pagination from './../../layout/Pagination';
 
 const typeMap = {
   ADVERTISEMENT: '광고',
@@ -20,13 +21,17 @@ const typeMap = {
 
 const Post = () => {
   const { postsDetail, fetchPostsDetail } = usePostsDetailStore();
-  console.log('ffffff', postsDetail);
+  const { comments, pagination, fetchComments } = usePostsCommentStore();
   const { id } = useParams();
   const postId = Number(id);
 
+  const page = pagination.number;
+  const size = pagination.size;
+
   useEffect(() => {
-    fetchPostsDetail();
-  }, [fetchPostsDetail]);
+    fetchPostsDetail(postId);
+    fetchComments(postId, page, size);
+  }, [fetchPostsDetail, fetchComments, postId, page, size]);
 
   if (postsDetail.length === 0) {
     return <p>로딩 중...</p>;
@@ -37,6 +42,10 @@ const Post = () => {
   if (!post) {
     return <p>게시글을 찾을 수 없습니다.</p>;
   }
+
+  const handlePageChange = (newPage: number) => {
+    fetchComments(postId, newPage, size);
+  };
 
   return (
     <PageLayoutStyled>
@@ -94,19 +103,26 @@ const Post = () => {
             </div>
           </Write>
           <Comments>
-            {Array.from({ length: 3 }, (_, idx) => (
-              <Comment key={idx}>
-                <ExProfileImg />
-                <CommentInfoWrapper>
-                  <span>
-                    <CommentNickname>닉네임</CommentNickname>
-                    <CommentDate>2000.01.01</CommentDate>
-                  </span>
-                  <p>가나다라 마바사 아자차카 타파하 가나다라 마바사 아자차카 타파하.</p>
-                </CommentInfoWrapper>
-              </Comment>
-            ))}
+            {comments.length > 0 ? (
+              comments.map(comment => (
+                <Comment key={comment.id}>
+                  <ExProfileImg />
+                  <CommentInfoWrapper>
+                    <span>
+                      <CommentNickname>{comment.memberName}</CommentNickname>
+                      <CommentDate>{dayjs(comment.createdAt).format('YYYY-MM-DD')}</CommentDate>
+                    </span>
+                    <p>{comment.content}</p>
+                  </CommentInfoWrapper>
+                </Comment>
+              ))
+            ) : (
+              <NoComment>작성된 댓글이 없습니다</NoComment>
+            )}
           </Comments>
+          {comments.length > 0 && (
+            <Pagination pagination={pagination} onPageChange={handlePageChange} />
+          )}
           <ReportBtn>
             <WarningIcon /> 신고하기
           </ReportBtn>
@@ -289,7 +305,8 @@ const Write = styled.div`
     border-radius: 10px;
     resize: none;
 
-    &:hover {
+    &:hover,
+    &:focus {
       box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
     }
   }
@@ -328,12 +345,24 @@ const Write = styled.div`
 const Comments = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  min-height: 70px;
+  height: auto;
+  margin: 20px 0;
+`;
+
+const NoComment = styled.div`
+  display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  min-height: 100px;
-  height: auto;
-  margin: 20px 0;
+  height: 50px;
+  background-color: ${({ theme }) => theme.colors.clearGray};
+  color: ${({ theme }) => theme.colors.gray};
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  border-radius: 10px;
 `;
 
 const Comment = styled.div`
@@ -342,7 +371,7 @@ const Comment = styled.div`
   min-height: 50px;
   height: auto;
   padding: 10px;
-  background: ${({ theme }) => theme.colors.clearGray};
+  background-color: ${({ theme }) => theme.colors.clearGray};
   border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
 
   &:first-of-type {
@@ -355,14 +384,15 @@ const Comment = styled.div`
   }
 
   svg {
-    width: 35px;
-    height: 35px;
-    margin-right: 10px;
-    margin-top: -5px;
+    width: 26px;
+    height: 26px;
+    margin-right: 8px;
   }
 `;
 
 const CommentInfoWrapper = styled.div`
+  width: 90%;
+
   > span {
     display: flex;
     flex-direction: row;
@@ -375,7 +405,7 @@ const CommentInfoWrapper = styled.div`
 `;
 
 const CommentNickname = styled.span`
-  margin-right: 10px;
+  margin-right: 5px;
   font-size: ${({ theme }) => theme.fontSizes.base};
 `;
 
