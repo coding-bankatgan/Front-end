@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { Button, Label } from './SignUp';
 import { PrevContainer } from './SignUpStep2';
 import { Input } from '@/components/ui/input';
-import dayjs from 'dayjs';
 import { keyframes } from '@emotion/react';
 
 const SignUpStep1 = ({
