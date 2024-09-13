@@ -1,0 +1,110 @@
+[
+  {
+    "totalElements": 20,
+    "totalPages": 4,
+    "size": 10,
+    "number": 0,
+    "content": [
+      {
+        "id": 1,
+        "memberId": 1,
+        "memberName": "미꾸라지11",
+        "postId": 1,
+        "content": "댓글 내용",
+        "anonymous": false,
+        "createdAt": "2024-08-28T00:00:00Z",
+        "updatedAt": null
+      },
+      {
+        "id": 2,
+        "memberId": 2,
+        "memberName": "코끼리11",
+        "postId": 1,
+        "content": "댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용",
+        "anonymous": false,
+        "createdAt": "2024-08-28T00:00:00Z",
+        "updatedAt": null
+      },
+      {
+        "id": 3,
+        "memberId": 3,
+        "memberName": "토끼11",
+        "postId": 1,
+        "content": "댓글 내용",
+        "anonymous": false,
+        "createdAt": "2024-08-28T00:00:00Z",
+        "updatedAt": null
+      },
+      {
+        "id": 4,
+        "memberId": 1,
+        "memberName": "미꾸라지22",
+        "postId": 1,
+        "content": "댓글 내용",
+        "anonymous": false,
+        "createdAt": "2024-08-29T00:00:00Z",
+        "updatedAt": null
+      },
+      {
+        "id": 5,
+        "memberId": 2,
+        "memberName": "코끼리22",
+        "postId": 1,
+        "content": "댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용",
+        "anonymous": false,
+        "createdAt": "2024-08-29T00:00:00Z",
+        "updatedAt": null
+      },
+      {
+        "id": 6,
+        "memberId": 3,
+        "memberName": "토끼22",
+        "postId": 1,
+        "content": "댓글 내용",
+        "anonymous": false,
+        "createdAt": "2024-08-30T00:00:00Z",
+        "updatedAt": null
+      },
+      {
+        "id": 7,
+        "memberId": 4,
+        "memberName": "오리",
+        "postId": 2,
+        "content": "댓글 내용",
+        "anonymous": false,
+        "createdAt": "2024-08-28T00:00:00Z",
+        "updatedAt": null
+      },
+      {
+        "id": 8,
+        "memberId": 5,
+        "memberName": "상어111111",
+        "postId": 3,
+        "content": "댓글 내용",
+        "anonymous": false,
+        "createdAt": "2024-08-28T00:00:00Z",
+        "updatedAt": null
+      },
+      {
+        "id": 9,
+        "memberId": 5,
+        "memberName": "상어22222",
+        "postId": 3,
+        "content": "댓글 내용",
+        "anonymous": false,
+        "createdAt": "2024-08-29T00:00:00Z",
+        "updatedAt": null
+      },
+      {
+        "id": 10,
+        "memberId": 5,
+        "memberName": "상어333333",
+        "postId": 3,
+        "content": "댓글 내용",
+        "anonymous": false,
+        "createdAt": "2024-08-30T00:00:00Z",
+        "updatedAt": null
+      }
+    ]
+  }
+]
