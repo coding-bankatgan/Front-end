@@ -4,6 +4,7 @@ import cardItemDetail from '../../public/cardItemDetail.json';
 import specialtyDrink from '../../public/specialtyDrink.json';
 import regions from '../../public/regions.json';
 import registration from '../../public/registration.json';
+import comments from '../../public/comments.json';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -29,13 +30,41 @@ export const handlers = [
   }),
 
   /** 전체 게시글 조회 API */
-  http.get('/posts', async () => {
+  http.get('api/posts', async () => {
     return HttpResponse.json(cardItem);
   }),
 
   /** 특정 게시글 조회 API */
-  http.get('/posts/detail', async () => {
+  http.get('api/posts/:postId', async ({ params }) => {
+    Number(params.postId);
     return HttpResponse.json(cardItemDetail);
+  }),
+
+  /** 특정 게시글 댓글 API */
+  http.get('/api/:postId/comments', async ({ params, request }) => {
+    const postId = Number(params.postId);
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('number')) || 0;
+    const size = Number(url.searchParams.get('size')) || 10;
+
+    const filteredComments = comments
+      .flatMap(comment => comment.content)
+      .filter(comment => comment.postId === postId);
+
+    // 페이지네이션
+    const start = Number(page) * Number(size);
+    const end = start + Number(size);
+    const paginatedComments = filteredComments.slice(start, end);
+    const totalElements = filteredComments.length;
+    const totalPages = Math.ceil(totalElements / Number(size));
+
+    return HttpResponse.json({
+      totalElements,
+      totalPages,
+      size,
+      number: page,
+      content: paginatedComments,
+    });
   }),
 
   /** 마이페이지 회원정보수정 API */
