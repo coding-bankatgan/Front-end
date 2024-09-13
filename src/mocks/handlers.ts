@@ -3,6 +3,7 @@ import cardItem from '../../public/cardItem.json';
 import cardItemDetail from '../../public/cardItemDetail.json';
 import specialtyDrink from '../../public/specialtyDrink.json';
 import regions from '../../public/regions.json';
+import registration from '../../public/registration.json';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -40,6 +41,14 @@ export const handlers = [
   /** 마이페이지 회원정보수정 API */
   http.post('/mypage/edit', async () => {
     return HttpResponse.json({ specialtyDrink, regions });
+  }),
+
+  /** 특산주 신청 API */
+  http.post('/specialty-drink', async () => {
+    return HttpResponse.json(registration);
+  }),
+  http.post('/specialty-drink/form', async () => {
+    return HttpResponse.json({ registration, regions });
   }),
 
   http.post('/api/auth/google', async ({ request }) => {
