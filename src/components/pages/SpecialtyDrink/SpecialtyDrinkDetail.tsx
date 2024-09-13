@@ -1,23 +1,56 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
-import { Link } from 'react-router-dom';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import styled from '@emotion/styled';
 import { Textarea } from '@/components/ui/textarea';
+import useRegistrationStore from '@/store/useRegistrationStore';
 
 const SpecialtyDrinkDetail = () => {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const { registrations, fetchRegistrations, updateApprovalStatus } = useRegistrationStore();
+  const { registId } = useParams();
+  const id = Number(registId);
 
-  const handleSelectChange = (value: string) => {
-    setSelectedOption(value);
+  const navigate = useNavigate();
+
+  const location = useLocation();
+  const newRegistration = location.state;
+
+  const registration =
+    registrations.find(registration => registration.registId === id) || newRegistration;
+
+  const [selectedApproval, setSelectedApproval] = useState<'true' | 'false' | null>(null);
+  const [isSelectDisabled, setIsSelectDisabled] = useState<boolean>(false);
+
+  useEffect(() => {
+    fetchRegistrations();
+  }, [fetchRegistrations]);
+
+  useEffect(() => {
+    if (registration) {
+      setSelectedApproval(
+        registration.approved === null ? null : (registration.approved as 'true' | 'false'),
+      );
+      setIsSelectDisabled(registration.approved !== null);
+    }
+  }, [registration]);
+
+  //** approve 기능 */
+  const handleApprovalChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedApproval(
+      event.target.value === '' ? null : (event.target.value as 'true' | 'false'),
+    );
+  };
+  const handleUpdateClick = async () => {
+    if (selectedApproval !== null) {
+      updateApprovalStatus(id, selectedApproval);
+      console.log(id);
+      console.log(selectedApproval);
+      navigate('/specialty-drink');
+    }
+  };
+  const handleCancelClick = () => {
+    navigate('/specialty-drink');
   };
 
   return (
@@ -27,42 +60,39 @@ const SpecialtyDrinkDetail = () => {
           <h1>특산주 신청합니다!</h1>
         </HeaderStyled>
         <TitleStyled>
-          <img src="https://picsum.photos/seed/picsum/155/135" alt="주류 이름" />
+          <img src={registration?.imageUrl} alt={registration?.drinkName} />
           <DrinkInfo>
             <Label htmlFor="text">특산주 이름</Label>
-            <span>특산주 이름</span>
+            <span>{registration?.drinkName}</span>
             <Label htmlFor="text">지역</Label>
-            <span>지역</span>
+            <span>{registration?.placeName}</span>
           </DrinkInfo>
         </TitleStyled>
-        <TextareaStyled disabled placeholder="포스팅 내용" />
+        <TextareaStyled value={registration?.description} readOnly />
         <Line />
         <BottomStyled>
-          <Select onValueChange={handleSelectChange}>
-            <SelectTrigger>
-              <SelectValue placeholder="특산주를 등록하시겠습니까?" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="true">특산주 등록이 완료되었습니다! :D</SelectItem>
-                <SelectItem value="false">전달주신 특산주 정보가 확인되지 않습니다.</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <SelectStyled
+            value={selectedApproval ?? ''}
+            onChange={handleApprovalChange}
+            disabled={isSelectDisabled}
+          >
+            <option value="" disabled hidden>
+              {registration?.approved === null
+                ? '특산주를 등록하시겠습니까?'
+                : '특산주 상태가 이미 설정되었습니다.'}
+            </option>
+            <option value="true" disabled={isSelectDisabled}>
+              특산주 등록이 완료되었습니다! :D
+            </option>
+            <option value="false" disabled={isSelectDisabled}>
+              전달주신 특산주 정보가 확인되지 않습니다.
+            </option>
+          </SelectStyled>
           <ButtonStyled>
-            <Link to="/specialty-drink">
-              <Button>취소</Button>
-            </Link>
-            <Link
-              to={selectedOption ? `/specialty-drink/` : '#'}
-              onClick={e => {
-                if (!selectedOption) {
-                  e.preventDefault(); // 선택되지 않으면 링크 클릭 방지
-                }
-              }}
-            >
-              <Button>등록</Button>
-            </Link>
+            <Button onClick={handleCancelClick}>취소</Button>
+            <Button onClick={handleUpdateClick} disabled={selectedApproval === null}>
+              등록
+            </Button>
           </ButtonStyled>
         </BottomStyled>
       </ContentWrapper>
@@ -89,6 +119,7 @@ const TitleStyled = styled.div`
 
   img {
     min-width: 150px;
+    max-height: 150px;
     width: 48.5%;
     margin-bottom: 10px;
     border-radius: 10px;
@@ -141,6 +172,23 @@ const BottomStyled = styled.div`
   }
 `;
 
+const SelectStyled = styled.select`
+  width: 100%;
+  height: 35px;
+  margin-left: auto;
+  margin-top: 20px;
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  border: 1px solid ${({ theme }) => theme.colors.lightGray};
+  border-radius: 5px;
+
+  &:focus,
+  &:active {
+    border-color: ${({ theme }) => theme.colors.focusShadow};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    outline: none;
+  }
+`;
+
 const ButtonStyled = styled.div`
   display: flex;
   margin-top: 80px;
@@ -148,12 +196,13 @@ const ButtonStyled = styled.div`
   button {
     width: 140px;
     border-radius: 30px;
-  }
-  a:nth-of-type(1) button {
-    background-color: ${({ theme }) => theme.colors.gray};
-  }
-  a:nth-of-type(2) button {
-    background-color: ${({ theme }) => theme.colors.primary};
+    :nth-of-type(1) {
+      background-color: ${({ theme }) => theme.colors.gray};
+    }
+
+    :nth-of-type(2) {
+      background-color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `;
 

@@ -1,12 +1,20 @@
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Pagination } from '@/components/ui/pagination';
+import { Badge } from '@/components/ui/badge';
+import { useEffect } from 'react';
 import styled from '@emotion/styled';
 import ArrowLeftIcon from '@/assets/icons/ArrowLeftIcon';
 import PlusIcon from '@/assets/icons/PlusIcon';
+import useRegistrationStore from '@/store/useRegistrationStore';
+import dayjs from 'dayjs';
 
 const SpecialtyDrinkBoard = () => {
+  const { registrations, fetchRegistrations } = useRegistrationStore();
+  useEffect(() => {
+    fetchRegistrations();
+  }, [fetchRegistrations]);
+  const navigate = useNavigate();
   return (
     <NoFooterLayoutSub>
       <ContentWrapper>
@@ -17,13 +25,25 @@ const SpecialtyDrinkBoard = () => {
           <h1>특산주 신청 리스트</h1>
         </ListTitleStyled>
         <ListContentStyled>
-          {Array.from({ length: 3 }, (_, idx) => (
-            <li key={idx}>
-              <Link to="/specialty-drink/:idx">
-                <span>특산주 신청합니다!</span>
-                <p>Re: 특산주 등록이 완료되었습니다! :D</p>
-              </Link>
-              <p>09/06</p>
+          {registrations.map(registration => (
+            <li
+              key={registration.registId}
+              onClick={() => navigate(`/specialty-drink/${registration.registId}`)}
+            >
+              <div>
+                <span>{registration.drinkName}</span>
+                {registration.approved === null ? (
+                  <Badge variant="outline">New!</Badge>
+                ) : (
+                  <p>
+                    Re:{' '}
+                    {registration.approved
+                      ? '특산주 등록이 완료되었습니다! :D'
+                      : '전달주신 특산주 정보가 확인되지 않습니다.'}
+                  </p>
+                )}
+              </div>
+              <p>{dayjs(registration.createdAt).format('MM/DD')}</p>
             </li>
           ))}
         </ListContentStyled>
@@ -63,6 +83,12 @@ const ListContentStyled = styled.ul`
 
     p {
       font-size: ${({ theme }) => theme.fontSizes.xsmall};
+    }
+
+    > div {
+      div {
+        color: ${({ theme }) => theme.colors.error};
+      }
     }
   }
 `;
