@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw';
+import { delay, http, HttpResponse } from 'msw';
 import cardItem from '../../public/cardItem.json';
 import cardItemDetail from '../../public/cardItemDetail.json';
 import specialtyDrink from '../../public/specialtyDrink.json';
@@ -53,6 +53,23 @@ export const handlers = [
 
     return HttpResponse.json({
       mockTokens,
+    });
+  }),
+
+  /** 아이디 중복 검사 API */
+  http.post('/api/email', async ({ request }) => {
+    const { email } = (await request.json()) as { email: string };
+
+    await delay(2000);
+
+    if (email === 'man@naver.com') {
+      throw new HttpResponse(null, {
+        status: 401,
+      });
+    }
+
+    return HttpResponse.json({
+      message: '사용 가능한 아이디 입니다.',
     });
   }),
 ];
