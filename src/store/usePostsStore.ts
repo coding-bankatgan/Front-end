@@ -1,18 +1,17 @@
 import { create } from 'zustand';
-import { fetchPostsDetailApi } from './../api/postApi';
+import { fetchPostsApi } from '../api/postApi';
 
 interface Tag {
   tagId: number;
   tagName: string;
 }
 
-export interface PostDetail {
+export interface Post {
   id: number;
   memberId: number;
   memberName: string;
   drink: {
     id: number;
-    placeName: string;
     name: string;
     drinkType: string;
     degree: number;
@@ -34,22 +33,22 @@ export interface PostDetail {
 }
 
 export interface PostsState {
-  postsDetail: PostDetail[];
-  setPostsDetail: (postsDetail: PostDetail[]) => void;
-  fetchPostsDetail: () => Promise<void>;
+  posts: Post[];
+  setPosts: (posts: Post[]) => void;
+  fetchPosts: () => Promise<void>;
 }
 
-export const usePostsDetailStore = create<PostsState>(set => ({
-  postsDetail: [],
-  setPostsDetail: postsDetail => set({ postsDetail }),
-  fetchPostsDetail: async () => {
+export const usePostsStore = create<PostsState>(set => ({
+  posts: [],
+  setPosts: posts => set({ posts }),
+  fetchPosts: async () => {
     try {
-      const data = await fetchPostsDetailApi();
-      set({ postsDetail: data });
-      console.log('!!!!!!!!', data);
+      const data = await fetchPostsApi();
+      set({ posts: data });
+      // console.log('!!!!!!!!', data);
     } catch (err) {
       console.error('Error fetching posts: ', err);
-      set({ postsDetail: [] });
+      set({ posts: [] });
     }
   },
 }));
