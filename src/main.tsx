@@ -9,7 +9,7 @@ const queryClient = new QueryClient();
 
 /** 개발환경에서만 msw ON */
 if (process.env.NODE_ENV === 'development') {
-  worker.start({
+  await worker.start({
     onUnhandledRequest: 'bypass',
   });
 }

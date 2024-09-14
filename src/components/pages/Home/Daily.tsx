@@ -5,6 +5,7 @@ import { worker } from '@/mocks/browser';
 import axios from 'axios';
 import { getAddress } from '@/api/postApi';
 import Loading from '@/assets/icons/Loading';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const Daily = () => {
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -14,6 +15,7 @@ const Daily = () => {
   const [userAddress, setUserAddress] = useState<string | null>(null);
   const [rotate, setRotate] = useState('false');
   const [showModal, setShowModal] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
   const [dailyData, setDailyData] = useState({
     drink_id: 0,
     name: '브라우저 권한을 확인해주세요!',
@@ -48,7 +50,6 @@ const Daily = () => {
         );
         if (latitude !== null && longitude !== null) {
           const date = async () => {
-            await worker.start();
             const item = await axios.get(`api/suggest/drink?lat=${latitude}&lon=${longitude}`);
             setDailyData(item.data.answer);
             console.log(item.data.answer);
@@ -84,13 +85,16 @@ const Daily = () => {
       <DailyDesc>{!error ? '현재 위치 기반으로 특산주를 추천해드려요 :D' : error}</DailyDesc>
       <DailyBottom>
         {!isVerification ? (
-          <ImgDesc>
-            <b>위치정보 제공에 동의해 주세요!</b>
-          </ImgDesc>
+          <ValiText>위치정보 제공에 동의해주세요!</ValiText>
         ) : (
           <>
             <Img>
-              <img src={dailyData.image_url} alt={dailyData.name} />
+              {imageLoading && <Skeleton />}
+              <img
+                src={dailyData.image_url}
+                alt={dailyData.name}
+                onLoad={() => setImageLoading(false)}
+              />
             </Img>
             <ImgDesc>
               <b>{dailyData.name}</b>
@@ -134,6 +138,16 @@ const Daily = () => {
     </DailySection>
   );
 };
+
+const ValiText = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 70px;
+  font-weight: bold;
+`;
+
 const Modal = styled.div`
   position: fixed;
   top: 0;
@@ -241,12 +255,18 @@ const DailyBottom = styled.div`
 `;
 
 const Img = styled.div`
-  width: 80px;
-  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 70px;
   margin-right: 10px;
   border-radius: 10px;
   overflow: hidden;
   img {
+    height: 100%;
+  }
+  div {
     width: 100%;
     height: 100%;
   }
