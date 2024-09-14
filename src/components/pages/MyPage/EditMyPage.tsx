@@ -1,21 +1,29 @@
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { Alert } from '@/components/ui/alert';
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from '@/components/ui/alert-dialog'; // 적절한 경로로 변경
 import { useSpecialtyStore } from '@/store/useSpecialtyStore';
-import styled from '@emotion/styled';
-import ExProfileImg from '@/assets/ExProfileImg';
-import SettingIcon from '@/assets/icons/SettingIcon';
-import { Member, useMemberStore } from '@/store/useMemberStore';
+import { useMemberStore } from '@/store/useMemberStore';
 import { mapDrinkType } from '@/data/drinkTypes';
-import { Value } from '@radix-ui/react-select';
+import ExProfileImg from '@/assets/ExProfileImg';
+import styled from '@emotion/styled';
 
 const EditMyPage = () => {
   //** 유저 정보 */
-  const { members, fetchMembers } = useMemberStore();
-  const [currentUser, setCurrentUser] = useState<Member | null>(null);
+  const { currentUser, fetchMembers } = useMemberStore();
   const [passwordError, setPasswordError] = useState<string>('');
   const [isCurrentPasswordValid, setIsCurrentPasswordValid] = useState<boolean>(false); // 패스워드 검증 성공 여부
 
@@ -23,29 +31,35 @@ const EditMyPage = () => {
     fetchMembers();
   }, [fetchMembers]);
 
-  useEffect(() => {
-    if (members.length > 0) {
-      const user = members.find(member => member.id === 1); // id가 1인 유저 찾기
-      if (user) {
-        setCurrentUser(user);
-      }
-    }
-  }, [members]);
-
   //** 상태값 관리 */
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [name, setName] = useState('');
+  const [name, setName] = useState(currentUser?.name || '');
   const [currentPassword, setcurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [isChecked, setIsChecked] = useState(false);
+  const [isAlramChecked, setIsAlramChecked] = useState(false);
+  const [isAgreeChecked, setIsAgreeChecked] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [saveAlertVisible, setSaveAlertVisible] = useState(false);
 
   const isMatch = newPassword === confirmPassword && newPassword !== '';
   const navigate = useNavigate();
 
-  const handleToggle = () => {
-    setIsChecked(!isChecked); // 현재 상태의 반대로 설정
+  const alramToggle = () => {
+    setIsAlramChecked(!isAlramChecked); // 현재 상태의 반대로 설정
   };
+
+  const agreeToggle = () => {
+    setIsAgreeChecked(!isAgreeChecked); // 현재 상태의 반대로 설정
+  };
+
+  //** 사용자 닉네임 변경 */
+  useEffect(() => {
+    if (currentUser) {
+      setName(currentUser.name);
+    }
+  }, [currentUser]);
 
   //** 기존 패스워드와 일치 여부 검사 함수 */
   const validateCurrentPassword = () => {
@@ -67,16 +81,23 @@ const EditMyPage = () => {
   }, [fetchDrinks]);
 
   useEffect(() => {
-    if (members.length > 0) {
-      const user = members.find(member => member.id === 1);
-      if (user) {
-        setCurrentUser(user);
-
-        const favorDrinks = user.favorDrinkType.map(type => mapDrinkType(type));
-        setSelectedDrinks(favorDrinks);
-      }
+    if (currentUser) {
+      const favorDrinks = currentUser.favorDrinkType.map(type => mapDrinkType(type));
+      setSelectedDrinks(favorDrinks);
     }
-  }, [members, setSelectedDrinks]);
+  }, [currentUser, setSelectedDrinks]);
+
+  //** 선호주종 5개 제한 */
+  const handleDrinkSelection = (drink: string) => {
+    if (selectedDrinks.includes(drink)) {
+      toggleDrinkSelection(drink);
+    } else if (selectedDrinks.length < 5) {
+      toggleDrinkSelection(drink);
+    } else {
+      setAlertVisible(true);
+      setTimeout(() => setAlertVisible(false), 1500);
+    }
+  };
 
   //** 사용자 프로필 이미지 변경 적용 */
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,10 +112,12 @@ const EditMyPage = () => {
   };
 
   const handleSave = () => {
-    validateCurrentPassword();
-    if (isCurrentPasswordValid && passwordError === '') {
+    if (newPassword === confirmPassword) {
       setSelectedDrinks(selectedDrinks);
       navigate('/mypage');
+    } else {
+      setSaveAlertVisible(true);
+      setTimeout(() => setSaveAlertVisible(false), 1000);
     }
   };
 
@@ -164,20 +187,21 @@ const EditMyPage = () => {
             <p style={{ color: 'red', fontSize: '14px' }}>비밀번호가 일치하지 않습니다.</p>
           )}
           <Label htmlFor="">선호주종</Label>
+          {alertVisible && (
+            <ModalWrapper>
+              <AlertContent alertVisible={alertVisible} isSecondAlert={false}>
+                <Alert variant="destructive">
+                  <p>최대 5개의 주종만 선택할 수 있습니다.</p>
+                </Alert>
+              </AlertContent>
+            </ModalWrapper>
+          )}
           <AlcoholList>
             {alldrinks.map(drink => (
               <AlcoholItem
                 key={drink}
                 isSelected={selectedDrinks.includes(drink)}
-                onClick={() => {
-                  if (selectedDrinks.includes(drink)) {
-                    toggleDrinkSelection(drink);
-                  } else if (selectedDrinks.length < 5) {
-                    toggleDrinkSelection(drink);
-                  } else {
-                    alert('최대 5개의 주종만 선택할 수 있습니다.');
-                  }
-                }}
+                onClick={() => handleDrinkSelection(drink)}
               >
                 {drink}
               </AlcoholItem>
@@ -189,18 +213,48 @@ const EditMyPage = () => {
           <SwitchWrapper>
             <span>나의 게시글에 대한 댓글 알림</span>
             <div>
-              <Switch onClick={handleToggle} />
-              {isChecked ? 'ON' : 'OFF'}
+              {isAlramChecked ? 'ON' : 'OFF'}
+              <Switch onClick={alramToggle} />
+            </div>
+          </SwitchWrapper>
+          <Label htmlFor="">정보 제공 동의</Label>
+          <SwitchWrapper>
+            <span>위치 정보 제공 동의</span>
+            <div>
+              {isAgreeChecked ? 'ON' : 'OFF'}
+              <Switch onClick={agreeToggle} />
             </div>
           </SwitchWrapper>
         </EditBottom>
         <ConfirmWrapper>
-          <Link to="/mypage">
-            <Button>취소</Button>
-          </Link>
-          <Link to="/mypage" onClick={handleSave}>
-            <Button>저장</Button>
-          </Link>
+          <Button onClick={() => navigate('/mypage')}>취소</Button>
+          <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <AlertDialogTrigger asChild>
+              <Button>저장</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogDescription>
+                  회원정보 수정사항을 저장하시겠습니까?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancelStyled onClick={() => setIsDialogOpen(false)}>
+                  취소
+                </AlertDialogCancelStyled>
+                <AlertDialogActionStyled onClick={handleSave}>저장</AlertDialogActionStyled>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          {saveAlertVisible && (
+            <ModalWrapper>
+              <AlertContent alertVisible={saveAlertVisible} isSecondAlert={true}>
+                <Alert variant="destructive">
+                  <p>새 비밀번호와 확인 비밀번호가 일치하지 않습니다.</p>
+                </Alert>
+              </AlertContent>
+            </ModalWrapper>
+          )}
         </ConfirmWrapper>
       </ContentWrapper>
     </NoFooterLayout>
@@ -284,10 +338,47 @@ const EditMid = styled.ul`
 const Label = styled.label`
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
-  ::before {
+  :not(:first-of-type)::before {
     content: '* ';
     color: ${({ theme }) => theme.colors.tertiary};
   }
+`;
+
+const ModalWrapper = styled.div`
+  position: fixed;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const AlertContent = styled.div<{ alertVisible: boolean; isSecondAlert: boolean }>`
+  padding: 5px;
+  background-color: rgba(255, 0, 0, 0.3); /* 반투명한 배경 */
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  opacity: ${({ alertVisible }) => (alertVisible ? 1 : 0)};
+  transform: ${({ alertVisible }) => (alertVisible ? 'translateY(0)' : 'translateY(-20px)')};
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+  z-index: 1001;
+
+  * p {
+    font-size: ${({ theme }) => theme.fontSizes.xsmall};
+    color: ${({ theme }) => theme.colors.white};
+  }
+
+  ${({ alertVisible }) => (alertVisible ? `display: block;` : `display: none;`)}
+
+  ${({ isSecondAlert }) =>
+    isSecondAlert &&
+    `
+  `}
 `;
 
 interface AlcoholItemProps {
@@ -325,17 +416,26 @@ const EditBottom = styled.div`
   span {
     font-size: ${({ theme }) => theme.fontSizes.xsmall};
   }
+
+  label::before {
+    content: '* ';
+    color: ${({ theme }) => theme.colors.tertiary};
+  }
 `;
 
 const SwitchWrapper = styled.div`
   display: flex;
   margin-top: 8px;
+  margin-bottom: 8px;
   justify-content: space-between;
   align-items: center;
 
   div {
     display: flex;
+    align-items: center;
+    font-size: ${({ theme }) => theme.fontSizes.xsmall};
     button {
+      margin-left: 5px;
       margin-right: 2px;
     }
   }
@@ -353,14 +453,29 @@ const ConfirmWrapper = styled.div`
   button {
     width: 140px;
     border-radius: 30px;
-  }
 
-  a:nth-of-type(1) button {
+    :nth-of-type(1) {
+      background-color: ${({ theme }) => theme.colors.gray};
+    }
+    :nth-of-type(2) {
+      background-color: ${({ theme }) => theme.colors.primary};
+    }
+  }
+`;
+
+const AlertDialogActionStyled = styled(AlertDialogAction)`
+  background-color: ${({ theme }) => theme.colors.primary};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
+
+const AlertDialogCancelStyled = styled(AlertDialogCancel)`
+  background-color: ${({ theme }) => theme.colors.brightGray};
+
+  &:hover {
     background-color: ${({ theme }) => theme.colors.gray};
-  }
-
-  a:nth-of-type(2) button {
-    background-color: ${({ theme }) => theme.colors.primary};
   }
 `;
 

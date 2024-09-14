@@ -6,17 +6,18 @@ import CardItem from '@/components/layout/CardItem';
 import FollowTagList from './FollowTagList';
 import BookmarkIcon from '@/assets/icons/BookmarkIcon';
 import ListIcon from '@/assets/icons/ListIcon';
+import { useMemberStore } from '@/store/useMemberStore';
 
 const MyPageTab = () => {
   const { posts, fetchPosts } = usePostsStore();
-  const currentUserID = 1;
+  const { currentUser } = useMemberStore();
 
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
 
   const filteredPosts = Array.isArray(posts)
-    ? posts.filter(posts => posts.memberId === currentUserID)
+    ? posts.filter(posts => posts.memberId === currentUser?.id)
     : [];
 
   return (
