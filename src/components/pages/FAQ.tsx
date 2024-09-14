@@ -1,20 +1,16 @@
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from '@/components/ui/accordion';
+import { AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 import styled from '@emotion/styled';
-import ArrowLeftIcon from '@/assets/icons/ArrowLeftIcon';
+import PrevBtn from '../layout/PrevBtn';
+import { AccordionStyled } from './Announcement';
 
 const FAQ = () => {
   return (
     <NoFooterLayoutSub>
-      <ContentWrapperSub>
-        <ArrowLeftIcon></ArrowLeftIcon>
+      <ContentWrapper>
+        <PrevBtn />
         <TitleStyled>FAQ</TitleStyled>
-        <Accordion type="multiple" className="w-full">
+        <AccordionStyled type="multiple" className="w-full">
           <AccordionItem value="item-1">
             <AccordionTriggerSub>Q. 오늘 한 잔 이란?</AccordionTriggerSub>
             <AccordionContentSub>
@@ -40,8 +36,8 @@ const FAQ = () => {
               있습니다.
             </AccordionContentSub>
           </AccordionItem>
-        </Accordion>
-      </ContentWrapperSub>
+        </AccordionStyled>
+      </ContentWrapper>
     </NoFooterLayoutSub>
   );
 };
@@ -50,28 +46,24 @@ const NoFooterLayoutSub = styled(NoFooterLayout)`
   align-items: flex-start;
 `;
 
-const ContentWrapperSub = styled(ContentWrapper)`
-  margin-top: 15px;
-`;
-
 const TitleStyled = styled.h1`
   width: 100%;
-  height: 60px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.black};
+  height: auto;
+  padding-bottom: 20px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.darkGray};
   color: ${({ theme }) => theme.colors.black};
-  font-size: ${({ theme }) => theme.fontSizes.xxlarge};
+  font-size: ${({ theme }) => theme.fontSizes.large};
   font-weight: bold;
   text-align: center;
 `;
 
 const AccordionTriggerSub = styled(AccordionTrigger)`
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
 `;
 
 const AccordionContentSub = styled(AccordionContent)`
   padding: 12px 8px 12px 8px;
-  background-color: ${({ theme }) => theme.colors.lightGray};
+  background-color: ${({ theme }) => theme.colors.brightGray};
 `;
 
 export default FAQ;

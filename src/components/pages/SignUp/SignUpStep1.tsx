@@ -228,19 +228,28 @@ export const Container = styled.div`
 
   input {
     margin-bottom: 2px;
-    background-color: ${({ theme }) => theme.colors.lightGray};
+    background-color: ${({ theme }) => theme.colors.brightGray};
     font-size: ${({ theme }) => theme.fontSizes.small};
+
+    &:focus {
+      border: 1px solid ${({ theme }) => theme.colors.focusShadow};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    }
   }
 `;
 
 export const Header = styled.h2`
-  margin: 20px 0 20px 0;
+  margin: 20px 0;
   font-size: ${({ theme }) => theme.fontSizes.medium};
   font-weight: bold;
+
+  p {
+    font-weight: normal;
+  }
 `;
 
 export const AlarmText = styled.p`
-  margin-top: 10px;
+  margin-top: 5px;
   color: ${({ theme }) => theme.colors.gray};
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
 `;
@@ -253,19 +262,19 @@ export const Step = styled.div`
 `;
 
 export const Orange1 = styled.div`
-  background-color: ${({ theme }) => theme.colors.tertiary};
+  background-color: ${({ theme }) => theme.colors.primary};
   width: 33.33%;
   height: 100%;
 `;
 
 export const Orange2 = styled.div`
-  background-color: ${({ theme }) => theme.colors.tertiary};
+  background-color: ${({ theme }) => theme.colors.primary};
   width: 66.67%;
   height: 100%;
 `;
 
 export const Orange3 = styled.div`
-  background-color: ${({ theme }) => theme.colors.tertiary};
+  background-color: ${({ theme }) => theme.colors.primary};
   width: 100%;
   height: 100%;
 `;

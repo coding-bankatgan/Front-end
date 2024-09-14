@@ -95,12 +95,12 @@ const Login = () => {
       {showLoginError && <Error>이메일 또는 패스워드를 확인해주세요.</Error>}
       <Container isVisible={isVisible}>
         <FirstLogo isVisible={isVisible}>
-          <LogoImage src="/오늘한잔.png" alt="오늘한잔" />
+          <LogoImage src="https://picsum.photos/200/300" alt="오늘한잔" />
           <Spinner />
         </FirstLogo>
       </Container>
       <FormContainer onSubmit={handleSubmit}>
-        <LogoImage src="/오늘한잔.png" alt="오늘한잔" />
+        <LogoImage src="https://picsum.photos/200/300" alt="오늘한잔" />
         <Heading>모두를 위한 특산주</Heading>
         <Label htmlFor="email">아이디(이메일)</Label>
         <Input type="email" name="email" id="email" />
@@ -199,8 +199,14 @@ const FormContainer = styled.form`
 
   input {
     margin-bottom: 16px;
-    background-color: ${({ theme }) => theme.colors.lightGray};
+    background-color: ${({ theme }) => theme.colors.white};
+    border: 1px solid ${({ theme }) => theme.colors.lightGray};
     font-size: ${({ theme }) => theme.fontSizes.small};
+
+    &:focus {
+      border: 1px solid ${({ theme }) => theme.colors.focusShadow};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    }
   }
 
   a {
@@ -209,10 +215,8 @@ const FormContainer = styled.form`
 `;
 
 const Heading = styled.p`
-  width: 60%;
+  width: 100%;
   margin: 5px auto 25px auto;
-  border-radius: 50px;
-  background-color: ${({ theme }) => theme.colors.lightGray};
   font-size: ${({ theme }) => theme.fontSizes.small};
   text-align: center;
 `;
@@ -229,21 +233,22 @@ const Label = styled.label`
 
 const LoginBtn = styled.button`
   width: 100%;
-  margin: 12px 0 12px 0;
-  padding: 10px;
+  height: 45px;
+  margin: 12px 0;
   background-color: ${({ theme }) => theme.colors.primary};
-  border-radius: 50px;
   color: ${({ theme }) => theme.colors.white};
-  font-weight: bold;
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  border-radius: 30px;
   text-align: center;
 `;
 
 const SignupBtn = styled.button`
   width: 100%;
-  padding: 10px;
+  height: 45px;
   background-color: ${({ theme }) => theme.colors.lightGray};
-  border-radius: 50px;
-  font-weight: bold;
+  color: ${({ theme }) => theme.colors.black};
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  border-radius: 30px;
   text-align: center;
 `;
 
@@ -252,14 +257,13 @@ const GoogleBtn = styled.button`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 44px;
+  height: 45px;
+  margin-top: 12px;
   padding: 10px;
   background-color: ${({ theme }) => theme.colors.white};
-  border: 2px solid ${({ theme }) => theme.colors.tertiary};
-  border-radius: 50px;
-  font-weight: bold;
+  border: 1px solid ${({ theme }) => theme.colors.tertiary};
+  border-radius: 30px;
   text-align: center;
-  margin-top: 12px;
   svg {
     width: 30px;
     height: 100%;

@@ -57,6 +57,8 @@ const SheetTriggerStyled = styled(SheetTrigger)`
 `;
 
 const SheetContentStyled = styled(SheetContent)`
+  padding: 20px 15px 15px 15px;
+
   > button {
     &:focus {
       box-shadow: none;
@@ -104,7 +106,7 @@ const NoticeTop = styled.span`
   align-items: center;
   margin-bottom: 10px;
   color: ${({ theme }) => theme.colors.gray};
-  font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  font-size: ${({ theme }) => theme.fontSizes.small};
 
   > div {
     background-color: ${({ theme }) => theme.colors.primary};
@@ -115,7 +117,7 @@ const NoticeTop = styled.span`
 
 const NoticeTitle = styled.b`
   display: inline-block;
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-size: ${({ theme }) => theme.fontSizes.small};
   line-height: 18px;
   text-align: justify;
   letter-spacing: -0.3px;
@@ -123,7 +125,7 @@ const NoticeTitle = styled.b`
 
 const NoticeContent = styled.span`
   display: inline-block;
-  font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  font-size: ${({ theme }) => theme.fontSizes.small};
   line-height: 15px;
   text-align: justify;
   letter-spacing: -0.3px;

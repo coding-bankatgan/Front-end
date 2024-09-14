@@ -61,7 +61,7 @@ const Tab = () => {
         {sortedPosts.length > 0 ? (
           sortedPosts.map(post => <CardItem key={post.id} post={post} />)
         ) : (
-          <p>아무것도 없어요</p>
+          <p>작성된 게시글이 없습니다</p>
         )}
       </TabsContentStyled>
     </TabsStyled>
@@ -76,7 +76,6 @@ const TabsStyled = styled(Tabs)`
     height: 30px;
     margin-left: auto;
     margin-top: 10px;
-    font-size: ${({ theme }) => theme.fontSizes.xsmall};
     border: 1px solid ${({ theme }) => theme.colors.lightGray};
 
     &:focus {
@@ -115,7 +114,7 @@ const SelectStyled = styled.select`
   height: 35px;
   margin-left: auto;
   margin-top: 20px;
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-size: ${({ theme }) => theme.fontSizes.small};
   border: 1px solid ${({ theme }) => theme.colors.lightGray};
   border-radius: 5px;
 

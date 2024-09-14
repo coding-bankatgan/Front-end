@@ -21,7 +21,7 @@ const Header = () => {
           <DropdownMenuTrigger>
             <EllipsisVerticalIcon />
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContentStyled>
             <DropdownMenuItem onClick={() => navigate('/announcement')}>공지사항</DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate('/faq')}>FAQ</DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate('/specialty-drink')}>
@@ -30,7 +30,7 @@ const Header = () => {
             <DropdownMenuItem onClick={() => navigate('/report')}>
               신고 접수 리스트
             </DropdownMenuItem>
-          </DropdownMenuContent>
+          </DropdownMenuContentStyled>
         </DropdownMenu>
       </MenuWrapper>
     </HeaderLayout>
@@ -67,6 +67,15 @@ const MenuWrapper = styled.div`
 
   svg {
     color: ${({ theme }) => theme.colors.darkGray};
+  }
+`;
+
+const DropdownMenuContentStyled = styled(DropdownMenuContent)`
+  margin: 5px 1px 0 0;
+
+  div {
+    padding: 10px 0;
+    font-size: ${({ theme }) => theme.fontSizes.small};
   }
 `;
 

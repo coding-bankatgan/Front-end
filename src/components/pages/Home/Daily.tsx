@@ -82,11 +82,11 @@ const ImgDesc = styled.span`
   align-items: flex-start;
 
   b {
-    font-size: ${({ theme }) => theme.fontSizes.base};
+    font-size: ${({ theme }) => theme.fontSizes.small};
   }
 
   span {
-    font-size: ${({ theme }) => theme.fontSizes.xsmall};
+    font-size: ${({ theme }) => theme.fontSizes.small};
   }
 `;
 

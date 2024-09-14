@@ -31,7 +31,7 @@ const ButtonWrapper = styled.div`
     height: 50px;
     background-color: ${({ theme }) => theme.colors.brightGray};
     color: ${({ theme }) => theme.colors.darkGray};
-    font-size: ${({ theme }) => theme.fontSizes.small};
+    font-size: ${({ theme }) => theme.fontSizes.base};
     border-radius: 10px;
 
     svg {

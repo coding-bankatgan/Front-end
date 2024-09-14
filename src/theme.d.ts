@@ -25,7 +25,6 @@ declare module '@emotion/react' {
       medium: string;
       large: string;
       xlarge: string;
-      xxlarge: string;
     };
   }
 }

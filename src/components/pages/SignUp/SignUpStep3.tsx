@@ -55,7 +55,6 @@ const SignUpStep3 = ({
             <br />
             <AlarmText>3 ~ 5개를 선택해 주세요.</AlarmText>
           </Header>
-
           <AlcoholList>
             {alcohols.map((alcohol: string) => (
               <AlcoholItem
@@ -101,7 +100,7 @@ const AlcoholItem = styled.button<AlcoholItemProps>`
   width: 90px;
   height: 90px;
   background-color: ${({ isSelected, theme }) =>
-    isSelected ? theme.colors.tertiary : theme.colors.lightGray};
+    isSelected ? theme.colors.tertiary : theme.colors.brightGray};
   border-radius: 10px;
   border: none;
   display: flex;

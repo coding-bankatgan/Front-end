@@ -6,15 +6,28 @@ import PostStep3 from './PostStep3';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChangePage from './ChangePage';
+import { useNavigate } from 'react-router-dom';
 
 const CreatePost = () => {
   const [step, setStep] = useState(1);
   const [isNext, setIsNext] = useState(true);
+  const navigate = useNavigate();
+
+  const prevBtn = () => {
+    setIsNext(false);
+    navigate(-1);
+  };
+
+  const nextBtn = () => {
+    setIsNext(false);
+    navigate('/');
+  };
 
   const prevStep = () => {
     setIsNext(false);
     setStep(prevStep => prevStep - 1);
   };
+
   const nextStep = () => {
     setIsNext(true);
     setStep(prevStep => prevStep + 1);
@@ -26,7 +39,7 @@ const CreatePost = () => {
         <AnimatePresence mode="wait">
           {step === 1 && (
             <>
-              <ChangePage prevStep={prevStep} progressValue={33} />
+              <ChangePage prevStep={prevBtn} progressValue={33} />
               <motion.div
                 key="step1"
                 initial={{ opacity: 0, x: isNext ? 100 : -100 }}
@@ -62,7 +75,7 @@ const CreatePost = () => {
                 exit={{ opacity: 0, x: isNext ? -100 : 100 }}
                 transition={{ duration: 0.4 }}
               >
-                <PostStep3 prevStep={prevStep} nextStep={nextStep} />
+                <PostStep3 prevStep={prevStep} nextStep={nextBtn} />
               </motion.div>
             </>
           )}

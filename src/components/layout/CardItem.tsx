@@ -83,11 +83,11 @@ const CardContentStyled = styled(CardContent)`
 
   p {
     display: -webkit-box;
-    height: 35px;
+    height: 42px;
     margin-top: 5px;
-    font-size: ${({ theme }) => theme.fontSizes.xsmall};
-    text-align: justify;
-    letter-spacing: -0.5px;
+    font-size: ${({ theme }) => theme.fontSizes.small};
+    text-align: left;
+    letter-spacing: -0.2px;
     overflow: hidden;
     text-overflow: ellipsis;
     -webkit-line-clamp: 2;
@@ -102,7 +102,7 @@ const ContentTop = styled.div`
 
   span {
     display: flex;
-    font-size: ${({ theme }) => theme.fontSizes.base};
+    font-size: ${({ theme }) => theme.fontSizes.small};
 
     svg {
       width: 20px;
@@ -136,6 +136,7 @@ const TagWrapper = styled.div`
 
   div {
     margin-right: 4px;
+    padding: 3px 10px;
     background-color: ${({ theme }) => theme.colors.primary};
     color: ${({ theme }) => theme.colors.white};
     font-size: ${({ theme }) => theme.fontSizes.xsmall};
@@ -158,14 +159,14 @@ const CardFooterStyled = styled(CardFooter)`
 
   span:nth-of-type(1) {
     color: ${({ theme }) => theme.colors.gray};
-    font-size: ${({ theme }) => theme.fontSizes.xxsmall};
+    font-size: ${({ theme }) => theme.fontSizes.xsmall};
   }
 
   span:nth-of-type(2) {
     display: flex;
     align-items: center;
     color: ${({ theme }) => theme.colors.gray};
-    font-size: ${({ theme }) => theme.fontSizes.xxsmall};
+    font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
     svg {
       width: 14px;

@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useEffect } from 'react';
 import styled from '@emotion/styled';
-import ArrowLeftIcon from '@/assets/icons/ArrowLeftIcon';
 import PlusIcon from '@/assets/icons/PlusIcon';
 import useRegistrationStore from '@/store/useRegistrationStore';
 import dayjs from 'dayjs';
+import PrevBtn from '@/components/layout/PrevBtn';
 
 const SpecialtyDrinkBoard = () => {
   const { registrations, fetchRegistrations } = useRegistrationStore();
@@ -15,13 +15,12 @@ const SpecialtyDrinkBoard = () => {
     fetchRegistrations();
   }, [fetchRegistrations]);
   const navigate = useNavigate();
+
   return (
     <NoFooterLayoutSub>
       <ContentWrapper>
         <ListTitleStyled>
-          <Link to="/">
-            <ArrowLeftIcon />
-          </Link>
+          <PrevBtn />
           <h1>특산주 신청 리스트</h1>
         </ListTitleStyled>
         <ListContentStyled>
@@ -43,17 +42,15 @@ const SpecialtyDrinkBoard = () => {
                   </p>
                 )}
               </div>
-              <p>{dayjs(registration.createdAt).format('MM/DD')}</p>
+              <span>{dayjs(registration.createdAt).format('YYYY.MM.DD')}</span>
             </li>
           ))}
         </ListContentStyled>
-        <ListBottomStyled>
-          <EditDrinkForm>
-            <Link to="/specialty-drink/form">
-              <PlusIcon />
-            </Link>
-          </EditDrinkForm>
-        </ListBottomStyled>
+        <EditDrinkForm>
+          <Link to="/specialty-drink/form">
+            <PlusIcon />
+          </Link>
+        </EditDrinkForm>
       </ContentWrapper>
     </NoFooterLayoutSub>
   );
@@ -66,8 +63,9 @@ const NoFooterLayoutSub = styled(NoFooterLayout)`
 const ListTitleStyled = styled.div`
   h1 {
     width: 100%;
-    height: 40px;
-    border-bottom: 1px solid ${({ theme }) => theme.colors.black};
+    height: auto;
+    padding-bottom: 20px;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.darkGray};
     color: ${({ theme }) => theme.colors.black};
     font-size: ${({ theme }) => theme.fontSizes.large};
     font-weight: bold;
@@ -78,8 +76,9 @@ const ListTitleStyled = styled.div`
 const ListContentStyled = styled.ul`
   li {
     display: flex;
-    margin: 15px 10px;
     justify-content: space-between;
+    padding: 15px 10px;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
 
     p {
       font-size: ${({ theme }) => theme.fontSizes.xsmall};
@@ -90,24 +89,34 @@ const ListContentStyled = styled.ul`
         color: ${({ theme }) => theme.colors.error};
       }
     }
+
+    > span {
+      margin-top: 4px;
+      color: ${({ theme }) => theme.colors.gray};
+      font-size: ${({ theme }) => theme.fontSizes.xsmall};
+    }
   }
 `;
 
-const ListBottomStyled = styled.div`
-  display: flex;
-  margin-right: 15px;
-  flex-direction: row-reverse;
-`;
-
 const EditDrinkForm = styled(Button)`
+  position: fixed;
+  bottom: 40px;
+  right: 20px;
   display: flex;
   width: 40px;
   height: 40px;
-  background-color: ${({ theme }) => theme.colors.tertiary};
+  background-color: ${({ theme }) => theme.colors.primary};
   border-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 4px 10px;
+
+  svg {
+    width: 22px;
+    height: 22px;
+    color: ${({ theme }) => theme.colors.white};
+  }
 
   :hover {
-    background-color: ${({ theme }) => theme.colors.tertiary};
+    background-color: ${({ theme }) => theme.colors.secondary};
   }
 `;
 
