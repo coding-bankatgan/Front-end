@@ -3,21 +3,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePostsStore } from '@/store/usePostsStore';
 import { useEffect, useState } from 'react';
 import CardItem from '@/components/layout/CardItem';
+import { worker } from '@/mocks/browser';
 
 const Tab = () => {
   const { posts, fetchPosts } = usePostsStore();
   const [selectedTab, setSelectedTab] = useState('all');
   const [sortOrder, setSortOrder] = useState('recent');
 
-  // useLayoutEffect(() => {
-  //   fetchPosts();
-  // }, [fetchPosts]);
-
   useEffect(() => {
-    window.onload = () => {
+    const fetchData = async () => {
+      await worker.start();
       fetchPosts();
     };
-  }, [fetchPosts]);
+
+    fetchData();
+  }, [worker, fetchPosts]);
 
   const filteredPosts = Array.isArray(posts)
     ? selectedTab === 'all'
