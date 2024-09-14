@@ -28,3 +28,27 @@ export const fetchCommentsApi = async (postId: number, page: number, size: numbe
     console.error('Error fetching comments: ', err);
   }
 };
+
+/** Kakao 맵 api */
+export const getAddress = async (latitude: number | null, longitude: number | null) => {
+  const apiKey = 'f21248c02fc4d05f9ce83b60e063d55d';
+  const url = `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${longitude}&y=${latitude}`;
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `KakaoAK ${apiKey}`,
+      },
+    });
+    const data = await response.json();
+
+    if (data.documents && data.documents.length > 0) {
+      const address = data.documents[0].address.address_name;
+      return address;
+    } else {
+      throw new Error('Geocoding failed');
+    }
+  } catch (error) {
+    console.error('Error fetching address:', error);
+  }
+};

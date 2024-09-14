@@ -110,4 +110,23 @@ export const handlers = [
       message: '사용 가능한 아이디 입니다.',
     });
   }),
+  /** 데일리 추천 api */
+  http.get(`api/suggest/drink`, ({ request }) => {
+    const requestUrl = new URL(request.url);
+    const lat = requestUrl.searchParams.get('lat');
+    const lon = requestUrl.searchParams.get('lon');
+
+    const answer = {
+      drink_id: 1,
+      name: '독산 30',
+      place_name: '서울시',
+      image_url: 'https://thesool.com/common/imageView.do?targetId=PR00000957&targetNm=PRODUCT',
+      lat,
+      lon,
+    };
+
+    return HttpResponse.json({
+      answer,
+    });
+  }),
 ];
