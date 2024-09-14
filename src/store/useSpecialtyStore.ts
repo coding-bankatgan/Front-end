@@ -18,9 +18,9 @@ interface specialtyDrink {
 interface SpecialtyState {
   alldrinks: string[];
   selectedDrinks: string[];
+  setSelectedDrinks: (selectedDrinks: string[]) => void;
   fetchDrinks: () => Promise<void>;
   toggleDrinkSelection: (drink: string) => void;
-  setSelectedDrinks: (drinks: string[]) => void;
 }
 
 export const useSpecialtyStore = create<SpecialtyState>((set, get) => ({
@@ -34,7 +34,6 @@ export const useSpecialtyStore = create<SpecialtyState>((set, get) => ({
       if (Array.isArray(drinksType)) {
         set({
           alldrinks: drinksType,
-          selectedDrinks: ['소주', '맥주', '리큐르'],
         });
       } else {
         console.error('error: ', drinksType);
@@ -58,7 +57,5 @@ export const useSpecialtyStore = create<SpecialtyState>((set, get) => ({
     }
   },
 
-  setSelectedDrinks: (drinks: string[]) => {
-    set({ selectedDrinks: drinks });
-  },
+  setSelectedDrinks: selectedDrinks => set({ selectedDrinks }),
 }));

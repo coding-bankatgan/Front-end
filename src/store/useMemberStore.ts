@@ -8,7 +8,7 @@ export interface Member {
   birthDate: string;
   currentPassword: string;
   newPassword: null;
-  favorDrinkType: string;
+  favorDrinkType: string[];
   role: 'USER' | 'MANAGER';
   alarmEnabled: boolean;
   imageUrl: string;
