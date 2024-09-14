@@ -1,11 +1,24 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { usePostsStore } from '@/store/usePostsStore';
+import { useEffect } from 'react';
 import styled from '@emotion/styled';
-import CardItemList from '../../layout/CardItemList';
+import CardItem from '@/components/layout/CardItem';
 import FollowTagList from './FollowTagList';
 import BookmarkIcon from '@/assets/icons/BookmarkIcon';
 import ListIcon from '@/assets/icons/ListIcon';
 
 const MyPageTab = () => {
+  const { posts, fetchPosts } = usePostsStore();
+  const currentUserID = 1;
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
+
+  const filteredPosts = Array.isArray(posts)
+    ? posts.filter(posts => posts.memberId === currentUserID)
+    : [];
+
   return (
     <TabsStyled defaultValue="my-posts" className="w-[100%]">
       <TabsListStyled>
@@ -17,7 +30,11 @@ const MyPageTab = () => {
         </TabsTrigger>
       </TabsListStyled>
       <TabsContentStyled value="my-posts">
-        <CardItemList />
+        {filteredPosts.length > 0 ? (
+          filteredPosts.map(post => <CardItem key={post.id} post={post} />)
+        ) : (
+          <p>아무것도 없어요</p>
+        )}
       </TabsContentStyled>
       <TabsContentStyled value="my-tag-lists">
         <FollowTagList />
@@ -41,6 +58,7 @@ const TabsListStyled = styled(TabsList)`
   grid-auto-flow: column;
   justify-content: space-around;
   width: 100%;
+  height: 40px;
   background-color: ${({ theme }) => theme.colors.white};
 
   button {
@@ -49,6 +67,13 @@ const TabsListStyled = styled(TabsList)`
     &[data-state='active'] {
       box-shadow: none;
       border-bottom: 1px solid ${({ theme }) => theme.colors.primary};
+      > svg {
+        color: ${({ theme }) => theme.colors.primary};
+      }
+    }
+
+    svg {
+      color: ${({ theme }) => theme.colors.darkGray};
     }
   }
 `;
