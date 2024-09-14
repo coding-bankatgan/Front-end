@@ -1,17 +1,14 @@
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
 import { Link } from 'react-router-dom';
-import { Pagination } from '@/components/ui/pagination';
 import styled from '@emotion/styled';
-import ArrowLeftIcon from '@/assets/icons/ArrowLeftIcon';
+import PrevBtn from '@/components/layout/PrevBtn';
 
 const ReportBoard = () => {
   return (
     <NoFooterLayoutSub>
       <ContentWrapper>
         <ListTitleStyled>
-          <Link to="/">
-            <ArrowLeftIcon />
-          </Link>
+          <PrevBtn />
           <h1>신고 접수 리스트</h1>
         </ListTitleStyled>
         <ListContentStyled>
@@ -21,7 +18,7 @@ const ReportBoard = () => {
                 <span>[신고 사유]</span>
                 <p>Re: 삭제 조치</p>
               </Link>
-              <p>09/06</p>
+              <span>2024.09.06</span>
             </li>
           ))}
         </ListContentStyled>
@@ -37,8 +34,9 @@ const NoFooterLayoutSub = styled(NoFooterLayout)`
 const ListTitleStyled = styled.div`
   h1 {
     width: 100%;
-    height: 40px;
-    border-bottom: 1px solid ${({ theme }) => theme.colors.black};
+    height: auto;
+    padding-bottom: 20px;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.darkGray};
     color: ${({ theme }) => theme.colors.black};
     font-size: ${({ theme }) => theme.fontSizes.large};
     font-weight: bold;
@@ -49,10 +47,17 @@ const ListTitleStyled = styled.div`
 const ListContentStyled = styled.ul`
   li {
     display: flex;
-    margin: 15px 10px;
     justify-content: space-between;
+    padding: 15px 10px;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
 
     p {
+      font-size: ${({ theme }) => theme.fontSizes.xsmall};
+    }
+
+    > span {
+      margin-top: 4px;
+      color: ${({ theme }) => theme.colors.gray};
       font-size: ${({ theme }) => theme.fontSizes.xsmall};
     }
   }

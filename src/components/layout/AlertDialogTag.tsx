@@ -38,7 +38,7 @@ const AlertDialogTriggerStyled = styled(AlertDialogTrigger)`
   padding: 3px 10px;
   background-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.primary};
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-size: ${({ theme }) => theme.fontSizes.small};
   border: 1px solid ${({ theme }) => theme.colors.primary};
   border-radius: 20px;
 

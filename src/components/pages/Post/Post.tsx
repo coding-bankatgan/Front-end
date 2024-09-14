@@ -164,7 +164,7 @@ const PostTitleSection = styled.div`
       padding: 2px 10px;
       background-color: ${({ theme }) => theme.colors.secondary};
       color: ${({ theme }) => theme.colors.white};
-      font-size: ${({ theme }) => theme.fontSizes.xsmall};
+      font-size: ${({ theme }) => theme.fontSizes.small};
       font-weight: normal;
       border-radius: 20px;
     }
@@ -233,7 +233,7 @@ const Info = styled.ul`
   height: auto;
   padding: 10px;
   background-color: ${({ theme }) => theme.colors.brightGray};
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-size: ${({ theme }) => theme.fontSizes.small};
   border-radius: 10px;
 
   li {
@@ -266,7 +266,7 @@ const MetaData = styled.div`
 
   span {
     color: ${({ theme }) => theme.colors.gray};
-    font-size: ${({ theme }) => theme.fontSizes.xsmall};
+    font-size: ${({ theme }) => theme.fontSizes.small};
   }
 
   span:nth-of-type(2) {
@@ -299,9 +299,9 @@ const Write = styled.div`
   textarea {
     min-width: 230px;
     width: 100%;
-    padding: 5px;
+    padding: 10px;
     background-color: ${({ theme }) => theme.colors.clearGray};
-    font-size: ${({ theme }) => theme.fontSizes.base};
+    font-size: ${({ theme }) => theme.fontSizes.small};
     border-radius: 10px;
     resize: none;
 
@@ -397,16 +397,17 @@ const CommentInfoWrapper = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-bottom: 5px;
   }
 
   p {
-    font-size: ${({ theme }) => theme.fontSizes.base};
+    font-size: ${({ theme }) => theme.fontSizes.small};
   }
 `;
 
 const CommentNickname = styled.span`
   margin-right: 5px;
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-size: ${({ theme }) => theme.fontSizes.small};
 `;
 
 const CommentDate = styled.span`
@@ -420,7 +421,7 @@ const ReportBtn = styled.span`
   align-items: center;
   margin: 30px 0 10px 0;
   color: ${({ theme }) => theme.colors.error};
-  font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  font-size: ${({ theme }) => theme.fontSizes.small};
 
   svg {
     width: 18px;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Select,
   SelectContent,
@@ -15,9 +15,18 @@ import { Input } from '@/components/ui/input';
 
 const ReportedPost = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleSelectChange = (value: string) => {
     setSelectedOption(value);
+  };
+
+  const handleUpdateClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!selectedOption) {
+      e.preventDefault();
+    } else {
+      navigate('/report');
+    }
   };
 
   return (
@@ -52,19 +61,8 @@ const ReportedPost = () => {
             </SelectContent>
           </Select>
           <ButtonStyled>
-            <Link to="/report">
-              <Button>취소</Button>
-            </Link>
-            <Link
-              to={selectedOption ? `/report` : '#'}
-              onClick={e => {
-                if (!selectedOption) {
-                  e.preventDefault(); // 선택되지 않으면 링크 클릭 방지
-                }
-              }}
-            >
-              <Button>등록</Button>
-            </Link>
+            <Button onClick={() => navigate('/report')}>취소</Button>
+            <Button onClick={handleUpdateClick}>등록</Button>
           </ButtonStyled>
         </BottomStyled>
       </ContentWrapper>
@@ -79,10 +77,10 @@ const NoFooterLayoutSub = styled(NoFooterLayout)`
 const HeaderStyled = styled.div`
   h1 {
     width: 100%;
-    height: 40px;
-    margin-top: 5px;
+    margin-bottom: 20px;
     color: ${({ theme }) => theme.colors.black};
     font-size: ${({ theme }) => theme.fontSizes.medium};
+    font-weight: bold;
   }
 `;
 
@@ -108,11 +106,13 @@ const FormHeaderStyled = styled.div`
 `;
 
 const Label = styled.label`
-  margin-bottom: 10px;
-  font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  margin-bottom: 5px;
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-weight: bold;
 
   ::before {
-    content: '* ';
+    content: '*';
+    margin-right: 3px;
     color: ${({ theme }) => theme.colors.tertiary};
   }
 `;
@@ -121,7 +121,7 @@ const Line = styled.div`
   width: 100%;
   height: 1px;
   margin: 10px 0;
-  background-color: ${({ theme }) => theme.colors.gray};
+  background-color: ${({ theme }) => theme.colors.lightGray};
 `;
 
 const BottomStyled = styled.div`
@@ -140,17 +140,22 @@ const SelectItemStyled = styled(SelectItem)`
 
 const ButtonStyled = styled.div`
   display: flex;
-  margin-top: 80px;
-  justify-content: space-around;
+  justify-content: space-between;
+  margin-top: 70px;
+
   button {
-    width: 140px;
+    width: 48%;
+    height: 45px;
+    font-size: ${({ theme }) => theme.fontSizes.base};
     border-radius: 30px;
-  }
-  a:nth-of-type(1) button {
-    background-color: ${({ theme }) => theme.colors.gray};
-  }
-  a:nth-of-type(2) button {
-    background-color: ${({ theme }) => theme.colors.primary};
+
+    :nth-of-type(1) {
+      background-color: ${({ theme }) => theme.colors.gray};
+    }
+
+    :nth-of-type(2) {
+      background-color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `;
 

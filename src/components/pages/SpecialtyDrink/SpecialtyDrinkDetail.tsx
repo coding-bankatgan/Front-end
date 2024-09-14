@@ -107,10 +107,10 @@ const NoFooterLayoutSub = styled(NoFooterLayout)`
 const HeaderStyled = styled.div`
   h1 {
     width: 100%;
-    height: 40px;
-    margin-top: 5px;
+    margin-bottom: 20px;
     color: ${({ theme }) => theme.colors.black};
     font-size: ${({ theme }) => theme.fontSizes.medium};
+    font-weight: bold;
   }
 `;
 
@@ -119,11 +119,12 @@ const TitleStyled = styled.div`
 
   img {
     min-width: 150px;
+    width: auto;
+    height: auto;
     max-height: 150px;
-    width: 48.5%;
+    object-fit: contain;
     margin-bottom: 10px;
-    border-radius: 10px;
-    border: 1px solid ${({ theme }) => theme.colors.lightGray};
+    border: 1px solid ${({ theme }) => theme.colors.brightGray};
     overflow: hidden;
   }
 `;
@@ -136,15 +137,17 @@ const DrinkInfo = styled.div`
 
   span {
     margin-bottom: 16px;
-    font-size: ${({ theme }) => theme.fontSizes.small};
+    font-size: ${({ theme }) => theme.fontSizes.base};
   }
 `;
 
 const Label = styled.label`
-  font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-weight: bold;
 
   ::before {
-    content: '* ';
+    content: '*';
+    margin-right: 3px;
     color: ${({ theme }) => theme.colors.tertiary};
   }
 `;
@@ -152,8 +155,13 @@ const Label = styled.label`
 const TextareaStyled = styled(Textarea)`
   height: 150px;
   margin-bottom: 10px;
-  background-color: ${({ theme }) => theme.colors.lightGray};
+  background-color: ${({ theme }) => theme.colors.brightGray};
+  font-size: ${({ theme }) => theme.fontSizes.base};
   resize: none;
+
+  &:focus {
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+  }
 `;
 
 const Line = styled.div`
@@ -174,10 +182,10 @@ const BottomStyled = styled.div`
 
 const SelectStyled = styled.select`
   width: 100%;
-  height: 35px;
+  height: 40px;
   margin-left: auto;
   margin-top: 20px;
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-size: ${({ theme }) => theme.fontSizes.small};
   border: 1px solid ${({ theme }) => theme.colors.lightGray};
   border-radius: 5px;
 
@@ -191,11 +199,15 @@ const SelectStyled = styled.select`
 
 const ButtonStyled = styled.div`
   display: flex;
-  margin-top: 80px;
-  justify-content: space-around;
+  justify-content: space-between;
+  margin-top: 70px;
+
   button {
-    width: 140px;
+    width: 48%;
+    height: 45px;
+    font-size: ${({ theme }) => theme.fontSizes.base};
     border-radius: 30px;
+
     :nth-of-type(1) {
       background-color: ${({ theme }) => theme.colors.gray};
     }

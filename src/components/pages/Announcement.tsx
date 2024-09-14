@@ -6,15 +6,15 @@ import {
   AccordionContent,
 } from '@/components/ui/accordion';
 import styled from '@emotion/styled';
-import ArrowLeftIcon from '@/assets/icons/ArrowLeftIcon';
+import PrevBtn from '../layout/PrevBtn';
 
 const Announcement = () => {
   return (
     <NoFooterLayoutSub>
-      <ContentWrapperSub>
-        <ArrowLeftIcon></ArrowLeftIcon>
+      <ContentWrapper>
+        <PrevBtn />
         <TitleStyled>공지사항</TitleStyled>
-        <Accordion type="single" collapsible className="w-full">
+        <AccordionStyled type="single" collapsible className="w-full">
           <AccordionItem value="item-1">
             <AccordionTriggerSub>
               <PostingTitle>
@@ -28,8 +28,8 @@ const Announcement = () => {
               <br></br>
             </AccordionContentSub>
           </AccordionItem>
-        </Accordion>
-      </ContentWrapperSub>
+        </AccordionStyled>
+      </ContentWrapper>
     </NoFooterLayoutSub>
   );
 };
@@ -38,23 +38,25 @@ const NoFooterLayoutSub = styled(NoFooterLayout)`
   align-items: flex-start;
 `;
 
-const ContentWrapperSub = styled(ContentWrapper)`
-  margin-top: 15px;
-`;
-
 const TitleStyled = styled.h1`
   width: 100%;
-  height: 60px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.black};
+  height: auto;
+  padding-bottom: 20px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.darkGray};
   color: ${({ theme }) => theme.colors.black};
-  font-size: ${({ theme }) => theme.fontSizes.xxlarge};
+  font-size: ${({ theme }) => theme.fontSizes.large};
   font-weight: bold;
   text-align: center;
 `;
 
+export const AccordionStyled = styled(Accordion)`
+  button {
+    padding: 15px 10px;
+  }
+`;
+
 const AccordionTriggerSub = styled(AccordionTrigger)`
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
 `;
 
 const PostingTitle = styled.div`
@@ -64,13 +66,13 @@ const PostingTitle = styled.div`
 `;
 
 const PostingDate = styled.span`
-  color: ${({ theme }) => theme.colors.darkGray};
+  color: ${({ theme }) => theme.colors.gray};
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
 `;
 
 const AccordionContentSub = styled(AccordionContent)`
   padding: 12px 8px 12px 8px;
-  background-color: ${({ theme }) => theme.colors.lightGray};
+  background-color: ${({ theme }) => theme.colors.brightGray};
 `;
 
 export default Announcement;

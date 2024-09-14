@@ -5,13 +5,22 @@ import { Line } from '../Home/Home';
 import { Badge } from '@/components/ui/badge';
 import handImg from '../../../assets/img/handimg.png';
 import SearchResults from './SearchResults';
+import { useNavigate } from 'react-router-dom';
 
 const Search = () => {
+  const navigate = useNavigate();
+
+  const prevBtn = () => {
+    navigate(-1);
+  };
+
   return (
     <SearchLayout>
       <SearchFixed>
         <SearchTop>
-          <ArrowLeftIcon />
+          <span onClick={prevBtn}>
+            <ArrowLeftIcon />
+          </span>
           검색하기
         </SearchTop>
         <SearchContent>
@@ -48,7 +57,7 @@ const SearchLayout = styled.div`
   min-height: 100vh;
   height: auto;
   padding: 40px 20px 20px 20px;
-  background-color: ${({ theme }) => theme.colors.lightGray};
+  background-color: ${({ theme }) => theme.colors.brightGray};
 `;
 
 const SearchFixed = styled.section`
@@ -66,7 +75,7 @@ const SearchTop = styled.div`
   align-items: center;
   width: auto;
   color: ${({ theme }) => theme.colors.darkGray};
-  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-size: ${({ theme }) => theme.fontSizes.medium};
   font-weight: bold;
 
   svg {
@@ -80,8 +89,10 @@ const SearchContent = styled.div`
   margin-top: 20px;
 
   input {
+    height: 45px;
+    font-size: ${({ theme }) => theme.fontSizes.base};
     border: 1px solid ${({ theme }) => theme.colors.primary};
-    border-radius: 20px;
+    border-radius: 30px;
 
     &:focus {
       box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
@@ -100,11 +111,12 @@ const SearchWrapper = styled.div`
   min-width: 320px;
   width: auto;
   height: 100%;
-  margin-top: 160px;
+  margin-top: 170px;
 `;
 
 const TagWrapper = styled.div`
-  padding: 0 5px;
+  padding: 5px;
+  height: auto;
 
   > div {
     display: flex;
@@ -124,6 +136,7 @@ const BadgeStyled = styled(Badge)`
   color: ${({ theme }) => theme.colors.primary};
   font-weight: normal;
   border: 1px solid ${({ theme }) => theme.colors.primary};
+  font-size: ${({ theme }) => theme.fontSizes.small};
 `;
 
 export default Search;

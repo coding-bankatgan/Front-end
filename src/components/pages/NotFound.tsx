@@ -32,7 +32,7 @@ const TitleStyled = styled.h1`
   width: 100%;
   height: 45px;
   color: ${({ theme }) => theme.colors.black};
-  font-size: ${({ theme }) => theme.fontSizes.xxlarge};
+  font-size: ${({ theme }) => theme.fontSizes.xlarge};
   font-weight: bold;
   text-align: center;
 `;

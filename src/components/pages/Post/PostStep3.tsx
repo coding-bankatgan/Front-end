@@ -100,8 +100,6 @@ const ImgSelect = styled.div`
 `;
 
 const PostContent = styled.section`
-  overflow: hidden;
-
   img {
     min-width: 316px;
     width: auto;
@@ -147,6 +145,10 @@ const PostContent = styled.section`
     height: auto;
     background-color: ${({ theme }) => theme.colors.brightGray};
     resize: none;
+
+    &:focus {
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    }
   }
 `;
 
@@ -157,7 +159,9 @@ const ButtonStyled = styled(Button)`
   height: 45px;
   margin-top: 30px;
   background-color: ${({ theme }) => theme.colors.primary};
-  border-radius: 20px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  border-radius: 30px;
 
   &:active,
   &:hover {

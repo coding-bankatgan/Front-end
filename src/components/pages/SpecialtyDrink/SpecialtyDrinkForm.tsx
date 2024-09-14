@@ -112,6 +112,7 @@ const NoFooterLayoutSub = styled(NoFooterLayout)`
 
 const TitleStyled = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.medium};
+  font-weight: bold;
   margin-bottom: 10px;
 `;
 
@@ -145,16 +146,16 @@ const FormHeaderStyled = styled.div`
 const FormContentStyled = styled.div`
   input {
     margin-bottom: 8px;
-    background-color: ${({ theme }) => theme.colors.lightGray};
+    background-color: ${({ theme }) => theme.colors.brightGray};
   }
 
-  > input, textarea {
+  > input,
+  textarea {
     &:focus {
       border-color: ${({ theme }) => theme.colors.focusShadow};
       box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
     }
   }
-v
 `;
 
 const Label = styled.label`
@@ -171,7 +172,7 @@ const SelectStyled = styled.select`
   width: 100px;
   height: 35px;
   margin-bottom: 8px;
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-size: ${({ theme }) => theme.fontSizes.small};
   border: 1px solid ${({ theme }) => theme.colors.lightGray};
   border-radius: 5px;
 
@@ -185,22 +186,25 @@ const SelectStyled = styled.select`
 
 const TextareaStyled = styled(Textarea)`
   height: 150px;
-  background-color: ${({ theme }) => theme.colors.lightGray};
+  background-color: ${({ theme }) => theme.colors.brightGray};
   resize: none;
 `;
 
 const FormBottomStyled = styled.div`
   display: flex;
+  justify-content: space-between;
   margin-top: 40px;
-  justify-content: space-around;
 
   button {
-    width: 140px;
+    width: 48%;
+    height: 45px;
+    font-size: ${({ theme }) => theme.fontSizes.base};
     border-radius: 30px;
 
     :nth-of-type(1) {
       background-color: ${({ theme }) => theme.colors.gray};
     }
+
     :nth-of-type(2) {
       background-color: ${({ theme }) => theme.colors.primary};
     }
