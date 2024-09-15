@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useNavigate } from 'react-router-dom';
 import Notification from './Notification';
+import BarsIcon from '@/assets/icons/BarsIcon';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Header = () => {
         <Notification />
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <EllipsisVerticalIcon />
+            <BarsIcon />
           </DropdownMenuTrigger>
           <DropdownMenuContentStyled>
             <DropdownMenuItem onClick={() => navigate('/announcement')}>공지사항</DropdownMenuItem>
@@ -47,7 +48,7 @@ const HeaderLayout = styled.header`
   min-width: 360px;
   width: 100%;
   height: 60px;
-  padding: 0 10px 0 20px;
+  padding: 0 20px;
   background-color: ${({ theme }) => theme.colors.white};
   box-shadow: rgba(114, 114, 114, 0.1) 0px 1px 5px;
   z-index: 50;
