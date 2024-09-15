@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { usePostsDetailStore } from '@/store/usePostsDetailStore';
 import PostComments from './PostComments';
+import EllipsisHorizontalIcon from '@/assets/icons/EllipsisHorizontalIcon';
 
 const typeMap = {
   ADVERTISEMENT: '광고',
@@ -46,6 +47,9 @@ const Post = () => {
           <Nickname>
             <ExProfileImg />
             {post?.memberName}
+            <span>
+              <EllipsisHorizontalIcon />
+            </span>
           </Nickname>
           <Img>
             <img src={post?.imageUrl} alt={post?.drink.name} />
@@ -155,10 +159,20 @@ const Nickname = styled.div`
   padding: 10px 20px;
   font-size: ${({ theme }) => theme.fontSizes.base};
 
-  svg {
+  > svg {
     width: 30px;
     height: 30px;
     margin-right: 5px;
+  }
+
+  span {
+    margin-left: auto;
+    padding: 0;
+
+    svg {
+      margin-right: -3px;
+      color: ${({ theme }) => theme.colors.darkGray};
+    }
   }
 `;
 
