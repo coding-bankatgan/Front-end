@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+/** 전체 게시글 조회 API */
 export const fetchPostsApi = async () => {
   try {
     const response = await axios.get('api/posts');
@@ -9,20 +10,44 @@ export const fetchPostsApi = async () => {
   }
 };
 
+/** 특정 게시글 상세 조회 API */
 export const fetchPostsDetailApi = async (postId: number) => {
   try {
     const response = await axios.get(`api/posts/${postId}`);
-    // console.log('aaoaooaoaoaoao', response.data);
     return response.data;
   } catch (err) {
     console.error('Error fetching postsDetail: ', err);
   }
 };
 
+/** 특정 게시글 댓글 작성 API */
+export const fetchCommentWriteApi = async (postId: number, content: string) => {
+  try {
+    const response = await axios.post(
+      'api/comments',
+      {
+        postId: postId,
+        content: content,
+        anonymous: false,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching commentWrite: ', err);
+  }
+};
+
+/** 특정 게시글 댓글 조회 API */
 export const fetchCommentsApi = async (postId: number, page: number, size: number) => {
   try {
     const response = await axios.get(`/api/${postId}/comments?number=${page}&size=${size}`);
-    // console.log('rrrrrrrrrrrr', response.data);
+    console.log('API response:', response.data);
     return response.data;
   } catch (err) {
     console.error('Error fetching comments: ', err);
