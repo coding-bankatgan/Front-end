@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import SendIcon from '@/assets/icons/SendIcon';
 import WarningIcon from '@/assets/icons/WarningIcon';
 import Pagination from './../../layout/Pagination';
@@ -44,6 +45,7 @@ const wirteComment = async (postId: number, content: string) => {
 const PostComments = ({ postId }: PostCommentsProps) => {
   const [comments, setComments] = useState<Content[]>([]);
   const [newComment, setNewComment] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const [pagination, setPagination] = useState<PagenationInfo>({
     totalElements: 0,
     totalPages: 0,
@@ -78,6 +80,10 @@ const PostComments = ({ postId }: PostCommentsProps) => {
     fetchComments(postId, pagination.number, pagination.size);
   }, [postId, pagination.number, pagination.size]);
 
+  const handleAnonymousChange = () => {
+    setIsAnonymous(!isAnonymous);
+  };
+
   const handlePageChange = (newPage: number) => {
     fetchComments(postId, newPage, pagination.size);
   };
@@ -96,10 +102,12 @@ const PostComments = ({ postId }: PostCommentsProps) => {
         const newCommentData = {
           ...response,
           id: Date.now(),
+          memberName: isAnonymous ? '익명' : response.memberName,
         };
 
         setComments(prevComments => [newCommentData, ...prevComments]);
         setNewComment('');
+        setIsAnonymous(false);
       }
     } catch (err) {
       console.error('Error submitting comment:', err);
@@ -115,10 +123,14 @@ const PostComments = ({ postId }: PostCommentsProps) => {
             value={newComment}
             onChange={handleCommentChange}
           />
-          <Button onClick={handleCommentSubmit}>
-            <SendIcon />
-          </Button>
+          <CheckBoxWrapper>
+            <Checkbox id="other" checked={isAnonymous} onCheckedChange={handleAnonymousChange} />
+            <label htmlFor="other">익명</label>
+          </CheckBoxWrapper>
         </div>
+        <Button onClick={handleCommentSubmit}>
+          <SendIcon />
+        </Button>
       </Write>
       <Comments>
         {comments.length > 0 ? (
@@ -165,11 +177,12 @@ const Write = styled.div`
   textarea {
     min-width: 230px;
     width: 100%;
-    padding: 10px;
+    padding: 10px 10px 10px 70px;
     background-color: ${({ theme }) => theme.colors.clearGray};
     font-size: ${({ theme }) => theme.fontSizes.small};
     border-radius: 10px;
     resize: none;
+    height: 40px;
 
     &:hover,
     &:focus {
@@ -201,10 +214,37 @@ const Write = styled.div`
   }
 
   > div {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
+  }
+`;
+
+const CheckBoxWrapper = styled.div`
+  position: absolute;
+  top: 18px;
+  left: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 !important;
+
+  button {
+    width: 16px;
+    height: 16px;
+    margin: 0 5px 0 0;
+    background-color: ${({ theme }) => theme.colors.gray};
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  label {
+    font-size: ${({ theme }) => theme.fontSizes.xsmall};
   }
 `;
 
@@ -227,7 +267,7 @@ const NoComment = styled.div`
   height: 50px;
   background-color: ${({ theme }) => theme.colors.clearGray};
   color: ${({ theme }) => theme.colors.gray};
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-size: ${({ theme }) => theme.fontSizes.small};
   border-radius: 10px;
 `;
 
