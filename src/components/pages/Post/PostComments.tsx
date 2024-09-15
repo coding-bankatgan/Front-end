@@ -6,7 +6,7 @@ import WarningIcon from '@/assets/icons/WarningIcon';
 import Pagination from './../../layout/Pagination';
 import { useEffect, useState } from 'react';
 import ExProfileImg from '@/assets/ExProfileImg';
-import { fetchCommentsApi } from '@/api/postApi';
+import { fetchCommentsApi, fetchCommentWriteApi } from '@/api/postApi';
 import dayjs from 'dayjs';
 
 interface PostCommentsProps {
@@ -31,8 +31,19 @@ interface PagenationInfo {
   number: number;
 }
 
+/** 댓글 작성 API 호출 함수 */
+const wirteComment = async (postId: number, content: string) => {
+  try {
+    const response = await fetchCommentWriteApi(postId, content);
+    return response;
+  } catch (err) {
+    console.error('Error writing comment: ', err);
+  }
+};
+
 const PostComments = ({ postId }: PostCommentsProps) => {
   const [comments, setComments] = useState<Content[]>([]);
+  const [newComment, setNewComment] = useState('');
   const [pagination, setPagination] = useState<PagenationInfo>({
     totalElements: 0,
     totalPages: 0,
@@ -40,11 +51,20 @@ const PostComments = ({ postId }: PostCommentsProps) => {
     number: 0,
   });
 
+  /** 특정 게시글의 댓글 가져오는 함수 */
   const fetchComments = async (postId: number, page: number, size: number) => {
     const data = await fetchCommentsApi(postId, page, size);
 
     if (data) {
-      setComments(data.content);
+      setComments(prevComments => {
+        const newComments = [...prevComments, ...data.content];
+        // 댓글 ID를 기준으로 중복 제거
+        const uniqueComments = Array.from(
+          new Map(newComments.map(comment => [comment.id, comment])).values(),
+        );
+        return uniqueComments;
+      });
+
       setPagination({
         totalElements: data.totalElements,
         totalPages: data.totalPages,
@@ -56,18 +76,46 @@ const PostComments = ({ postId }: PostCommentsProps) => {
 
   useEffect(() => {
     fetchComments(postId, pagination.number, pagination.size);
-  }, [postId]);
+  }, [postId, pagination.number, pagination.size]);
 
   const handlePageChange = (newPage: number) => {
     fetchComments(postId, newPage, pagination.size);
+  };
+
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewComment(e.target.value);
+  };
+
+  const handleCommentSubmit = async () => {
+    if (newComment.trim() === '') return;
+
+    try {
+      const response = await wirteComment(postId, newComment);
+
+      if (response) {
+        const newCommentData = {
+          ...response,
+          id: Date.now(),
+        };
+
+        setComments(prevComments => [newCommentData, ...prevComments]);
+        setNewComment('');
+      }
+    } catch (err) {
+      console.error('Error submitting comment:', err);
+    }
   };
 
   return (
     <CommentWrapper>
       <Write>
         <div>
-          <Textarea placeholder="댓글을 작성해주세요." />
-          <Button>
+          <Textarea
+            placeholder="댓글을 작성해주세요."
+            value={newComment}
+            onChange={handleCommentChange}
+          />
+          <Button onClick={handleCommentSubmit}>
             <SendIcon />
           </Button>
         </div>
