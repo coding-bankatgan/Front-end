@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { usePostsDetailStore } from '@/store/usePostsDetailStore';
 import PostComments from './PostComments';
 import EllipsisHorizontalIcon from '@/assets/icons/EllipsisHorizontalIcon';
+import { mapDrinkType } from '@/data/drinkTypes';
 
 const typeMap = {
   ADVERTISEMENT: '광고',
@@ -58,7 +59,7 @@ const Post = () => {
           <EtcWrap>
             <Info>
               <li>
-                <span>주종:</span> 막걸리
+                <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
               </li>
               <li>
                 <span>도수:</span> {post?.drink.degree}
