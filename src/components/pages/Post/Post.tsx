@@ -57,20 +57,37 @@ const Post = () => {
           </Img>
           <Desc>{post?.content}</Desc>
           <EtcWrap>
-            <Info>
-              <li>
-                <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
-              </li>
-              <li>
-                <span>도수:</span> {post?.drink.degree}
-              </li>
-              <li>
-                <span>당도:</span> {post?.drink.sweetness}
-              </li>
-              <li>
-                <span>평점:</span> {post?.rating}
-              </li>
-            </Info>
+            {post?.type === 'ADVERTISEMENT' ? (
+              <Info>
+                <li>
+                  <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
+                </li>
+                <li>
+                  <span>도수:</span> {post?.drink.degree}
+                </li>
+                <li>
+                  <span>당도:</span> {post?.drink.sweetness}
+                </li>
+              </Info>
+            ) : (
+              <Info>
+                <li>
+                  <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
+                </li>
+                <li>
+                  <span>도수:</span> {post?.drink.degree}
+                </li>
+                <li>
+                  <span>당도:</span> {post?.drink.sweetness}
+                </li>
+                <li>
+                  <span>평점:</span> {post?.rating}
+                </li>
+                <li>
+                  <span>평균 평점:</span> {post?.drink.averageRating || 0}
+                </li>
+              </Info>
+            )}
             <TagWrapper>
               {post?.tags.map(tag => (
                 <AlertDialogTag key={tag.tagId}>{tag.tagName}</AlertDialogTag>
@@ -195,7 +212,8 @@ const EtcWrap = styled.div`
 const Info = styled.ul`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
   height: auto;
@@ -205,11 +223,17 @@ const Info = styled.ul`
   border-radius: 10px;
 
   li {
-    width: 20%;
+    width: 28%;
+    margin-right: 10px;
   }
 
-  li:nth-of-type(1) {
-    width: 27%;
+  li:nth-of-type(5) {
+    width: 30%;
+  }
+
+  li:nth-of-type(4),
+  li:nth-of-type(5) {
+    margin-top: 5px;
   }
 `;
 
