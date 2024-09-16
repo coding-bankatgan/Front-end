@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,14 +11,37 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import styled from '@emotion/styled';
+import { useMemberStore } from '@/store/useMemberStore';
 
 interface AlertDialogTagProps {
   children: React.ReactNode;
+  tagId: number;
 }
 
-const AlertDialogTag = ({ children }: AlertDialogTagProps) => {
+const AlertDialogTag = ({ children, tagId }: AlertDialogTagProps) => {
+  const { currentUser, addFollowTag } = useMemberStore();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const tagName = typeof children === 'string' ? children : '';
+  console.log(currentUser);
+
+  const handleAddTagToFollow = async () => {
+    if (currentUser) {
+      const followTag = {
+        memberId: currentUser.id,
+        memberName: currentUser.name,
+        tagId,
+        tagName,
+      };
+      await addFollowTag(followTag);
+      setIsDialogOpen(false);
+    } else {
+      console.error('no user');
+    }
+  };
+
   return (
-    <AlertDialog>
+    <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <AlertDialogTriggerStyled>#{children}</AlertDialogTriggerStyled>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -25,8 +49,10 @@ const AlertDialogTag = ({ children }: AlertDialogTagProps) => {
           <AlertDialogDescription>'#{children}' 태그를 팔로우 하시겠습니까?</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancelStyled>아니오</AlertDialogCancelStyled>
-          <AlertDialogActionStyled>네</AlertDialogActionStyled>
+          <AlertDialogCancelStyled onClick={() => setIsDialogOpen(false)}>
+            아니오
+          </AlertDialogCancelStyled>
+          <AlertDialogActionStyled onClick={handleAddTagToFollow}>네</AlertDialogActionStyled>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
