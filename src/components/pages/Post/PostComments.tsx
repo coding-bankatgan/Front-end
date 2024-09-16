@@ -1,12 +1,13 @@
 import styled from '@emotion/styled';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import SendIcon from '@/assets/icons/SendIcon';
 import WarningIcon from '@/assets/icons/WarningIcon';
 import Pagination from './../../layout/Pagination';
 import { useEffect, useState } from 'react';
 import ExProfileImg from '@/assets/ExProfileImg';
-import { fetchCommentsApi } from '@/api/postApi';
+import { fetchCommentsApi, fetchCommentWriteApi } from '@/api/postApi';
 import dayjs from 'dayjs';
 
 interface PostCommentsProps {
@@ -31,8 +32,20 @@ interface PagenationInfo {
   number: number;
 }
 
+/** 댓글 작성 API 호출 함수 */
+const wirteComment = async (postId: number, content: string) => {
+  try {
+    const response = await fetchCommentWriteApi(postId, content);
+    return response;
+  } catch (err) {
+    console.error('Error writing comment: ', err);
+  }
+};
+
 const PostComments = ({ postId }: PostCommentsProps) => {
   const [comments, setComments] = useState<Content[]>([]);
+  const [newComment, setNewComment] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const [pagination, setPagination] = useState<PagenationInfo>({
     totalElements: 0,
     totalPages: 0,
@@ -40,11 +53,20 @@ const PostComments = ({ postId }: PostCommentsProps) => {
     number: 0,
   });
 
+  /** 특정 게시글의 댓글 가져오는 함수 */
   const fetchComments = async (postId: number, page: number, size: number) => {
     const data = await fetchCommentsApi(postId, page, size);
 
     if (data) {
-      setComments(data.content);
+      setComments(prevComments => {
+        const newComments = [...prevComments, ...data.content];
+        // 댓글 ID를 기준으로 중복 제거
+        const uniqueComments = Array.from(
+          new Map(newComments.map(comment => [comment.id, comment])).values(),
+        );
+        return uniqueComments;
+      });
+
       setPagination({
         totalElements: data.totalElements,
         totalPages: data.totalPages,
@@ -56,21 +78,59 @@ const PostComments = ({ postId }: PostCommentsProps) => {
 
   useEffect(() => {
     fetchComments(postId, pagination.number, pagination.size);
-  }, [postId]);
+  }, [postId, pagination.number, pagination.size]);
+
+  const handleAnonymousChange = () => {
+    setIsAnonymous(!isAnonymous);
+  };
 
   const handlePageChange = (newPage: number) => {
     fetchComments(postId, newPage, pagination.size);
+  };
+
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewComment(e.target.value);
+  };
+
+  const handleCommentSubmit = async () => {
+    if (newComment.trim() === '') return;
+
+    try {
+      const response = await wirteComment(postId, newComment);
+
+      if (response) {
+        const newCommentData = {
+          ...response,
+          id: Date.now(),
+          memberName: isAnonymous ? '익명' : response.memberName,
+        };
+
+        setComments(prevComments => [newCommentData, ...prevComments]);
+        setNewComment('');
+        setIsAnonymous(false);
+      }
+    } catch (err) {
+      console.error('Error submitting comment:', err);
+    }
   };
 
   return (
     <CommentWrapper>
       <Write>
         <div>
-          <Textarea placeholder="댓글을 작성해주세요." />
-          <Button>
-            <SendIcon />
-          </Button>
+          <Textarea
+            placeholder="댓글을 작성해주세요."
+            value={newComment}
+            onChange={handleCommentChange}
+          />
+          <CheckBoxWrapper>
+            <Checkbox id="other" checked={isAnonymous} onCheckedChange={handleAnonymousChange} />
+            <label htmlFor="other">익명</label>
+          </CheckBoxWrapper>
         </div>
+        <Button onClick={handleCommentSubmit}>
+          <SendIcon />
+        </Button>
       </Write>
       <Comments>
         {comments.length > 0 ? (
@@ -117,11 +177,12 @@ const Write = styled.div`
   textarea {
     min-width: 230px;
     width: 100%;
-    padding: 10px;
+    padding: 10px 10px 10px 70px;
     background-color: ${({ theme }) => theme.colors.clearGray};
     font-size: ${({ theme }) => theme.fontSizes.small};
     border-radius: 10px;
     resize: none;
+    height: 40px;
 
     &:hover,
     &:focus {
@@ -153,10 +214,37 @@ const Write = styled.div`
   }
 
   > div {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
+  }
+`;
+
+const CheckBoxWrapper = styled.div`
+  position: absolute;
+  top: 18px;
+  left: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 !important;
+
+  button {
+    width: 16px;
+    height: 16px;
+    margin: 0 5px 0 0;
+    background-color: ${({ theme }) => theme.colors.gray};
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  label {
+    font-size: ${({ theme }) => theme.fontSizes.xsmall};
   }
 `;
 
@@ -179,7 +267,7 @@ const NoComment = styled.div`
   height: 50px;
   background-color: ${({ theme }) => theme.colors.clearGray};
   color: ${({ theme }) => theme.colors.gray};
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-size: ${({ theme }) => theme.fontSizes.small};
   border-radius: 10px;
 `;
 

@@ -6,6 +6,8 @@ import regions from '../../public/regions.json';
 import registration from '../../public/registration.json';
 import comments from '../../public/comments.json';
 import member from '../../public/member.json';
+import commentWrite from '../../public/commentWrite.json';
+import { Comment, CommentRequestBody } from '@/types/comment';
 import tag from '../../public/tag.json';
 
 const mockJwtToken =
@@ -16,6 +18,8 @@ const mockJwtToken =
   "name": "John Doe",
   "admin": true
 }*/
+
+let commentsData: Comment[] = [...commentWrite];
 
 export const handlers = [
   /** 로그인 테스트 API */
@@ -42,7 +46,29 @@ export const handlers = [
     return HttpResponse.json(cardItemDetail);
   }),
 
-  /** 특정 게시글 댓글 API */
+  /** 특정 게시글 댓글 작성 API */
+  http.post('api/comments', async ({ request }) => {
+    const requestBody = (await request.json()) as CommentRequestBody;
+
+    const { postId, content, anonymous } = requestBody;
+
+    const newComment: Comment = {
+      id: comments.length + 1,
+      memberId: 10,
+      memberName: '멤버 A',
+      postId: postId,
+      content,
+      anonymous,
+      createdAt: new Date().toISOString(),
+      updatedAt: null,
+    };
+
+    commentsData = [...commentsData, newComment];
+
+    return HttpResponse.json(newComment);
+  }),
+
+  /** 특정 게시글 댓글 조회 API */
   http.get('/api/:postId/comments', async ({ params, request }) => {
     const postId = Number(params.postId);
     const url = new URL(request.url);
@@ -53,11 +79,14 @@ export const handlers = [
       .flatMap(comment => comment.content)
       .filter(comment => comment.postId === postId);
 
-    // 페이지네이션
+    const sortedComments = filteredComments.sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+
     const start = Number(page) * Number(size);
     const end = start + Number(size);
-    const paginatedComments = filteredComments.slice(start, end);
-    const totalElements = filteredComments.length;
+    const paginatedComments = sortedComments.slice(start, end);
+    const totalElements = sortedComments.length;
     const totalPages = Math.ceil(totalElements / Number(size));
 
     return HttpResponse.json({

@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import MapPinIcon from '../../../assets/icons/MapPinIcon';
 import { useEffect, useState } from 'react';
-import { worker } from '@/mocks/browser';
 import axios from 'axios';
 import { getAddress } from '@/api/postApi';
 import Loading from '@/assets/icons/Loading';
@@ -14,7 +13,6 @@ const Daily = () => {
   const [isVerification, setIsVerification] = useState<boolean | null>(null);
   const [userAddress, setUserAddress] = useState<string | null>(null);
   const [rotate, setRotate] = useState('false');
-  const [showModal, setShowModal] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
   const [dailyData, setDailyData] = useState({
     drink_id: 0,
@@ -35,7 +33,6 @@ const Daily = () => {
       localStorage.setItem('gpsVeri', 'off');
     } else if (localStorage.getItem('gpsVeri') === 'off') {
       setIsVerification(false);
-      setShowModal(true);
     } else if (localStorage.getItem('gpsVeri') === 'on') {
       setIsVerification(true);
       if (navigator.geolocation) {
@@ -85,7 +82,17 @@ const Daily = () => {
       <DailyDesc>{!error ? '현재 위치 기반으로 특산주를 추천해드려요 :D' : error}</DailyDesc>
       <DailyBottom>
         {!isVerification ? (
-          <ValiText>위치정보 제공에 동의해주세요!</ValiText>
+          <ValiText>
+            위치정보 제공에 동의해주세요!
+            <button
+              onClick={() => {
+                setIsVerification(true);
+                localStorage.setItem('gpsVeri', 'on');
+              }}
+            >
+              동의
+            </button>
+          </ValiText>
         ) : (
           <>
             <Img>
@@ -107,83 +114,28 @@ const Daily = () => {
         rotate={rotate}
         onClick={() => {
           handleRotate();
-          if (!isVerification) {
-            setShowModal(true);
-          }
         }}
       >
         <Loading />
       </LoadingContainer>
-      {showModal && (
-        <Modal>
-          <ModalContent>
-            <h2>위치정보 제공 동의가 필요합니다.</h2>
-            <p>
-              위치정보를 제공하고 <br />
-              특별한 특산주들을 추천받기!
-            </p>
-            <button
-              onClick={() => {
-                setIsVerification(true);
-                localStorage.setItem('gpsVeri', 'on');
-                setShowModal(false);
-              }}
-            >
-              동의
-            </button>
-            <button onClick={() => setShowModal(false)}>닫기</button>
-          </ModalContent>
-        </Modal>
-      )}
     </DailySection>
   );
 };
 
 const ValiText = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 70px;
   font-weight: bold;
-`;
-
-const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ModalContent = styled.div`
-  width: 80%;
-  padding: 20px;
-  border-radius: 8px;
-  background-color: ${({ theme }) => theme.colors.white};
-  text-align: center;
-  border: 4px solid ${({ theme }) => theme.colors.tertiary};
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-  h2 {
-    margin-bottom: 10px;
-    font-weight: bold;
-  }
-
   button {
-    margin: 15px 30px 0 30px;
-    padding: 3px 15px 3px 15px;
-    color: ${({ theme }) => theme.colors.white};
+    margin-top: 4px;
+    padding: 2px 12px 2px 12px;
+    background: ${({ theme }) => theme.colors.success};
     border-radius: 8px;
-  }
-  button:nth-of-type(1) {
-    background-color: ${({ theme }) => theme.colors.success};
-  }
-  button:nth-of-type(2) {
-    background-color: ${({ theme }) => theme.colors.error};
+    color: ${({ theme }) => theme.colors.white};
   }
 `;
 
