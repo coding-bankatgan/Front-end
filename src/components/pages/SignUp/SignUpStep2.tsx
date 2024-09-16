@@ -1,49 +1,133 @@
 import styled from '@emotion/styled';
-import { Container, Gray2, Header, Orange2, ScrollCont, Step, Wrapper } from './SignUpStep1';
-import { Button, Label } from './SignUp';
-import ArrowLeftIcon from '@/assets/icons/ArrowLeftIcon';
-import { Input } from '@/components/ui/input';
+import { Container, Header, ScrollCont, Wrapper } from './SignUpStep1';
+import { Button } from './SignUp';
 
 const SignUpStep2 = ({
-  nextSlide,
-  prevSlide,
+  handleSubmit,
+  handleSelect,
+  selectedAlcohols,
+  validatedAlcohols,
+  containerRef,
 }: {
-  nextSlide: () => void;
-  prevSlide: () => void;
+  handleSubmit: () => void;
+  handleSelect: (alcohol: string) => void;
+  selectedAlcohols: string[];
+  validatedAlcohols: boolean;
+  containerRef: React.RefObject<HTMLDivElement>;
 }) => {
+  const alcohols: string[] = [
+    'SOJU',
+    'BEER',
+    'LIQUOR',
+    'MAKGEOLLI',
+    'DONGDONGJU',
+    'CHEONGJU',
+    'YAKJU',
+    'FRUIT WINE',
+    'LIQUEUR',
+    'DISTILLED SPIRITS',
+    'GAOLIANG LIQUOR',
+    'FOLK LIQUOR',
+    'WHISKEY',
+    'BRANDY',
+    'RUM',
+    'GIN',
+    'VODKA',
+    'TEQUILA',
+    'WINE',
+    'CHAMPAGNE',
+    'SAKE',
+    'OTHER',
+  ];
+  const alcoholsName: string[] = [
+    '소주',
+    '맥주',
+    '양주',
+    '막걸리',
+    '동동주',
+    '청주',
+    '약주',
+    '과실주',
+    '리큐르',
+    '증류주',
+    '고량주',
+    '민속주',
+    '위스키',
+    '브랜디',
+    '럼주',
+    '진',
+    '보드카',
+    '데킬라',
+    '와인',
+    '샴페인',
+    '사케',
+    '기타',
+  ];
+
   return (
     <Wrapper>
       <ScrollCont>
-        <Step>
-          <Orange2 />
-          <Gray2 />
-        </Step>
-        <PrevContainer onClick={() => prevSlide()}>
-          <ArrowLeftIcon />
-        </PrevContainer>
         <Container>
-          <Header>
-            현재 거주하고 있는 지역 정보를
+          <Header ref={containerRef}>
+            좋아하는 주종을 선택해 주세요 :)
             <br />
-            입력해 주세요.
+            <AlarmText validated={validatedAlcohols}>※ 3 ~ 5개를 선택해 주세요.</AlarmText>
           </Header>
-          <Label htmlFor="email">도</Label>
-          <Input type="text" />
-          <Label htmlFor="email">시</Label>
-          <Input type="text" />
+          <AlcoholList>
+            {alcohols.map((alcohol: string, idx: number) => (
+              <AlcoholItem
+                key={alcohol}
+                isSelected={selectedAlcohols.includes(alcohol)}
+                onClick={() => handleSelect(alcohol)}
+              >
+                {alcoholsName[idx]}
+              </AlcoholItem>
+            ))}
+          </AlcoholList>
         </Container>
       </ScrollCont>
 
-      <Button onClick={() => nextSlide()}>다음</Button>
+      <Button onClick={() => handleSubmit()}>완료</Button>
     </Wrapper>
   );
 };
 
 export default SignUpStep2;
 
-export const PrevContainer = styled.div`
-  color: black;
-  width: 20px;
-  height: 20px;
-  transform: translateY(-60%);
+const AlcoholList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  overflow-y: scroll;
+  width: 100%;
+
+  gap: 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+const AlarmText = styled.p<{ validated: boolean }>`
+  margin-top: 5px;
+  color: ${({ validated, theme }) => (validated ? theme.colors.gray : theme.colors.error)};
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
+`;
+
+interface AlcoholItemProps {
+  isSelected: boolean;
+}
+
+const AlcoholItem = styled.button<AlcoholItemProps>`
+  width: 90px;
+  height: 90px;
+  background-color: ${({ isSelected, theme }) =>
+    isSelected ? theme.colors.tertiary : theme.colors.brightGray};
+  border-radius: 10px;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 `;
