@@ -6,6 +6,7 @@ import regions from '../../public/regions.json';
 import registration from '../../public/registration.json';
 import comments from '../../public/comments.json';
 import member from '../../public/member.json';
+import tag from '../../public/tag.json';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -66,6 +67,11 @@ export const handlers = [
       number: page,
       content: paginatedComments,
     });
+  }),
+
+  //** 마이페이지 API */
+  http.post('/mypage', async () => {
+    return HttpResponse.json({ member, tag });
   }),
 
   /** 마이페이지 회원정보수정 API */
