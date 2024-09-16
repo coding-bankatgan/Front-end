@@ -72,7 +72,9 @@ const Post = () => {
             </Info>
             <TagWrapper>
               {post?.tags.map(tag => (
-                <AlertDialogTag key={tag.tagId}>{tag.tagName}</AlertDialogTag>
+                <AlertDialogTag key={tag.tagId} tagId={tag.tagId}>
+                  {tag.tagName}
+                </AlertDialogTag>
               ))}
             </TagWrapper>
             <MetaData>
