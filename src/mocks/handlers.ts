@@ -130,4 +130,11 @@ export const handlers = [
       answer,
     });
   }),
+
+  /**회원가입 post Test  */
+  http.post(`api/members/signup`, async ({ request }) => {
+    const requestBody = await request.json();
+    console.log(requestBody);
+    return new Response();
+  }),
 ];
