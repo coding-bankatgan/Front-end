@@ -3,12 +3,12 @@ import cardItem from '../../public/cardItem.json';
 import cardItemDetail from '../../public/cardItemDetail.json';
 import specialtyDrink from '../../public/specialtyDrink.json';
 import regions from '../../public/regions.json';
-import registration from '../../public/registration.json';
+import registrations from '../../public/registration.json';
 import comments from '../../public/comments.json';
 import member from '../../public/member.json';
 import commentWrite from '../../public/commentWrite.json';
-import { Comment, CommentRequestBody } from '@/types/comment';
 import tag from '../../public/tag.json';
+import { Comment, CommentRequestBody } from '@/types/comment';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -33,6 +33,11 @@ export const handlers = [
         status: 401,
       });
     }
+  }),
+
+  /** 회원정보 조회 API */
+  http.get('/api/members', async () => {
+    return HttpResponse.json(member);
   }),
 
   /** 전체 게시글 조회 API */
@@ -108,12 +113,39 @@ export const handlers = [
     return HttpResponse.json({ specialtyDrink, member });
   }),
 
-  /** 특산주 신청 API */
-  http.post('/specialty-drink', async () => {
-    return HttpResponse.json(registration);
+  /** 특산주 등록 신청 API */
+  http.post('/api/drinks/registrations', async () => {
+    return HttpResponse.json({ registrations, regions });
   }),
-  http.post('/specialty-drink/form', async () => {
-    return HttpResponse.json({ registration, regions });
+
+  /** 특산주 신청 목록 조회 API */
+  http.get('/api/drinks/registrations', async ({ request }) => {
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('number')) || 0;
+    const size = Number(url.searchParams.get('size')) || 10;
+
+    const filteredRegistration = registrations.flatMap(registration => registration.content);
+
+    // 페이지네이션
+    const start = Number(page) * Number(size);
+    const end = start + Number(size);
+    const paginatedRegistrations = filteredRegistration.slice(start, end);
+    const totalElements = filteredRegistration.length;
+    const totalPages = Math.ceil(totalElements / Number(size));
+
+    return HttpResponse.json({
+      totalElements,
+      totalPages,
+      size,
+      number: page,
+      content: paginatedRegistrations,
+    });
+  }),
+
+  /** 특산주 신청 글 조회 API */
+  http.get('/api/drinks/registrations/:registId', async ({ params }) => {
+    Number(params.registId);
+    return HttpResponse.json(registrations);
   }),
 
   http.post('/api/auth/google', async ({ request }) => {

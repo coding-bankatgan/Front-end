@@ -77,3 +77,35 @@ export const getAddress = async (latitude: number | null, longitude: number | nu
     console.error('Error fetching address:', error);
   }
 };
+
+//** 특산주 신청 목록 조회 API */
+export const fetchRegistrationsApi = async (page: number, size: number) => {
+  try {
+    const response = await axios.get(`/api/drinks/registrations?page=${page}&size=${size}`);
+    console.log('api', response.data);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching specialtyDrink: ', err);
+  }
+};
+
+//** 특산주 신청 글 조회 API */
+export const fetchRegistrationsDetailApi = async (registId: number) => {
+  try {
+    const response = await axios.get(`/api/drinks/registrations/${registId}`);
+    console.log('api', response.data);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching specialtyDrink: ', err);
+  }
+};
+
+//** 회원정보 조회 API */
+export const fetchMembers = async () => {
+  try {
+    const response = await axios.get(`/api/members`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching member: ', err);
+  }
+};

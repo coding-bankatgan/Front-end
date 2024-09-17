@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { create } from 'zustand';
+import { fetchMembers } from '@/api/postApi';
 
 interface Tag {
   id?: number;
@@ -32,7 +33,6 @@ export interface MemberState {
   fetchMembers: () => Promise<void>;
 
   currentUser: Member | null;
-  setCurrentUser: (userId: number) => void;
 
   followTags: Tag[];
   addFollowTag: (tag: Tag) => Promise<void>;
@@ -47,21 +47,15 @@ export const useMemberStore = create<MemberState>(set => ({
   setMembers: (members: Member[]) => set({ members }),
   fetchMembers: async () => {
     try {
-      const response = await axios.get('/member.json');
-      const members = response.data as Member[];
-      set({ members });
+      const response = await fetchMembers();
+      set({ members: response });
 
-      const currentUser = members.find(member => member.id === 2) || null;
-      set({ currentUser });
+      const currentUser = response.find((member: Member) => member.id === 2) || null;
+      set({ currentUser }); // currentUser Manager
     } catch (err) {
       console.log('Error', err);
     }
   },
-  setCurrentUser: (userId: number) =>
-    set(state => {
-      const user = state.members.find(member => member.id === userId);
-      return { currentUser: user || null };
-    }),
 
   fetchFollowTags: async () => {
     try {

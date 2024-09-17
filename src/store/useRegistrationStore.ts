@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { create } from 'zustand';
+import { fetchRegistrationsApi, fetchRegistrationsDetailApi } from '@/api/postApi';
 
 interface Registration {
   registId: number;
@@ -19,7 +19,17 @@ interface Registration {
 
 interface RegistrationState {
   registrations: Registration[];
-  setRegistrations: (registration: Registration[]) => void;
+  registrationsDetail: Registration[];
+
+  pagination: {
+    totalElements: number;
+    totalPages: number;
+    size: number;
+    number: number;
+  };
+  setPagination: (pagination: RegistrationState['pagination']) => void;
+
+  setRegistrations: (registrations: Registration[]) => void;
   addRegistration: (
     registration: Omit<
       Registration,
@@ -28,26 +38,50 @@ interface RegistrationState {
   ) => void;
 
   updateApprovalStatus: (registId: number, approved: 'true' | 'false') => void;
-  fetchRegistrations: () => Promise<void>;
+
+  fetchRegistrations: (page: number, size: number) => Promise<void>;
+  fetchRegistrationsDetail: (registId: number) => Promise<void>;
 }
 
-const useRegistrationStore = create<RegistrationState>((set, get) => ({
+const useRegistrationStore = create<RegistrationState>(set => ({
   registrations: [],
+  registrationsDetail: [],
+  pagination: {
+    totalElements: 0,
+    totalPages: 0,
+    size: 10,
+    number: 0,
+  },
   setRegistrations: registrations => set({ registrations }),
-  fetchRegistrations: async () => {
+  setPagination: pagination => set({ pagination }),
+  fetchRegistrations: async (page: number, size: number) => {
     try {
-      const response = await axios.get('/registration.json');
-      console.log(response.data);
-      if (Array.isArray(response.data)) {
+      const data = await fetchRegistrationsApi(page, size);
+      if (data) {
+        set({ registrations: data.content });
         set({
-          registrations: response.data,
+          pagination: {
+            totalElements: data.totalElements,
+            totalPages: data.totalPages,
+            size: size,
+            number: page,
+          },
         });
-      } else {
-        console.error('error: ', response);
-        set({ registrations: [] });
       }
     } catch (err) {
-      set({ registrations: [] });
+      set({
+        registrations: [],
+        pagination: { totalElements: 0, totalPages: 0, size: 10, number: 0 },
+      });
+    }
+  },
+  fetchRegistrationsDetail: async registId => {
+    try {
+      const data = await fetchRegistrationsDetailApi(registId);
+      set({ registrationsDetail: data });
+    } catch (err) {
+      console.error('Error fetching posts: ', err);
+      set({ registrationsDetail: [] });
     }
   },
 

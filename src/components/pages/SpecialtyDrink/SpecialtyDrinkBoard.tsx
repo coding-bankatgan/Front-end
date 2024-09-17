@@ -1,20 +1,30 @@
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useEffect } from 'react';
+import useRegistrationStore from '@/store/useRegistrationStore';
 import styled from '@emotion/styled';
 import PlusIcon from '@/assets/icons/PlusIcon';
-import useRegistrationStore from '@/store/useRegistrationStore';
 import dayjs from 'dayjs';
 import PrevBtn from '@/components/layout/PrevBtn';
+import Pagination from './../../layout/Pagination';
 
 const SpecialtyDrinkBoard = () => {
-  const { registrations, fetchRegistrations } = useRegistrationStore();
-  useEffect(() => {
-    fetchRegistrations();
-  }, [fetchRegistrations]);
   const navigate = useNavigate();
+  const { registrations, pagination, fetchRegistrations } = useRegistrationStore(state => ({
+    registrations: state.registrations,
+    pagination: state.pagination,
+    fetchRegistrations: state.fetchRegistrations,
+  }));
+
+  useEffect(() => {
+    fetchRegistrations(pagination.number, pagination.size);
+  }, [fetchRegistrations, pagination.number, pagination.size]);
+
+  const handlePageChange = (newPage: number) => {
+    fetchRegistrations(newPage, pagination.size);
+  };
 
   return (
     <NoFooterLayoutSub>
@@ -46,10 +56,11 @@ const SpecialtyDrinkBoard = () => {
             </li>
           ))}
         </ListContentStyled>
-        <EditDrinkForm>
-          <Link to="/specialty-drink/form">
-            <PlusIcon />
-          </Link>
+        {registrations.length > 0 && (
+          <Pagination pagination={pagination} onPageChange={handlePageChange} />
+        )}
+        <EditDrinkForm onClick={() => navigate('/specialty-drink/form')}>
+          <PlusIcon />
         </EditDrinkForm>
       </ContentWrapper>
     </NoFooterLayoutSub>
@@ -105,13 +116,12 @@ const EditDrinkForm = styled(Button)`
   display: flex;
   width: 40px;
   height: 40px;
+  padding: 12px;
   background-color: ${({ theme }) => theme.colors.primary};
   border-radius: 20px;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 4px 10px;
 
   svg {
-    width: 22px;
-    height: 22px;
     color: ${({ theme }) => theme.colors.white};
   }
 

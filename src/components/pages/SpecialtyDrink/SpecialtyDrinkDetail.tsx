@@ -5,11 +5,18 @@ import { Button } from '@/components/ui/button';
 import styled from '@emotion/styled';
 import { Textarea } from '@/components/ui/textarea';
 import useRegistrationStore from '@/store/useRegistrationStore';
+import { useMemberStore } from '@/store/useMemberStore';
 
 const SpecialtyDrinkDetail = () => {
-  const { registrations, fetchRegistrations, updateApprovalStatus } = useRegistrationStore();
+  const { registrations, fetchRegistrationsDetail, updateApprovalStatus } = useRegistrationStore();
+  const { currentUser, fetchMembers } = useMemberStore();
   const { registId } = useParams();
   const id = Number(registId);
+  const isManager = currentUser?.role === 'MANAGER';
+
+  useEffect(() => {
+    fetchMembers();
+  }, [fetchMembers]);
 
   const navigate = useNavigate();
 
@@ -23,8 +30,8 @@ const SpecialtyDrinkDetail = () => {
   const [isSelectDisabled, setIsSelectDisabled] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchRegistrations();
-  }, [fetchRegistrations]);
+    fetchRegistrationsDetail(id);
+  }, [fetchRegistrationsDetail, id]);
 
   useEffect(() => {
     if (registration) {
@@ -74,23 +81,19 @@ const SpecialtyDrinkDetail = () => {
           <SelectStyled
             value={selectedApproval ?? ''}
             onChange={handleApprovalChange}
-            disabled={isSelectDisabled}
+            disabled={!isManager || isSelectDisabled}
           >
             <option value="" disabled hidden>
               {registration?.approved === null
                 ? '특산주를 등록하시겠습니까?'
                 : '특산주 상태가 이미 설정되었습니다.'}
             </option>
-            <option value="true" disabled={isSelectDisabled}>
-              특산주 등록이 완료되었습니다! :D
-            </option>
-            <option value="false" disabled={isSelectDisabled}>
-              전달주신 특산주 정보가 확인되지 않습니다.
-            </option>
+            <option value="true">특산주 등록이 완료되었습니다! :D</option>
+            <option value="false">전달주신 특산주 정보가 확인되지 않습니다.</option>
           </SelectStyled>
           <ButtonStyled>
             <Button onClick={handleCancelClick}>취소</Button>
-            <Button onClick={handleUpdateClick} disabled={selectedApproval === null}>
+            <Button onClick={handleUpdateClick} disabled={selectedApproval === null || !isManager}>
               등록
             </Button>
           </ButtonStyled>
