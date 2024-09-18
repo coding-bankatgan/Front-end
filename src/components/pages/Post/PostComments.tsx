@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import ExProfileImg from '@/assets/ExProfileImg';
 import { fetchCommentsApi, fetchCommentWriteApi } from '@/api/postApi';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 
 interface PostCommentsProps {
   postId: number;
@@ -114,6 +115,13 @@ const PostComments = ({ postId }: PostCommentsProps) => {
     }
   };
 
+  /** 신고하기 버튼 클릭 시 폼 이동 */
+  const navigate = useNavigate();
+  const postLink = `http://localhost:5173/post/${postId}`;
+  const handleReportClick = () => {
+    navigate(`/report/form`, { state: { postLink } });
+  };
+
   return (
     <CommentWrapper>
       <Write>
@@ -153,7 +161,7 @@ const PostComments = ({ postId }: PostCommentsProps) => {
       {comments.length > 0 && (
         <Pagination pagination={pagination} onPageChange={handlePageChange} />
       )}
-      <ReportBtn>
+      <ReportBtn onClick={handleReportClick}>
         <WarningIcon /> 신고하기
       </ReportBtn>
     </CommentWrapper>
