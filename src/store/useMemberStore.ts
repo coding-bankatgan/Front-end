@@ -20,12 +20,19 @@ export interface Member {
 export interface MemberState {
   members: Member[];
   setMembers: (members: Member[]) => void;
+  // currentUser: Member | null;
+  // setCurrentUser: (userId: number) => void;
   fetchMembers: () => Promise<void>;
 }
 
 export const useMemberStore = create<MemberState>(set => ({
   members: [],
   setMembers: (members: Member[]) => set({ members }),
+  // currentUser: null,
+  // setCurrentUser: (userId: number) =>
+  //   set(user => ({
+  //     currentUser: user.members.find(member => member.id === userId) || null,
+  //   })),
   fetchMembers: async () => {
     try {
       const response = await axios.get('/member.json');
