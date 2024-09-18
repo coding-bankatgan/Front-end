@@ -7,8 +7,11 @@ import registrations from '../../public/registration.json';
 import comments from '../../public/comments.json';
 import member from '../../public/member.json';
 import commentWrite from '../../public/commentWrite.json';
+import declarationWrite from '../../public/reportWrite.json';
 import tag from '../../public/tag.json';
+import declarations from '../../public/report.json';
 import { Comment, CommentRequestBody } from '@/types/comment';
+import { Declaration, DeclarationRequestBody } from '@/types/declaration';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -20,6 +23,7 @@ const mockJwtToken =
 }*/
 
 let commentsData: Comment[] = [...commentWrite];
+let declarationsData: Declaration[] = [...declarationWrite];
 
 export const handlers = [
   /** 로그인 테스트 API */
@@ -160,6 +164,58 @@ export const handlers = [
     return HttpResponse.json({
       mockTokens,
     });
+  }),
+
+  /** 신고 제출 API */
+  http.post('/api/declarations', async ({ request }) => {
+    const requestBody = (await request.json()) as DeclarationRequestBody;
+
+    const { link, type, content } = requestBody;
+
+    const newDeclaration: Declaration = {
+      id: declarations.length + 1,
+      memberId: 1,
+      memberName: '멤버 A',
+      link: link,
+      type: type,
+      content: content,
+      approved: null,
+      createdAt: new Date().toISOString(),
+    };
+
+    declarationsData = [...declarationsData, newDeclaration];
+    console.log(declarationsData);
+    return HttpResponse.json(newDeclaration);
+  }),
+
+  /** 신고글 목록 조회 API */
+  http.get('/api/declarations', async ({ request }) => {
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('number')) || 0;
+    const size = Number(url.searchParams.get('size')) || 10;
+
+    const filteredDeclarations = declarations.flatMap(declaration => declaration.content);
+
+    // 페이지네이션
+    const start = Number(page) * Number(size);
+    const end = start + Number(size);
+    const paginatedDeclarations = filteredDeclarations.slice(start, end);
+    const totalElements = filteredDeclarations.length;
+    const totalPages = Math.ceil(totalElements / Number(size));
+
+    return HttpResponse.json({
+      totalElements,
+      totalPages,
+      size,
+      number: page,
+      content: paginatedDeclarations,
+    });
+  }),
+
+  /** 신고글 조회 API */
+  http.get('/api/declarations/:declarationId', async ({ params }) => {
+    Number(params.declarationId);
+    return HttpResponse.json(declarations);
   }),
 
   /** 아이디 중복 검사 API */
