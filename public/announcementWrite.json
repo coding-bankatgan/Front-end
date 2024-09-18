@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "memberId": 1,
+    "title": "[공지] 새로운 공지",
+    "content": "test",
+    "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00000957&targetNm=PRODUCT",
+    "createdAt": "2024-09-15T12:00:00",
+    "updatedAt": null
+  }
+]

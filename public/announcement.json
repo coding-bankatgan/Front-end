@@ -1,0 +1,37 @@
+[
+  {
+    "totalElements": 1,
+    "totalPages": 1,
+    "size": 10,
+    "number": 0,
+    "content": [
+      {
+        "id": 1,
+        "memberId": 1,
+        "title": "[공지] 오늘 한잔? 앱이 출시되었습니다!!🎉",
+        "content": "오늘 한 잔? 앱이 금일 앱스토어에 출시되었습니다🎉 오늘 한 잔 앱을 통해 지역 특산주에 대한 정보를 얻고 취향에 맞는 술을 찾아보세요:D",
+        "imageUrl": null,
+        "createdAt": "2024-09-15T12:00:00",
+        "updatedAt": "2024-09-15T12:00:00"
+      },
+      {
+        "id": 2,
+        "memberId": 2,
+        "title": "[공지] 오류 수정, 버그 수정, 새로운 기능 추가, 기존 기능 업그레이드",
+        "content": "새로운 기능이 업데이트 되었습니다!!",
+        "imageUrl": null,
+        "createdAt": "2024-09-15T12:00:00",
+        "updatedAt": "2024-09-15T12:00:00"
+      },
+      {
+        "id": 3,
+        "memberId": 3,
+        "title": "[공지] testtesttesttesttesttesttest testtesttesttesttest",
+        "content": "새로운 기능이 업데이트 되었습니다!!",
+        "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00000957&targetNm=PRODUCT",
+        "createdAt": "2024-09-15T12:00:00",
+        "updatedAt": "2024-09-15T12:00:00"
+      }
+    ]
+  }
+]
