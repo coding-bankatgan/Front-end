@@ -45,7 +45,7 @@ const CardItem = ({ post }: CardItemProps) => {
         </TagWrapper>
       </CardContentStyled>
       <CardFooterStyled>
-        <span>{dayjs(post.createdAt).format('YYYY-MM-DD')}</span>
+        <span>{dayjs(post.createdAt).format('YYYY.MM.DD')}</span>
         <span>
           <ViewIcon />
           {post.viewCount.toLocaleString()}

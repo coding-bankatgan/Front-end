@@ -140,7 +140,7 @@ const PostComments = ({ postId }: PostCommentsProps) => {
               <CommentInfoWrapper>
                 <span>
                   <CommentNickname>{comment.memberName}</CommentNickname>
-                  <CommentDate>{dayjs(comment.createdAt).format('YYYY-MM-DD')}</CommentDate>
+                  <CommentDate>{dayjs(comment.createdAt).format('YYYY.MM.DD')}</CommentDate>
                 </span>
                 <p>{comment.content}</p>
               </CommentInfoWrapper>
@@ -243,6 +243,10 @@ const CheckBoxWrapper = styled.div`
     }
   }
 
+  button[aria-checked='true'] {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+
   label {
     font-size: ${({ theme }) => theme.fontSizes.xsmall};
   }
@@ -327,11 +331,12 @@ const ReportBtn = styled.span`
   align-items: center;
   margin: 30px 0 10px 0;
   color: ${({ theme }) => theme.colors.error};
-  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
   svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
+    margin-right: 2px;
   }
 `;
 
