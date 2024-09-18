@@ -5,24 +5,25 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useNavigate, useLocation } from 'react-router-dom';
-import CustomAlert from '@/components/layout/CustomAlert';
 import axios from 'axios';
+import { getRoleFromToken } from '@/auth';
 
-const ReportForm = () => {
+interface ReportFormProps {
+  showAlert: (type: 'success' | 'error', message: string) => void;
+}
+
+const ReportForm = ({ showAlert }: ReportFormProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [type, setType] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const [showAlert, setShowAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(
-    null,
-  );
 
   const { postLink } = location.state || {};
 
   const handleUpdateClick = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!type || !content) {
-      setShowAlert({ type: 'error', message: '신고 사유와 내용을 입력해주세요.' });
+      showAlert('error', '신고 사유와 내용을 입력해주세요.');
       return;
     }
 
@@ -34,11 +35,11 @@ const ReportForm = () => {
       });
       if (response.data) {
         console.log(response.data);
-        setShowAlert({ type: 'success', message: '신고가 접수되었습니다' });
+        showAlert('success', '신고가 접수되었습니다');
         setTimeout(() => navigate(-1), 2000);
       }
     } catch (error) {
-      setShowAlert({ type: 'error', message: '오류가 발생하였습니다. 잠시 후 다시 시도해주세요.' });
+      showAlert('error', '오류가 발생하였습니다. 잠시 후 다시 시도해주세요.');
       console.error('신고 중 오류 발생:', error);
     }
   };
@@ -47,8 +48,13 @@ const ReportForm = () => {
     window.open(postLink, '_blank');
   };
 
+  const role = getRoleFromToken();
+
   const handleCancelClick = () => {
-    navigate('/report');
+    // if (role !== 'MANAGER') {
+    //   navigate('/report');
+    // }
+    navigate(-1);
   };
 
   return (
@@ -84,13 +90,6 @@ const ReportForm = () => {
           </Label>
         </FormContentStyled>
         <FormBottomStyled>
-          {showAlert && (
-            <CustomAlert
-              type={showAlert.type}
-              message={showAlert.message}
-              onClose={() => setShowAlert(null)}
-            />
-          )}
           <Button onClick={handleCancelClick}>취소</Button>
           <Button onClick={handleUpdateClick}>등록</Button>
         </FormBottomStyled>

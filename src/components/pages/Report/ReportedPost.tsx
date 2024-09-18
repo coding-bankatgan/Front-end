@@ -3,6 +3,7 @@ import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import useDeclarationStore from '@/store/useDeclarationStore';
 import styled from '@emotion/styled';
 
@@ -49,6 +50,11 @@ const ReportedPost = () => {
       value === '' ? null : value === 'true' ? true : false, // 문자열을 boolean으로 변환
     );
   };
+
+  const handleInputClick = () => {
+    window.open(declaration?.link, '_blank');
+  };
+
   const handleUpdateClick = async () => {
     if (selectedApproval !== null) {
       updateApprovalStatus(declarationId, selectedApproval);
@@ -65,13 +71,23 @@ const ReportedPost = () => {
     <NoFooterLayoutSub>
       <ContentWrapper>
         <HeaderStyled>
-          <h1>[신고 사유]</h1>
+          <h1>신고합니다!</h1>
         </HeaderStyled>
         <TitleStyled>
           <Label>링크</Label>
-          <FormHeaderStyled>
-            <Input placeholder="게시글 링크" disabled />
-          </FormHeaderStyled>
+          <FormStyled>
+            <Input
+              type="text"
+              id="link"
+              value={declaration?.link || ''}
+              onClick={handleInputClick}
+              readOnly
+            />
+            <Label>신고 사유</Label>
+            <Input type="text" id="type " value={declaration?.type || '알 수 없음'} readOnly />
+          </FormStyled>
+          <Label>신고 내용</Label>
+          <TextareaStyled id="content" value={declaration?.content || ''} readOnly />
         </TitleStyled>
         <Line />
         <BottomStyled>
@@ -127,13 +143,40 @@ const TitleStyled = styled.div`
     border: 1px solid ${({ theme }) => theme.colors.lightGray};
     overflow: hidden;
   }
+
+  > textarea {
+    &:focus {
+      border-color: ${({ theme }) => theme.colors.focusShadow};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    }
+  }
 `;
 
-const FormHeaderStyled = styled.div`
-  margin-bottom: 20px;
-  border-radius: 10px;
-  border: 1px solid ${({ theme }) => theme.colors.lightGray};
+const FormStyled = styled.div`
   overflow: hidden;
+
+  > input {
+    border-radius: 10px;
+    border: 1px solid ${({ theme }) => theme.colors.lightGray};
+    margin-bottom: 10px;
+    &:focus {
+      border-color: ${({ theme }) => theme.colors.focusShadow};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    }
+  }
+`;
+
+const TextareaStyled = styled(Textarea)`
+  height: 150px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  background-color: ${({ theme }) => theme.colors.lightGray};
+  resize: none;
+
+  &:focus {
+    border-color: ${({ theme }) => theme.colors.focusShadow};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+  }
 `;
 
 const Label = styled.label`

@@ -71,7 +71,7 @@
         "memberName": "test7",
         "link": "신고 게시글 링크",
         "type": "비속어 사용",
-        "content": "신고내용",
+        "content": "testtesttest",
         "approved": true,
         "createdAt": "2024-08-28T00:00:00Z"
       },
@@ -80,7 +80,7 @@
         "memberId": 8,
         "memberName": "test8",
         "link": "신고 게시글 링크",
-        "type": "비속어 사용",
+        "type": "허위",
         "content": "신고내용",
         "approved": false,
         "createdAt": "2024-08-28T00:00:00Z"

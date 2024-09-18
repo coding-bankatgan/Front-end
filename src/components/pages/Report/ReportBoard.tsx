@@ -32,10 +32,10 @@ const ReportBoard = ({ showAlert }: ReportListProps) => {
   const role = getRoleFromToken();
 
   const handleItemClick = (id: number) => {
-    if (role !== 'MANAGER') {
-      showAlert('error', '권한이 없습니다.');
-      return;
-    }
+    // if (role !== 'MANAGER') {
+    //   showAlert('error', '권한이 없습니다.');
+    //   return;
+    // }
     navigate(`/report/reported-post/${id}`);
   };
 
@@ -50,7 +50,7 @@ const ReportBoard = ({ showAlert }: ReportListProps) => {
           {declarations.map(declaration => (
             <li key={declaration.id} onClick={() => handleItemClick(declaration.id)}>
               <div>
-                <span>{declaration.type}</span>
+                <span>신고합니다!</span>
                 {declaration.approved === null ? (
                   <Badge variant="outline">New!</Badge>
                 ) : (
