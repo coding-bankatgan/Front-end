@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { Button, Label } from './SignUp';
-import { PrevContainer } from './SignUpStep2';
 import { Input } from '@/components/ui/input';
 import { keyframes } from '@emotion/react';
 
@@ -48,11 +47,6 @@ const SignUpStep1 = ({
   return (
     <Wrapper>
       <ScrollCont>
-        <Step>
-          <Orange1 />
-          <Gray1 />
-        </Step>
-        <PrevContainer></PrevContainer>
         <Container>
           <Header>기본적인 정보를 입력해주세요.</Header>
           <Label htmlFor="name">
@@ -200,13 +194,14 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px;
+  padding: 0 20px 20px 20px;
   min-width: 100vw;
-  height: 100vh;
+  height: calc(95vh;
 
   background-color: white;
 `;
 export const ScrollCont = styled.div`
+  height: calc(100vh - 120px);
   overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
