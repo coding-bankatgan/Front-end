@@ -68,7 +68,7 @@ const Router = ({ showAlert }: RouterProps) => {
 
         <Route path="/report" element={<ReportBoard showAlert={showAlert} />} />
         <Route path="/report/reported-post/:id" element={<ReportedPost />} />
-        <Route path="/report/form" element={<ReportForm />} />
+        <Route path="/report/form" element={<ReportForm showAlert={showAlert} />} />
 
         <Route path="/signup" element={<SignUp />} />
 

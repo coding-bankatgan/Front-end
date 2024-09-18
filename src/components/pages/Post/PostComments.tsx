@@ -117,7 +117,7 @@ const PostComments = ({ postId }: PostCommentsProps) => {
 
   /** 신고하기 버튼 클릭 시 폼 이동 */
   const navigate = useNavigate();
-  const postLink = `http://localhost:5173/post/${postId}`;
+  const postLink = `/post/${postId}`;
   const handleReportClick = () => {
     navigate(`/report/form`, { state: { postLink } });
   };
