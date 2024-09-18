@@ -9,6 +9,9 @@ import member from '../../public/member.json';
 import commentWrite from '../../public/commentWrite.json';
 import tag from '../../public/tag.json';
 import { Comment, CommentRequestBody } from '@/types/comment';
+import announcements from '../../public/announcement.json';
+import AnnouncementWrite from '../../public/announcementWrite.json';
+import { Announcement, AnnouncementRequestBody } from '@/types/announcement';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -20,6 +23,7 @@ const mockJwtToken =
 }*/
 
 let commentsData: Comment[] = [...commentWrite];
+let announcementData: Announcement[] = [...AnnouncementWrite];
 
 export const handlers = [
   /** 로그인 테스트 API */
@@ -160,6 +164,59 @@ export const handlers = [
     return HttpResponse.json({
       mockTokens,
     });
+  }),
+
+  /** 공지사항 등록 API */
+  http.post('/api/announcements', async ({ request }) => {
+    const requestBody = (await request.json()) as AnnouncementRequestBody;
+
+    const { title, content, imageUrl } = requestBody;
+
+    const newAnnouncement: Announcement = {
+      id: announcements.length + 1,
+      memberId: 1,
+      title: title,
+      content: content,
+      imageUrl: imageUrl,
+      createdAt: new Date().toISOString(),
+      updatedAt: null,
+    };
+
+    announcementData = [...announcementData, newAnnouncement];
+    console.log(announcementData);
+    return HttpResponse.json(newAnnouncement);
+  }),
+
+  /** 공지사항 수정 API */
+
+  /** 공지사항 삭제 API */
+
+  /** 공지사항 조회 API */
+  http.get('/api/announcements', async ({ request }) => {
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('number')) || 0;
+    const size = Number(url.searchParams.get('size')) || 10;
+
+    const filteredAnnouncements = announcements.flatMap(announcement => announcement.content);
+
+    // 페이지네이션
+    const start = Number(page) * Number(size);
+    const end = start + Number(size);
+    const paginatedAnnouncements = filteredAnnouncements.slice(start, end);
+    const totalElements = filteredAnnouncements.length;
+    const totalPages = Math.ceil(totalElements / Number(size));
+
+    return HttpResponse.json({
+      totalElements,
+      totalPages,
+      size,
+      number: page,
+      content: paginatedAnnouncements,
+    });
+  }),
+  http.get('/api/announcements/:id', async ({ params }) => {
+    Number(params.id);
+    return HttpResponse.json(announcements);
   }),
 
   /** 아이디 중복 검사 API */
