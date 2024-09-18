@@ -1,7 +1,9 @@
 export { default as Home } from './Home/Home';
 export { default as Login } from './Login';
 export { default as NotFound } from './NotFound';
-export { default as Announcement } from './Announcement';
+export { default as AnnouncementBoard } from './Announcement/AnnouncementBoard';
+export { default as AnnouncementDetail } from './Announcement/AnnouncementDetail';
+export { default as AnnouncementForm } from './Announcement/AnnouncementForm';
 export { default as FAQ } from './FAQ';
 export { default as Search } from './Search/Search';
 

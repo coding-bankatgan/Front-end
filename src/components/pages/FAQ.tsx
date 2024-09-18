@@ -1,8 +1,12 @@
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
-import { AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/components/ui/accordion';
 import styled from '@emotion/styled';
 import PrevBtn from '../layout/PrevBtn';
-import { AccordionStyled } from './Announcement';
 
 const FAQ = () => {
   return (
@@ -55,6 +59,12 @@ const TitleStyled = styled.h1`
   font-size: ${({ theme }) => theme.fontSizes.large};
   font-weight: bold;
   text-align: center;
+`;
+
+const AccordionStyled = styled(Accordion)`
+  button {
+    padding: 15px 10px;
+  }
 `;
 
 const AccordionTriggerSub = styled(AccordionTrigger)`

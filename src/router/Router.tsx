@@ -5,7 +5,9 @@ import {
   Home,
   Login,
   NotFound,
-  Announcement,
+  AnnouncementBoard,
+  AnnouncementDetail,
+  AnnouncementForm,
   FAQ,
   Search,
   MyPage,
@@ -48,8 +50,11 @@ const Router = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/search" element={<Search />} />
-        <Route path="/announcement" element={<Announcement />} />
         <Route path="/faq" element={<FAQ />} />
+
+        <Route path="/announcement" element={<AnnouncementBoard />} />
+        <Route path="/announcement/:id" element={<AnnouncementDetail />} />
+        <Route path="/announcement/form" element={<AnnouncementForm />} />
 
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/edit" element={<EditMyPage />} />
