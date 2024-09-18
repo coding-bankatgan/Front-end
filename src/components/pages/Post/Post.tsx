@@ -5,7 +5,7 @@ import ViewIcon from './../../../assets/icons/ViewIcon';
 import AlertDialogTag from '@/components/layout/AlertDialogTag';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { usePostsDetailStore } from '@/store/usePostsDetailStore';
 import PostComments from './PostComments';
 import EllipsisHorizontalIcon from '@/assets/icons/EllipsisHorizontalIcon';
@@ -13,6 +13,7 @@ import { mapDrinkType } from '@/data/drinkTypes';
 
 import ChatIcon from '@/assets/icons/ChatIcon';
 import HeartIcon from '@/assets/icons/HeartIcon';
+import { useLikeStore } from '@/store/useLikeStore';
 
 const typeMap = {
   ADVERTISEMENT: '광고',
@@ -24,11 +25,8 @@ const Post = () => {
   const { id } = useParams();
   const postId = Number(id);
 
-  const [liked, setLiked] = useState(false);
-  const toggleLike = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setLiked(!liked);
-  };
+  const { toggleLike } = useLikeStore();
+  const liked = useLikeStore(state => state.likedPosts.includes(postId));
 
   useEffect(() => {
     fetchPostsDetail(postId);
@@ -66,7 +64,7 @@ const Post = () => {
           </Img>
           <Interactions>
             <span>
-              <HeartIcon onClick={e => toggleLike(e)} liked={liked} />
+              <HeartIcon onClick={() => toggleLike(post.id)} liked={liked} />
               {post?.likeCount.toLocaleString()}
             </span>
             <span>

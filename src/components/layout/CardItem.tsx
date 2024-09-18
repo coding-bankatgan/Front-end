@@ -4,24 +4,20 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import HeartIcon from '@/assets/icons/HeartIcon';
 import { Badge } from '@/components/ui/badge';
 import ExProfileImg from '@/assets/ExProfileImg';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Post } from '@/store/usePostsStore';
+import { useLikeStore } from '@/store/useLikeStore';
 
 interface CardItemProps {
   post: Post;
 }
 
 const CardItem = ({ post }: CardItemProps) => {
-  const [liked, setLiked] = useState(false);
+  const { toggleLike } = useLikeStore();
+  const liked = useLikeStore(state => state.likedPosts.includes(post.id));
 
   const navigate = useNavigate();
-
-  const toggleLike = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setLiked(!liked);
-  };
 
   return (
     <CardStyled onClick={() => navigate(`/post/${post.id}`)}>
@@ -34,7 +30,13 @@ const CardItem = ({ post }: CardItemProps) => {
             <ExProfileImg />
             {post.memberName}
           </span>
-          <HeartIcon onClick={e => toggleLike(e)} liked={liked} />
+          <HeartIcon
+            onClick={e => {
+              e.stopPropagation();
+              toggleLike(post.id);
+            }}
+            liked={liked}
+          />
         </ContentTop>
         <DrinkName>{post.drink.name}</DrinkName>
         <p>{post.content}</p>
