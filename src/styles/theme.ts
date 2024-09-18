@@ -18,6 +18,8 @@ export const theme = {
     success: '#BEE09C',
     error: '#E97979',
 
+    heart: '#FF3140',
+
     focusShadow: 'rgba(255, 209, 140, 0.3)',
   },
   fontSizes: {
