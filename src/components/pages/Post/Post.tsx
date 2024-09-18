@@ -5,11 +5,14 @@ import ViewIcon from './../../../assets/icons/ViewIcon';
 import AlertDialogTag from '@/components/layout/AlertDialogTag';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { usePostsDetailStore } from '@/store/usePostsDetailStore';
 import PostComments from './PostComments';
 import EllipsisHorizontalIcon from '@/assets/icons/EllipsisHorizontalIcon';
 import { mapDrinkType } from '@/data/drinkTypes';
+
+import ChatIcon from '@/assets/icons/ChatIcon';
+import HeartIcon from '@/assets/icons/HeartIcon';
 
 const typeMap = {
   ADVERTISEMENT: '광고',
@@ -20,6 +23,12 @@ const Post = () => {
   const { postsDetail, fetchPostsDetail } = usePostsDetailStore();
   const { id } = useParams();
   const postId = Number(id);
+
+  const [liked, setLiked] = useState(false);
+  const toggleLike = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLiked(!liked);
+  };
 
   useEffect(() => {
     fetchPostsDetail(postId);
@@ -55,15 +64,29 @@ const Post = () => {
           <Img>
             <img src={post?.imageUrl} alt={post?.drink.name} />
           </Img>
+          <Interactions>
+            <span>
+              <HeartIcon onClick={e => toggleLike(e)} liked={liked} />
+              {post?.likeCount.toLocaleString()}
+            </span>
+            <span>
+              <ChatIcon /> {post?.commentCount.toLocaleString()}
+            </span>
+          </Interactions>
           <Desc>{post?.content}</Desc>
           <EtcWrap>
+            <TagWrapper>
+              {post?.tags.map(tag => (
+                <AlertDialogTag key={tag.tagId}>{tag.tagName}</AlertDialogTag>
+              ))}
+            </TagWrapper>
             {post?.type === 'ADVERTISEMENT' ? (
               <Info>
                 <li>
                   <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
                 </li>
                 <li>
-                  <span>도수:</span> {post?.drink.degree}
+                  <span>도수:</span> {post?.drink.degree}%
                 </li>
                 <li>
                   <span>당도:</span> {post?.drink.sweetness}
@@ -75,7 +98,7 @@ const Post = () => {
                   <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
                 </li>
                 <li>
-                  <span>도수:</span> {post?.drink.degree}
+                  <span>도수:</span> {post?.drink.degree}%
                 </li>
                 <li>
                   <span>당도:</span> {post?.drink.sweetness}
@@ -88,13 +111,8 @@ const Post = () => {
                 </li>
               </Info>
             )}
-            <TagWrapper>
-              {post?.tags.map(tag => (
-                <AlertDialogTag key={tag.tagId}>{tag.tagName}</AlertDialogTag>
-              ))}
-            </TagWrapper>
             <MetaData>
-              <span>{dayjs(post?.createdAt).format('YYYY-MM-DD')}</span>
+              <span>{dayjs(post?.createdAt).format('YYYY.MM.DD')}</span>
               <span>
                 <ViewIcon /> {post?.viewCount.toLocaleString()}
               </span>
@@ -194,12 +212,42 @@ const Nickname = styled.div`
   }
 `;
 
+const Interactions = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px 0 10px 20px;
+
+  span {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: ${({ theme }) => theme.fontSizes.small};
+
+    :nth-of-type(1) {
+      margin-right: 10px;
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      margin-right: 3px;
+    }
+
+    :nth-of-type(2) {
+      svg {
+        color: ${({ theme }) => theme.colors.darkGray};
+      }
+    }
+  }
+`;
+
 const Desc = styled.p`
   width: 100%;
-  min-height: 50px;
+  min-height: 21px;
   height: auto;
-  margin: 10px 0;
-  padding: 5px 20px 20px 20px;
+  margin-bottom: 20px;
+  padding: 0 20px;
   line-height: 21px;
 `;
 
@@ -207,6 +255,19 @@ const EtcWrap = styled.div`
   width: 100%;
   height: auto;
   padding: 0 20px 10px 20px;
+`;
+
+const TagWrapper = styled.div`
+  width: 100%;
+  margin-bottom: 15px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    height: 0;
+  }
 `;
 
 const Info = styled.ul`
@@ -217,6 +278,7 @@ const Info = styled.ul`
   align-items: center;
   width: 100%;
   height: auto;
+  margin-bottom: 15px;
   padding: 10px;
   background-color: ${({ theme }) => theme.colors.brightGray};
   font-size: ${({ theme }) => theme.fontSizes.small};
@@ -234,19 +296,6 @@ const Info = styled.ul`
   li:nth-of-type(4),
   li:nth-of-type(5) {
     margin-top: 5px;
-  }
-`;
-
-const TagWrapper = styled.div`
-  width: 100%;
-  margin: 10px 0 20px;
-  overflow-x: auto;
-  white-space: nowrap;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-
-  &::-webkit-scrollbar {
-    height: 0;
   }
 `;
 
