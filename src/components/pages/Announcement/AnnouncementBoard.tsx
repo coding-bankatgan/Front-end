@@ -2,6 +2,7 @@ import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 // import { getRoleFromToken } from '@/auth';
 import PlusIcon from '@/assets/icons/PlusIcon';
 import dayjs from 'dayjs';
@@ -34,6 +35,11 @@ const AnnouncementBoard = () => {
 
   // const role = getRoleFromToken();
 
+  /** 7일 이내에 생성된 공지인지 확인하는 함수 */
+  const isNewAnnouncement = (createdAt: string) => {
+    return dayjs().diff(dayjs(createdAt), 'day') <= 7;
+  };
+
   return (
     <NoFooterLayoutSub>
       <ContentWrapper>
@@ -44,6 +50,7 @@ const AnnouncementBoard = () => {
             <li key={announcement.id} onClick={() => handleItemClick(announcement.id)}>
               <div>
                 <TitleSpan>{announcement.title}</TitleSpan>
+                {isNewAnnouncement(announcement.createdAt) && <Badge variant="outline">New!</Badge>}
               </div>
               <span>{dayjs(announcement.createdAt).format('YYYY.MM.DD')}</span>
             </li>
@@ -96,6 +103,7 @@ const ListContentStyled = styled.ul`
       font-size: ${({ theme }) => theme.fontSizes.xsmall};
     }
     > div {
+      display: flex;
       div {
         color: ${({ theme }) => theme.colors.error};
       }
