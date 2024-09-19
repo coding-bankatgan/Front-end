@@ -24,8 +24,13 @@ import {
   SpecialtyDrinkDetail,
   SpecialtyDrinkForm,
 } from '../components/pages';
+import { getRoleFromToken } from '@/auth';
 
-const Router = () => {
+interface RouterProps {
+  showAlert: (type: 'success' | 'error', message: string) => void;
+}
+
+const Router = ({ showAlert }: RouterProps) => {
   const location = useLocation();
   const hideHeaderPaths = ['/login', '/signup', '/search'];
   const hideFooterPaths = [
@@ -43,9 +48,11 @@ const Router = () => {
   const isHideHeader = hideHeaderPaths.some(path => location.pathname.startsWith(path));
   const isHideFooter = hideFooterPaths.some(path => location.pathname.startsWith(path));
 
+  const role = getRoleFromToken();
+
   return (
     <>
-      {!isHideHeader && <Header />}
+      {!isHideHeader && <Header showAlert={showAlert} role={role} />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -64,9 +71,9 @@ const Router = () => {
         <Route path="/post/:id" element={<Post />} />
         <Route path="/create-post" element={<CreatePost />} />
 
-        <Route path="/report" element={<ReportBoard />} />
+        <Route path="/report" element={<ReportBoard showAlert={showAlert} />} />
         <Route path="/report/reported-post/:id" element={<ReportedPost />} />
-        <Route path="/report/form" element={<ReportForm />} />
+        <Route path="/report/form" element={<ReportForm showAlert={showAlert} />} />
 
         <Route path="/signup" element={<SignUp />} />
 

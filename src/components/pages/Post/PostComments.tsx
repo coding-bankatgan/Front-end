@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import ExProfileImg from '@/assets/ExProfileImg';
 import { fetchCommentsApi, fetchCommentWriteApi } from '@/api/postApi';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 
 interface PostCommentsProps {
   postId: number;
@@ -114,6 +115,13 @@ const PostComments = ({ postId }: PostCommentsProps) => {
     }
   };
 
+  /** 신고하기 버튼 클릭 시 폼 이동 */
+  const navigate = useNavigate();
+  const postLink = `/post/${postId}`;
+  const handleReportClick = () => {
+    navigate(`/report/form`, { state: { postLink } });
+  };
+
   return (
     <CommentWrapper>
       <Write>
@@ -140,7 +148,7 @@ const PostComments = ({ postId }: PostCommentsProps) => {
               <CommentInfoWrapper>
                 <span>
                   <CommentNickname>{comment.memberName}</CommentNickname>
-                  <CommentDate>{dayjs(comment.createdAt).format('YYYY-MM-DD')}</CommentDate>
+                  <CommentDate>{dayjs(comment.createdAt).format('YYYY.MM.DD')}</CommentDate>
                 </span>
                 <p>{comment.content}</p>
               </CommentInfoWrapper>
@@ -153,7 +161,7 @@ const PostComments = ({ postId }: PostCommentsProps) => {
       {comments.length > 0 && (
         <Pagination pagination={pagination} onPageChange={handlePageChange} />
       )}
-      <ReportBtn>
+      <ReportBtn onClick={handleReportClick}>
         <WarningIcon /> 신고하기
       </ReportBtn>
     </CommentWrapper>
@@ -243,6 +251,10 @@ const CheckBoxWrapper = styled.div`
     }
   }
 
+  button[aria-checked='true'] {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+
   label {
     font-size: ${({ theme }) => theme.fontSizes.xsmall};
   }
@@ -327,11 +339,12 @@ const ReportBtn = styled.span`
   align-items: center;
   margin: 30px 0 10px 0;
   color: ${({ theme }) => theme.colors.error};
-  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
   svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
+    margin-right: 2px;
   }
 `;
 
