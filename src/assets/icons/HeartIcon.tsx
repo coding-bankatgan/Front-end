@@ -27,8 +27,8 @@ const HeartIcon = ({ onClick, liked }: HeartIconProps) => {
 };
 
 const SvgStyled = styled.svg<{ liked: boolean }>`
-  stroke: ${({ theme, liked }) => (liked ? theme.colors.error : theme.colors.lightGray)};
-  fill: ${({ theme, liked }) => (liked ? theme.colors.error : theme.colors.lightGray)};
+  stroke: ${({ theme, liked }) => (liked ? theme.colors.heart : theme.colors.darkGray)};
+  fill: ${({ theme, liked }) => (liked ? theme.colors.heart : theme.colors.white)};
 `;
 
 export default HeartIcon;

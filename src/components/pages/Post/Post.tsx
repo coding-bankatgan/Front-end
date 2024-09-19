@@ -9,6 +9,11 @@ import { useEffect } from 'react';
 import { usePostsDetailStore } from '@/store/usePostsDetailStore';
 import PostComments from './PostComments';
 import EllipsisHorizontalIcon from '@/assets/icons/EllipsisHorizontalIcon';
+import { mapDrinkType } from '@/data/drinkTypes';
+
+import ChatIcon from '@/assets/icons/ChatIcon';
+import HeartIcon from '@/assets/icons/HeartIcon';
+import { useLikeStore } from '@/store/useLikeStore';
 
 const typeMap = {
   ADVERTISEMENT: '광고',
@@ -19,6 +24,9 @@ const Post = () => {
   const { postsDetail, fetchPostsDetail } = usePostsDetailStore();
   const { id } = useParams();
   const postId = Number(id);
+
+  const { toggleLike } = useLikeStore();
+  const liked = useLikeStore(state => state.likedPosts.includes(postId));
 
   useEffect(() => {
     fetchPostsDetail(postId);
@@ -54,22 +62,17 @@ const Post = () => {
           <Img>
             <img src={post?.imageUrl} alt={post?.drink.name} />
           </Img>
+          <Interactions>
+            <span>
+              <HeartIcon onClick={() => toggleLike(post.id)} liked={liked} />
+              {post?.likeCount.toLocaleString()}
+            </span>
+            <span>
+              <ChatIcon /> {post?.commentCount.toLocaleString()}
+            </span>
+          </Interactions>
           <Desc>{post?.content}</Desc>
           <EtcWrap>
-            <Info>
-              <li>
-                <span>주종:</span> 막걸리
-              </li>
-              <li>
-                <span>도수:</span> {post?.drink.degree}
-              </li>
-              <li>
-                <span>당도:</span> {post?.drink.sweetness}
-              </li>
-              <li>
-                <span>평점:</span> {post?.rating}
-              </li>
-            </Info>
             <TagWrapper>
               {post?.tags.map(tag => (
                 <AlertDialogTag key={tag.tagId} tagId={tag.tagId}>
@@ -77,8 +80,39 @@ const Post = () => {
                 </AlertDialogTag>
               ))}
             </TagWrapper>
+            {post?.type === 'ADVERTISEMENT' ? (
+              <Info>
+                <li>
+                  <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
+                </li>
+                <li>
+                  <span>도수:</span> {post?.drink.degree}%
+                </li>
+                <li>
+                  <span>당도:</span> {post?.drink.sweetness}
+                </li>
+              </Info>
+            ) : (
+              <Info>
+                <li>
+                  <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
+                </li>
+                <li>
+                  <span>도수:</span> {post?.drink.degree}%
+                </li>
+                <li>
+                  <span>당도:</span> {post?.drink.sweetness}
+                </li>
+                <li>
+                  <span>평점:</span> {post?.rating}
+                </li>
+                <li>
+                  <span>평균 평점:</span> {post?.drink.averageRating || 0}
+                </li>
+              </Info>
+            )}
             <MetaData>
-              <span>{dayjs(post?.createdAt).format('YYYY-MM-DD')}</span>
+              <span>{dayjs(post?.createdAt).format('YYYY.MM.DD')}</span>
               <span>
                 <ViewIcon /> {post?.viewCount.toLocaleString()}
               </span>
@@ -178,12 +212,42 @@ const Nickname = styled.div`
   }
 `;
 
+const Interactions = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px 0 10px 20px;
+
+  span {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: ${({ theme }) => theme.fontSizes.small};
+
+    :nth-of-type(1) {
+      margin-right: 10px;
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      margin-right: 3px;
+    }
+
+    :nth-of-type(2) {
+      svg {
+        color: ${({ theme }) => theme.colors.darkGray};
+      }
+    }
+  }
+`;
+
 const Desc = styled.p`
   width: 100%;
-  min-height: 50px;
+  min-height: 21px;
   height: auto;
-  margin: 10px 0;
-  padding: 5px 20px 20px 20px;
+  margin-bottom: 20px;
+  padding: 0 20px;
   line-height: 21px;
 `;
 
@@ -193,30 +257,9 @@ const EtcWrap = styled.div`
   padding: 0 20px 10px 20px;
 `;
 
-const Info = styled.ul`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: auto;
-  padding: 10px;
-  background-color: ${({ theme }) => theme.colors.brightGray};
-  font-size: ${({ theme }) => theme.fontSizes.small};
-  border-radius: 10px;
-
-  li {
-    width: 20%;
-  }
-
-  li:nth-of-type(1) {
-    width: 27%;
-  }
-`;
-
 const TagWrapper = styled.div`
   width: 100%;
-  margin: 10px 0 20px;
+  margin-bottom: 15px;
   overflow-x: auto;
   white-space: nowrap;
   scrollbar-width: none;
@@ -224,6 +267,35 @@ const TagWrapper = styled.div`
 
   &::-webkit-scrollbar {
     height: 0;
+  }
+`;
+
+const Info = styled.ul`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: ${({ theme }) => theme.colors.brightGray};
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  border-radius: 10px;
+
+  li {
+    width: 28%;
+    margin-right: 10px;
+  }
+
+  li:nth-of-type(5) {
+    width: 30%;
+  }
+
+  li:nth-of-type(4),
+  li:nth-of-type(5) {
+    margin-top: 5px;
   }
 `;
 
