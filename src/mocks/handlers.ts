@@ -7,11 +7,11 @@ import registrations from '../../public/registration.json';
 import comments from '../../public/comments.json';
 import member from '../../public/member.json';
 import commentWrite from '../../public/commentWrite.json';
-import declarationWrite from '../../public/reportWrite.json';
 import tag from '../../public/tag.json';
-import declarations from '../../public/report.json';
 import { Comment, CommentRequestBody } from '@/types/comment';
-import { Declaration, DeclarationRequestBody } from '@/types/declaration';
+import announcements from '../../public/announcement.json';
+import AnnouncementWrite from '../../public/announcementWrite.json';
+import { Announcement, AnnouncementRequestBody } from '@/types/announcement';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -23,7 +23,7 @@ const mockJwtToken =
 }*/
 
 let commentsData: Comment[] = [...commentWrite];
-let declarationsData: Declaration[] = [...declarationWrite];
+let announcementData: Announcement[] = [...AnnouncementWrite];
 
 export const handlers = [
   /** 로그인 테스트 API */
@@ -166,41 +166,44 @@ export const handlers = [
     });
   }),
 
-  /** 신고 제출 API */
-  http.post('/api/declarations', async ({ request }) => {
-    const requestBody = (await request.json()) as DeclarationRequestBody;
+  /** 공지사항 등록 API */
+  http.post('/api/announcements', async ({ request }) => {
+    const requestBody = (await request.json()) as AnnouncementRequestBody;
 
-    const { link, type, content } = requestBody;
+    const { title, content, imageUrl } = requestBody;
 
-    const newDeclaration: Declaration = {
-      id: declarations.length + 1,
+    const newAnnouncement: Announcement = {
+      id: announcements.length + 1,
       memberId: 1,
-      memberName: '멤버 A',
-      link: link,
-      type: type,
+      title: title,
       content: content,
-      approved: null,
+      imageUrl: imageUrl,
       createdAt: new Date().toISOString(),
+      updatedAt: null,
     };
 
-    declarationsData = [...declarationsData, newDeclaration];
-    console.log(declarationsData);
-    return HttpResponse.json(newDeclaration);
+    announcementData = [...announcementData, newAnnouncement];
+    console.log(announcementData);
+    return HttpResponse.json(newAnnouncement);
   }),
 
-  /** 신고글 목록 조회 API */
-  http.get('/api/declarations', async ({ request }) => {
+  /** 공지사항 수정 API */
+
+  /** 공지사항 삭제 API */
+
+  /** 공지사항 조회 API */
+  http.get('/api/announcements', async ({ request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('number')) || 0;
     const size = Number(url.searchParams.get('size')) || 10;
 
-    const filteredDeclarations = declarations.flatMap(declaration => declaration.content);
+    const filteredAnnouncements = announcements.flatMap(announcement => announcement.content);
 
     // 페이지네이션
     const start = Number(page) * Number(size);
     const end = start + Number(size);
-    const paginatedDeclarations = filteredDeclarations.slice(start, end);
-    const totalElements = filteredDeclarations.length;
+    const paginatedAnnouncements = filteredAnnouncements.slice(start, end);
+    const totalElements = filteredAnnouncements.length;
     const totalPages = Math.ceil(totalElements / Number(size));
 
     return HttpResponse.json({
@@ -208,14 +211,12 @@ export const handlers = [
       totalPages,
       size,
       number: page,
-      content: paginatedDeclarations,
+      content: paginatedAnnouncements,
     });
   }),
-
-  /** 신고글 조회 API */
-  http.get('/api/declarations/:declarationId', async ({ params }) => {
-    Number(params.declarationId);
-    return HttpResponse.json(declarations);
+  http.get('/api/announcements/:id', async ({ params }) => {
+    Number(params.id);
+    return HttpResponse.json(announcements);
   }),
 
   /** 아이디 중복 검사 API */

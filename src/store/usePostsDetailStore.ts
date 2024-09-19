@@ -27,8 +27,6 @@ export interface PostDetail {
   content: string;
   rating: number;
   tags: Tag[];
-  likeCount: number;
-  commentCount: number;
   imageUrl: string;
   viewCount: number;
   createdAt: string;

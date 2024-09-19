@@ -1,114 +1,67 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import useDeclarationStore from '@/store/useDeclarationStore';
 import styled from '@emotion/styled';
+import { Input } from '@/components/ui/input';
 
 const ReportedPost = () => {
-  const { declarations, fetchDeclarationsDetail, updateApprovalStatus } = useDeclarationStore();
-  const { id } = useParams();
-  const declarationId = Number(id);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchDeclarationsDetail(declarationId);
-  }, [fetchDeclarationsDetail, declarationId]);
-
-  const declaration = declarations.find(declaration => declaration.id === declarationId);
-
-  //** approve 기능 */
-  const [selectedApproval, setSelectedApproval] = useState<true | false | null>(null);
-  const [isSelectDisabled, setIsSelectDisabled] = useState<boolean>(false);
-
-  const renderMessage = () => {
-    const approvalState = declaration?.approved !== null ? declaration?.approved : selectedApproval;
-    switch (approvalState) {
-      case true:
-        return '신고 주신 부분 검토하였으며, 게시글 내 사유와 관련된 부분 확인되어 게시글 비공개 진행하였습니다. 제보에 감사드립니다.';
-      case false:
-        return '신고 주신 부분 검토하였으나, 수정이 필요한 부분 확인되지 않아 신고 요청 반려되었습니다.';
-      default:
-        return '';
-    }
+  const handleSelectChange = (value: string) => {
+    setSelectedOption(value);
   };
 
-  useEffect(() => {
-    if (declaration) {
-      setSelectedApproval(
-        declaration.approved === null ? null : (declaration.approved as true | false),
-      );
-      setIsSelectDisabled(declaration.approved !== null);
-    }
-  }, [declaration]);
-
-  const handleApprovalChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setSelectedApproval(
-      value === '' ? null : value === 'true' ? true : false, // 문자열을 boolean으로 변환
-    );
-  };
-
-  const handleInputClick = () => {
-    window.open(declaration?.link, '_blank');
-  };
-
-  const handleUpdateClick = async () => {
-    if (selectedApproval !== null) {
-      updateApprovalStatus(declarationId, selectedApproval);
-      console.log(id);
-      console.log(selectedApproval);
+  const handleUpdateClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!selectedOption) {
+      e.preventDefault();
+    } else {
       navigate('/report');
     }
-  };
-  const handleCancelClick = () => {
-    navigate('/report');
   };
 
   return (
     <NoFooterLayoutSub>
       <ContentWrapper>
         <HeaderStyled>
-          <h1>신고합니다!</h1>
+          <h1>[신고 사유]</h1>
         </HeaderStyled>
         <TitleStyled>
           <Label>링크</Label>
-          <FormStyled>
-            <Input
-              type="text"
-              id="link"
-              value={declaration?.link || ''}
-              onClick={handleInputClick}
-              readOnly
-            />
-            <Label>신고 사유</Label>
-            <Input type="text" id="type " value={declaration?.type || '알 수 없음'} readOnly />
-          </FormStyled>
-          <Label>신고 내용</Label>
-          <TextareaStyled id="content" value={declaration?.content || ''} readOnly />
+          <FormHeaderStyled>
+            <Input placeholder="게시글 링크" disabled />
+          </FormHeaderStyled>
         </TitleStyled>
         <Line />
         <BottomStyled>
-          <SelectStyled
-            value={selectedApproval !== null ? String(selectedApproval) : ''}
-            onChange={handleApprovalChange}
-            disabled={isSelectDisabled}
-          >
-            <option value="" disabled hidden>
-              {declaration?.approved === null ? '신고 처리 대기중' : '신고 처리 완료'}
-            </option>
-            <option value="true" disabled={isSelectDisabled}>
-              삭제 조치
-            </option>
-            <option value="false" disabled={isSelectDisabled}>
-              반려 조치
-            </option>
-          </SelectStyled>
-          <MessageContainer>{renderMessage()}</MessageContainer>
+          <Select onValueChange={handleSelectChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="신고 결과" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItemStyled value="true">
+                  [삭제] 신고 주신 부분 검토하였으며, 게시글 내 사유와 관련된 부분 확인되어 게시글
+                  비공개 진행하였습니다. 제보에 감사드립니다.
+                </SelectItemStyled>
+                <SelectItemStyled value="false">
+                  [반려] 신고 주신 부분 검토하였으나, 수정이 필요한 부분 확인되지 않아 신고 요청
+                  반려되었습니다.
+                </SelectItemStyled>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <ButtonStyled>
-            <Button onClick={handleCancelClick}>취소</Button>
+            <Button onClick={() => navigate('/report')}>취소</Button>
             <Button onClick={handleUpdateClick}>등록</Button>
           </ButtonStyled>
         </BottomStyled>
@@ -143,40 +96,13 @@ const TitleStyled = styled.div`
     border: 1px solid ${({ theme }) => theme.colors.lightGray};
     overflow: hidden;
   }
-
-  > textarea {
-    &:focus {
-      border-color: ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
-    }
-  }
 `;
 
-const FormStyled = styled.div`
+const FormHeaderStyled = styled.div`
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: 1px solid ${({ theme }) => theme.colors.lightGray};
   overflow: hidden;
-
-  > input {
-    border-radius: 10px;
-    border: 1px solid ${({ theme }) => theme.colors.lightGray};
-    margin-bottom: 10px;
-    &:focus {
-      border-color: ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
-    }
-  }
-`;
-
-const TextareaStyled = styled(Textarea)`
-  height: 150px;
-  margin-top: 5px;
-  margin-bottom: 10px;
-  background-color: ${({ theme }) => theme.colors.lightGray};
-  resize: none;
-
-  &:focus {
-    border-color: ${({ theme }) => theme.colors.focusShadow};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
-  }
 `;
 
 const Label = styled.label`
@@ -207,26 +133,9 @@ const BottomStyled = styled.div`
   }
 `;
 
-const SelectStyled = styled.select`
-  width: 100%;
-  height: 40px;
-  margin-left: auto;
-  margin-top: 20px;
-  font-size: ${({ theme }) => theme.fontSizes.small};
-  border: 1px solid ${({ theme }) => theme.colors.lightGray};
-  border-radius: 5px;
-  &:focus,
-  &:active {
-    border-color: ${({ theme }) => theme.colors.focusShadow};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
-    outline: none;
-  }
-`;
-
-const MessageContainer = styled.div`
-  margin-top: 20px;
-  font-size: ${({ theme }) => theme.fontSizes.small};
-  color: ${({ theme }) => theme.colors.primary};
+const SelectItemStyled = styled(SelectItem)`
+  max-width: 310px;
+  white-space: pre-wrap;
 `;
 
 const ButtonStyled = styled.div`

@@ -10,22 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import Notification from './Notification';
 import BarsIcon from '@/assets/icons/BarsIcon';
 
-interface HeaderProps {
-  showAlert: (type: 'success' | 'error', message: string) => void;
-  role: 'USER' | 'MANAGER' | null;
-}
-
-const Header = ({ showAlert, role }: HeaderProps) => {
+const Header = () => {
   const navigate = useNavigate();
-
-  const handleReportClick = () => {
-    if (role !== 'MANAGER') {
-      showAlert('error', '권한이 없습니다.');
-      setTimeout(() => 2000);
-      return;
-    }
-    navigate('/report');
-  };
 
   return (
     <HeaderLayout>
@@ -42,7 +28,9 @@ const Header = ({ showAlert, role }: HeaderProps) => {
             <DropdownMenuItem onClick={() => navigate('/specialty-drink')}>
               특산주 신청 리스트
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleReportClick}>신고 접수 리스트</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/report')}>
+              신고 접수 리스트
+            </DropdownMenuItem>
           </DropdownMenuContentStyled>
         </DropdownMenu>
       </MenuWrapper>

@@ -30,8 +30,6 @@ export interface Member {
 export interface MemberState {
   members: Member[];
   setMembers: (members: Member[]) => void;
-  // currentUser: Member | null;
-  // setCurrentUser: (userId: number) => void;
   fetchMembers: () => Promise<void>;
 
   currentUser: Member | null;
@@ -47,11 +45,6 @@ export const useMemberStore = create<MemberState>(set => ({
   followTags: [],
   currentUser: null,
   setMembers: (members: Member[]) => set({ members }),
-  // currentUser: null,
-  // setCurrentUser: (userId: number) =>
-  //   set(user => ({
-  //     currentUser: user.members.find(member => member.id === userId) || null,
-  //   })),
   fetchMembers: async () => {
     try {
       const response = await fetchMembers();

@@ -110,19 +110,37 @@ export const fetchMembers = async () => {
   }
 };
 
-/** 신고 제출 API */
-export const fetchDeclarationsWriteApi = async (
-  postLink: string,
-  type: string,
+/** 공지사항 조회 API */
+export const fetchAnnouncementApi = async (page: number, size: number) => {
+  try {
+    const response = await axios.get(`/api/announcements?page=${page}&size=${size}`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching announcements: ', err);
+  }
+};
+export const fetchAnnouncementDetailApi = async (id: number) => {
+  try {
+    const response = await axios.get(`/api/announcements/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching announcements: ', err);
+  }
+};
+
+/** 공지사항 등록 API */
+export const fetchAnnouncementWriteApi = async (
+  title: string,
   content: string,
+  imageUrl: string,
 ) => {
   try {
     const response = await axios.post(
-      '/api/declarations',
+      '/api/announcements',
       {
-        link: postLink,
-        type: type,
+        title: title,
         content: content,
+        imageUrl: imageUrl,
       },
       {
         headers: {
@@ -133,25 +151,5 @@ export const fetchDeclarationsWriteApi = async (
     return response.data;
   } catch (error) {
     console.error('Error fetching declarationWrite: ', error);
-  }
-};
-
-/** 신고글 목록 조회 API */
-export const fetchDeclarationsApi = async (page: number, size: number) => {
-  try {
-    const response = await axios.get(`/api/declarations?page=${page}&size=${size}`);
-    return response.data;
-  } catch (err) {
-    console.error('Error fetching declarations: ', err);
-  }
-};
-
-/** 신고글 조회 API */
-export const fetchDeclarationsDetailApi = async (declarationId: number) => {
-  try {
-    const response = await axios.get(`/api/declarations/${declarationId}`);
-    return response.data;
-  } catch (err) {
-    console.error('Error fetching declarations: ', err);
   }
 };
