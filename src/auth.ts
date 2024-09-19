@@ -35,6 +35,19 @@ export const decodeJWT = (token: string) => {
   }
 };
 
+/** JWT 토큰에서 역할(role) 값을 가져오는 함수 */
+export const getRoleFromToken = (): 'USER' | 'MANAGER' | null => {
+  const token = Cookies.get('jwt');
+
+  if (!token) {
+    console.error('JWT 토큰이 없습니다.');
+    return null;
+  }
+
+  const decoded = decodeJWT(token);
+  return decoded ? decoded.role : null;
+};
+
 /** JWT 토큰에서 sub 값을 가져오는 함수 */
 export const getSubFromToken = () => {
   const token = Cookies.get('jwt');

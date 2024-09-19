@@ -1,71 +1,97 @@
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { getRoleFromToken } from '@/auth';
 
-const ReportForm = () => {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+interface ReportFormProps {
+  showAlert: (type: 'success' | 'error', message: string) => void;
+}
 
-  const handleSelectChange = (value: string) => {
-    setSelectedOption(value);
+const ReportForm = ({ showAlert }: ReportFormProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [type, setType] = useState<string>('');
+  const [content, setContent] = useState<string>('');
+
+  const { postLink } = location.state || {};
+
+  const handleUpdateClick = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!type || !content) {
+      showAlert('error', '신고 사유와 내용을 입력해주세요.');
+      return;
+    }
+
+    try {
+      const response = await axios.post('/api/declarations', {
+        link: postLink,
+        type: type,
+        content: content,
+      });
+      if (response.data) {
+        console.log(response.data);
+        showAlert('success', '신고가 접수되었습니다');
+        setTimeout(() => navigate(-1), 2000);
+      }
+    } catch (error) {
+      showAlert('error', '오류가 발생하였습니다. 잠시 후 다시 시도해주세요.');
+      console.error('신고 중 오류 발생:', error);
+    }
+  };
+
+  const handleInputClick = () => {
+    window.open(postLink, '_blank');
+  };
+
+  const role = getRoleFromToken();
+
+  const handleCancelClick = () => {
+    // if (role !== 'MANAGER') {
+    //   navigate('/report');
+    // }
+    navigate(-1);
   };
 
   return (
     <NoFooterLayoutSub>
       <ContentWrapper>
         <TitleStyled>게시글 신고하기</TitleStyled>
-        <Label>링크</Label>
+        <Label htmlFor="link">링크</Label>
         <FormHeaderStyled>
-          <Input placeholder="게시글 링크" disabled />
+          <Input type="text" id="link" value={postLink} onClick={handleInputClick} readOnly />
         </FormHeaderStyled>
         <FormContentStyled>
-          <Label>신고 사유</Label>
-          <Select onValueChange={handleSelectChange}>
-            <SelectTrigger>
-              <SelectValue placeholder="신고 유형" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="option1">18세 미만인 사용자와 관련된 문제</SelectItem>
-                <SelectItem value="option2">사기 또는 거짓 정보</SelectItem>
-                <SelectItem value="option3">허위 과장 광고</SelectItem>
-                <SelectItem value="option4">상품 정보 오류</SelectItem>
-                <SelectItem value="option5">기타</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Label htmlFor="text">신고 내용</Label>
-          <TextareaStyled placeholder="기타 사유를 입력해주세요" />
+          <Label htmlFor="type">신고 사유</Label>
+          <SelectStyled id="type" value={type} onChange={e => setType(e.target.value)}>
+            <option value="" disabled hidden>
+              신고 유형
+            </option>
+            <option value="18세 미만">18세 미만인 사용자와 관련된 문제</option>
+            <option value="사기">사기 또는 거짓 정보</option>
+            <option value="허위">허위 과장 광고</option>
+            <option value="정보 오류">상품 정보 오류</option>
+            <option value="기타">기타</option>
+          </SelectStyled>
+          <Label htmlFor="content">신고 내용</Label>
+          <TextareaStyled
+            id="content"
+            value={content}
+            onChange={e => setContent(e.target.value)}
+            placeholder="기타 사유를 입력해주세요"
+          />
           <Label>
             이미지 수정 요청 시<br />
             관리자 이메일(admin@gmail.com)로 요청해주시기 바랍니다.
           </Label>
         </FormContentStyled>
         <FormBottomStyled>
-          <Link to="/">
-            <Button>취소</Button>
-          </Link>
-          <Link
-            to={selectedOption ? `/` : '#'}
-            onClick={e => {
-              if (!selectedOption) {
-                e.preventDefault(); // 선택되지 않으면 링크 클릭 방지
-              }
-            }}
-          >
-            <Button>등록</Button>
-          </Link>
+          <Button onClick={handleCancelClick}>취소</Button>
+          <Button onClick={handleUpdateClick}>등록</Button>
         </FormBottomStyled>
       </ContentWrapper>
     </NoFooterLayoutSub>
@@ -118,6 +144,23 @@ const FormContentStyled = styled.div`
   }
 `;
 
+const SelectStyled = styled.select`
+  width: 100%;
+  height: 40px;
+  margin-left: auto;
+  margin-top: 8px;
+  margin-bottom: 20px;
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  border: 1px solid ${({ theme }) => theme.colors.lightGray};
+  border-radius: 5px;
+  &:focus,
+  &:active {
+    border-color: ${({ theme }) => theme.colors.focusShadow};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    outline: none;
+  }
+`;
+
 const TextareaStyled = styled(Textarea)`
   height: 150px;
   margin-top: 5px;
@@ -132,16 +175,18 @@ const FormBottomStyled = styled.div`
   justify-content: space-around;
 
   button {
-    width: 140px;
+    width: 48%;
+    height: 45px;
+    font-size: ${({ theme }) => theme.fontSizes.base};
     border-radius: 30px;
-  }
 
-  a:nth-of-type(1) button {
-    background-color: ${({ theme }) => theme.colors.gray};
-  }
+    :nth-of-type(1) {
+      background-color: ${({ theme }) => theme.colors.gray};
+    }
 
-  a:nth-of-type(2) button {
-    background-color: ${({ theme }) => theme.colors.primary};
+    :nth-of-type(2) {
+      background-color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `;
 
