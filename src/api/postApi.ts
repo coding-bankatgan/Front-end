@@ -54,6 +54,26 @@ export const fetchCommentsApi = async (postId: number, page: number, size: numbe
   }
 };
 
+/** 검색페이지 태그 추천 API */
+export const fetchSuggestedTagsApi = async () => {
+  try {
+    const response = await axios.get('/api/suggest/tags');
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching suggestedTags: ', err);
+  }
+};
+
+/** 검색페이지 특산주 이름 추천 API */
+export const fetchSuggestedDrinksApi = async () => {
+  try {
+    const response = await axios.get('/api/suggest/drinks');
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching suggestedDrinks: ', err);
+  }
+};
+
 /** Kakao 맵 api */
 export const getAddress = async (latitude: number | null, longitude: number | null) => {
   const apiKey = 'f21248c02fc4d05f9ce83b60e063d55d';

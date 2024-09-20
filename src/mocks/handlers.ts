@@ -15,6 +15,8 @@ import announcements from '../../public/announcement.json';
 import AnnouncementWrite from '../../public/announcementWrite.json';
 import { Announcement, AnnouncementRequestBody } from '@/types/announcement';
 import { Declaration, DeclarationRequestBody } from '@/types/declaration';
+import suggestedTags from '../../public/suggestedTags.json';
+import suggestedDrinks from '../../public/suggestedDrinks.json';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -109,6 +111,16 @@ export const handlers = [
       number: page,
       content: paginatedComments,
     });
+  }),
+
+  /** 검색페이지 태그 추천 API */
+  http.get('api/suggest/tags', async () => {
+    return HttpResponse.json(suggestedTags);
+  }),
+
+  /** 검색페이지 특산주 이름 추천 API */
+  http.get('api/suggest/drinks', async () => {
+    return HttpResponse.json(suggestedDrinks);
   }),
 
   //** 마이페이지 API */
