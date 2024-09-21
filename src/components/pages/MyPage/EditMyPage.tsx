@@ -22,7 +22,7 @@ import ExProfileImg from '@/assets/ExProfileImg';
 import styled from '@emotion/styled';
 
 const EditMyPage = () => {
-  //** 유저 정보 */
+  /** 유저 정보 */
   const { currentUser, fetchMembers } = useMemberStore();
   const [passwordError, setPasswordError] = useState<string>('');
   const [isCurrentPasswordValid, setIsCurrentPasswordValid] = useState<boolean>(false); // 패스워드 검증 성공 여부
@@ -31,13 +31,12 @@ const EditMyPage = () => {
     fetchMembers();
   }, [fetchMembers]);
 
-  //** 상태값 관리 */
+  /** 상태값 관리 */
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [name, setName] = useState(currentUser?.name || '');
   const [currentPassword, setcurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [isAlramChecked, setIsAlramChecked] = useState(false);
   const [isAgreeChecked, setIsAgreeChecked] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
@@ -46,22 +45,26 @@ const EditMyPage = () => {
   const isMatch = newPassword === confirmPassword && newPassword !== '';
   const navigate = useNavigate();
 
-  const alramToggle = () => {
-    setIsAlramChecked(!isAlramChecked); // 현재 상태의 반대로 설정
+  /** 알림 수신 동의 */
+  const { isNotificationChecked, toggleNotification } = useMemberStore();
+  const notificationToggle = () => {
+    toggleNotification();
   };
+  console.log(isNotificationChecked);
 
+  /** 위치정보 제공 동의 */
   const agreeToggle = () => {
-    setIsAgreeChecked(!isAgreeChecked); // 현재 상태의 반대로 설정
+    setIsAgreeChecked(!isAgreeChecked);
   };
 
-  //** 사용자 닉네임 변경 */
+  /** 사용자 닉네임 변경 */
   useEffect(() => {
     if (currentUser) {
       setName(currentUser.name);
     }
   }, [currentUser]);
 
-  //** 기존 패스워드와 일치 여부 검사 함수 */
+  /** 기존 패스워드와 일치 여부 검사 함수 */
   const validateCurrentPassword = () => {
     if (currentUser && currentPassword !== currentUser.currentPassword) {
       setPasswordError('기존 패스워드와 일치하지 않습니다.'); // 패스워드 불일치 시 에러 메시지 설정
@@ -72,7 +75,7 @@ const EditMyPage = () => {
     }
   };
 
-  //** 선호주종 목데이터 import 및 선호주종 변경 적용 */
+  /** 선호주종 목데이터 import 및 선호주종 변경 적용 */
   const { alldrinks, selectedDrinks, fetchDrinks, toggleDrinkSelection, setSelectedDrinks } =
     useSpecialtyStore();
 
@@ -87,7 +90,7 @@ const EditMyPage = () => {
     }
   }, [currentUser, setSelectedDrinks]);
 
-  //** 선호주종 5개 제한 */
+  /** 선호주종 5개 제한 */
   const handleDrinkSelection = (drink: string) => {
     if (selectedDrinks.includes(drink)) {
       toggleDrinkSelection(drink);
@@ -99,7 +102,7 @@ const EditMyPage = () => {
     }
   };
 
-  //** 사용자 프로필 이미지 변경 적용 */
+  /** 사용자 프로필 이미지 변경 적용 */
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -111,6 +114,7 @@ const EditMyPage = () => {
     }
   };
 
+  /** 저장 */
   const handleSave = () => {
     if (newPassword === confirmPassword) {
       setSelectedDrinks(selectedDrinks);
@@ -213,8 +217,8 @@ const EditMyPage = () => {
           <SwitchWrapper>
             <span>나의 게시글에 대한 댓글 알림</span>
             <div>
-              {isAlramChecked ? 'ON' : 'OFF'}
-              <Switch onClick={alramToggle} />
+              {isNotificationChecked ? 'ON' : 'OFF'}
+              <Switch checked={isNotificationChecked} onClick={notificationToggle} />
             </div>
           </SwitchWrapper>
           <Label htmlFor="">정보 제공 동의</Label>

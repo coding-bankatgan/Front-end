@@ -15,6 +15,7 @@ import announcements from '../../public/announcement.json';
 import AnnouncementWrite from '../../public/announcementWrite.json';
 import { Announcement, AnnouncementRequestBody } from '@/types/announcement';
 import { Declaration, DeclarationRequestBody } from '@/types/declaration';
+import notifications from '../../public/notification.json';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -174,14 +175,14 @@ export const handlers = [
   http.post('/api/announcements', async ({ request }) => {
     const requestBody = (await request.json()) as AnnouncementRequestBody;
 
-    const { title, content, imageUrl } = requestBody;
+    const { title, content } = requestBody;
 
     const newAnnouncement: Announcement = {
       id: announcements.length + 1,
       memberId: 1,
       title: title,
       content: content,
-      imageUrl: imageUrl,
+      imageUrl: null,
       createdAt: new Date().toISOString(),
       updatedAt: null,
     };
@@ -273,6 +274,25 @@ export const handlers = [
   http.get('/api/declarations/:declarationId', async ({ params }) => {
     Number(params.declarationId);
     return HttpResponse.json(declarations);
+  }),
+
+  /** 알림 API */
+  http.get('/api/notifications', async () => {
+    const filteredNotifications = notifications.flatMap(notification => notification.content);
+
+    const size = 20;
+    const number = 0;
+    const paginatedNotifications = filteredNotifications.slice(0, size);
+    const totalElements = Math.min(notifications.length, 20);
+    const totalPages = 1;
+
+    return HttpResponse.json({
+      totalElements,
+      totalPages,
+      size,
+      number,
+      content: paginatedNotifications,
+    });
   }),
 
   /** 아이디 중복 검사 API */

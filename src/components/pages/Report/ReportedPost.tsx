@@ -21,7 +21,16 @@ const ReportedPost = () => {
 
   //** approve 기능 */
   const [selectedApproval, setSelectedApproval] = useState<true | false | null>(null);
+  const [selectedRejectReason, setSelectedRejectReason] = useState<string | null>(null);
   const [isSelectDisabled, setIsSelectDisabled] = useState<boolean>(false);
+
+  const rejectReasons: { [key: string]: string } = {
+    POST_DELETED_BY_USER: '사용자가 신고당한 게시글을 삭제한 경우',
+    NOT_RELEVANT: '신고 내용이 게시글과 관련이 없는 경우',
+    MISUNDERSTANDING: '신고자가 게시글을 오해하거나 잘못 해석한 경우',
+    NOT_ENOUGH_DETAILS: '신고 사유에 대한 구체적인 정보나 설명이 부족한 경우',
+    DUPLICATE_REPORT: '신고자의 의미없는 반복된 신고',
+  };
 
   const renderMessage = () => {
     const approvalState = declaration?.approved !== null ? declaration?.approved : selectedApproval;
@@ -49,6 +58,13 @@ const ReportedPost = () => {
     setSelectedApproval(
       value === '' ? null : value === 'true' ? true : false, // 문자열을 boolean으로 변환
     );
+    if (value === 'false') {
+      setSelectedRejectReason(null); // 반려 선택 시 반려 사유 초기화
+    }
+  };
+
+  const handleRejectReasonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedRejectReason(event.target.value);
   };
 
   const handleInputClick = () => {
@@ -56,8 +72,9 @@ const ReportedPost = () => {
   };
 
   const handleUpdateClick = async () => {
-    if (selectedApproval !== null) {
-      updateApprovalStatus(declarationId, selectedApproval);
+    if (selectedApproval !== null && selectedRejectReason !== null) {
+      const rejectReasonText = rejectReasons[selectedRejectReason];
+      updateApprovalStatus(declarationId, selectedApproval, rejectReasonText);
       console.log(id);
       console.log(selectedApproval);
       navigate('/report');
@@ -106,6 +123,18 @@ const ReportedPost = () => {
               반려 조치
             </option>
           </SelectStyled>
+          {selectedApproval === false && (
+            <SelectStyled value={selectedRejectReason || ''} onChange={handleRejectReasonChange}>
+              <option value="" disabled hidden>
+                반려 사유를 선택하세요
+              </option>
+              {Object.keys(rejectReasons).map(key => (
+                <option key={key} value={key}>
+                  {rejectReasons[key]}
+                </option>
+              ))}
+            </SelectStyled>
+          )}
           <MessageContainer>{renderMessage()}</MessageContainer>
           <ButtonStyled>
             <Button onClick={handleCancelClick}>취소</Button>

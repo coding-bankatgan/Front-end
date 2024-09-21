@@ -30,11 +30,12 @@ export interface Member {
 export interface MemberState {
   members: Member[];
   setMembers: (members: Member[]) => void;
-  // currentUser: Member | null;
+  currentUser: Member | null;
   // setCurrentUser: (userId: number) => void;
   fetchMembers: () => Promise<void>;
 
-  currentUser: Member | null;
+  isNotificationChecked: boolean;
+  toggleNotification: () => void;
 
   followTags: Tag[];
   addFollowTag: (tag: Tag) => Promise<void>;
@@ -107,4 +108,9 @@ export const useMemberStore = create<MemberState>(set => ({
       return state;
     });
   },
+
+  isNotificationChecked: true,
+  toggleNotification: () => set(state => ({ isNotificationChecked: !state.isNotificationChecked })),
 }));
+
+export default useMemberStore;

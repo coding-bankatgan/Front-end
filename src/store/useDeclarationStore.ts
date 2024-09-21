@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { fetchDeclarationsApi, fetchDeclarationsDetailApi } from '@/api/postApi';
+import useNotificationStore from '@/store/useNotificationStore';
 
 export interface Declaration {
   id: number;
@@ -24,7 +25,7 @@ export interface DeclarationState {
   };
   setPagination: (pagination: DeclarationState['pagination']) => void;
 
-  updateApprovalStatus: (id: number, approved: boolean) => void;
+  updateApprovalStatus: (id: number, approved: boolean, rejectReason?: string) => void;
 
   setDeclarations: (declaration: Declaration[]) => void;
   fetchDeclarations: (page: number, size: number) => Promise<void>;
@@ -72,11 +73,57 @@ const useDeclarationStore = create<DeclarationState>(set => ({
       set({ declarationsDetail: [] });
     }
   },
-  updateApprovalStatus: (id: number, approved: boolean) =>
+  updateApprovalStatus: async (id: number, approved: boolean, rejectReason?: string) =>
     set(state => {
       const updatedDeclarations = state.declarations.map(declaration =>
         declaration.id === id ? { ...declaration, approved } : declaration,
       );
+
+      const declaration = updatedDeclarations.find(decl => decl.id === id);
+      const { memberId, type, content } = declaration || {};
+
+      if (declaration) {
+        const { addNewNotification } = useNotificationStore.getState();
+        console.log(declaration.memberId);
+
+        if (approved) {
+          // 신고 승인 시
+          addNewNotification({
+            id: Date.now(), // 변경 필요
+            memberId: declaration.memberId,
+            postId: null,
+            type: 'DECLARATION',
+            content: '신고 요청이 승인되어 게시글 삭제되었습니다.',
+            createdAt: new Date().toISOString(),
+            isNew: true,
+          });
+
+          addNewNotification({
+            id: Date.now() + 1,
+            memberId: 0, // 신고 당한 사람의 ID (수정 필요)
+            postId: null,
+            type: 'REMOVED',
+            content: `${type} 사유로 인한 ${content}의 문제로 게시글이 삭제 처리되었습니다.`,
+            createdAt: new Date().toISOString(),
+            isNew: true,
+          });
+        } else {
+          // 신고 반려 시
+          const rejectionMessage = rejectReason
+            ? `신고 요청이 반려되었습니다. \n 반려 사유: ${rejectReason}`
+            : '신고 요청이 반려되었습니다.';
+          addNewNotification({
+            id: Date.now(),
+            memberId: declaration.memberId,
+            postId: null,
+            type: 'DECLARATION',
+            content: rejectionMessage,
+            createdAt: new Date().toISOString(),
+            isNew: true,
+          });
+        }
+      }
+
       return { declarations: updatedDeclarations };
     }),
 }));
