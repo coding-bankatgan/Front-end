@@ -17,6 +17,9 @@ import { Announcement, AnnouncementRequestBody } from '@/types/announcement';
 import { Declaration, DeclarationRequestBody } from '@/types/declaration';
 import suggestedTags from '../../public/suggestedTags.json';
 import suggestedDrinks from '../../public/suggestedDrinks.json';
+import autoCompleteTag from '../../public/autoCompleteTag.json';
+import autoCompleteDrink from '../../public/autoCompleteDrink.json';
+import searchByTag from '../../public/searchByTag.json';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -121,6 +124,51 @@ export const handlers = [
   /** 검색페이지 특산주 이름 추천 API */
   http.get('api/suggest/drinks', async () => {
     return HttpResponse.json(suggestedDrinks);
+  }),
+
+  /** 검색페이지 태그 자동완성 API */
+  http.get('/api/auto-complete/tag', async ({ request }) => {
+    const url = new URL(request.url);
+    const name = url.searchParams.get('name');
+    const filteredTags = autoCompleteTag.filter(tag => tag.includes(name ?? ''));
+
+    return HttpResponse.json(filteredTags);
+  }),
+
+  /** 검색페이지 특산주 이름 자동완성 API */
+  http.get('/api/auto-complete/drink', async ({ request }) => {
+    const url = new URL(request.url);
+    const name = url.searchParams.get('name');
+    const filteredDrinks = autoCompleteDrink.filter(drink => drink.includes(name ?? ''));
+
+    return HttpResponse.json(filteredDrinks);
+  }),
+
+  /** 검색페이지 태그로 게시글 검색 API */
+  http.post('api/search/post/tags', async ({ request }) => {
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('number')) || 0;
+    const size = Number(url.searchParams.get('size')) || 10;
+
+    const searchResults = (await request.json()) as string[];
+
+    const filteredResults = searchByTag[0].content.filter(post =>
+      post.tags.some(tag => searchResults.includes(tag.tagName)),
+    );
+
+    const start = Number(page) * Number(size);
+    const end = start + Number(size);
+    const paginatedComments = filteredResults.slice(start, end);
+    const totalElements = filteredResults.length;
+    const totalPages = Math.ceil(totalElements / Number(size));
+
+    return HttpResponse.json({
+      totalElements,
+      totalPages,
+      size,
+      number: page,
+      content: paginatedComments,
+    });
   }),
 
   //** 마이페이지 API */

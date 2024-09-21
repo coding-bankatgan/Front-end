@@ -74,6 +74,39 @@ export const fetchSuggestedDrinksApi = async () => {
   }
 };
 
+/** 검색페이지 태그 자동완성 API */
+export const fetchAutoCompleteTagApi = async (name: string) => {
+  try {
+    const response = await axios.get(`/api/auto-complete/tag?name=${name}`);
+    console.log('ffffffff', response.data);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching autoCompleteTag: ', err);
+  }
+};
+
+/** 검색페이지 특산주 이름 자동완성 API */
+export const fetchAutoCompleteDrinkApi = async (name: string) => {
+  try {
+    const response = await axios.get(`/api/auto-complete/drink?name=${name}`);
+    console.log('dddddddd', response.data);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching autoCompleteDrink: ', err);
+  }
+};
+
+/** 검색페이지 태그로 게시글 검색 API */
+export const fetchTagResultsApi = async (page: number, size: number) => {
+  try {
+    const response = await axios.get(`api/search/post/tags?page=${page}&size=${size}`);
+    console.log('검색결과 받아오자아아아아아', response.data);
+    return response.data;
+  } catch (err) {
+    console.error('Erro fetching tagResults: ', err);
+  }
+};
+
 /** Kakao 맵 api */
 export const getAddress = async (latitude: number | null, longitude: number | null) => {
   const apiKey = 'f21248c02fc4d05f9ce83b60e063d55d';
