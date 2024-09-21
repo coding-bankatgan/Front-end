@@ -131,7 +131,7 @@ const PostComments = ({ postId }: PostCommentsProps) => {
             memberId, // 게시글 작성자에게만 알림이 가야하나 댓글을 작성한 사용자에게도 알림이 가는중, 수정 필요
             postId: postId,
             type: 'COMMENT',
-            content: `${response.memberName}님이 귀하의 게시글에 댓글을 작성했습니다: "${newComment}"`,
+            content: `${newCommentData.memberName}님이 귀하의 게시글에 댓글을 작성했습니다: "${newComment}"`,
             createdAt: new Date().toISOString(),
             isNew: true,
           };
