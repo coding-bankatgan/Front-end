@@ -72,8 +72,13 @@ const ReportedPost = () => {
   };
 
   const handleUpdateClick = async () => {
-    if (selectedApproval !== null && selectedRejectReason !== null) {
-      const rejectReasonText = rejectReasons[selectedRejectReason];
+    if (selectedApproval !== null) {
+      let rejectReasonText: string | null = null;
+
+      if (selectedApproval === false && selectedRejectReason !== null) {
+        rejectReasonText = rejectReasons[selectedRejectReason];
+      }
+
       updateApprovalStatus(declarationId, selectedApproval, rejectReasonText);
       console.log(id);
       console.log(selectedApproval);

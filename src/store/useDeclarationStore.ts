@@ -25,7 +25,7 @@ export interface DeclarationState {
   };
   setPagination: (pagination: DeclarationState['pagination']) => void;
 
-  updateApprovalStatus: (id: number, approved: boolean, rejectReason?: string) => void;
+  updateApprovalStatus: (id: number, approved: boolean, rejectReason?: string | null) => void;
 
   setDeclarations: (declaration: Declaration[]) => void;
   fetchDeclarations: (page: number, size: number) => Promise<void>;
@@ -73,7 +73,7 @@ const useDeclarationStore = create<DeclarationState>(set => ({
       set({ declarationsDetail: [] });
     }
   },
-  updateApprovalStatus: async (id: number, approved: boolean, rejectReason?: string) =>
+  updateApprovalStatus: async (id: number, approved: boolean, rejectReason?: string | null) =>
     set(state => {
       const updatedDeclarations = state.declarations.map(declaration =>
         declaration.id === id ? { ...declaration, approved } : declaration,
