@@ -71,11 +71,15 @@ const ReportForm = ({ showAlert }: ReportFormProps) => {
             <option value="" disabled hidden>
               신고 유형
             </option>
-            <option value="18세 미만">18세 미만인 사용자와 관련된 문제</option>
-            <option value="사기">사기 또는 거짓 정보</option>
-            <option value="허위">허위 과장 광고</option>
-            <option value="정보 오류">상품 정보 오류</option>
-            <option value="기타">기타</option>
+            <option value="ILLEGAL_INFORMATION">법률 위반(불법, 사기, 위법 행위 권장 등)</option>
+            <option value="PERSONAL_INFORMATION_EXPOSURE">
+              개인정보 노출(전화번호, 주소, 주민등록번호 등)
+            </option>
+            <option value="OBSCENE">음란성/선정성(성적 표현, 외설적인 이미지나 글)</option>
+            <option value="PROFANE_LANGUAGE">비속어 사용</option>
+            <option value="SPAMMING">동일한 게시글 반복 게시(도배)</option>
+            <option value="COPYRIGHT_INFRINGEMENT">저작권에 위배되는 게시글</option>
+            <option value="OTHER">기타</option>
           </SelectStyled>
           <Label htmlFor="content">신고 내용</Label>
           <TextareaStyled
