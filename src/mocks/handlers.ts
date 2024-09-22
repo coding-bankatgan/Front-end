@@ -20,6 +20,7 @@ import suggestedDrinks from '../../public/suggestedDrinks.json';
 import autoCompleteTag from '../../public/autoCompleteTag.json';
 import autoCompleteDrink from '../../public/autoCompleteDrink.json';
 import searchByTag from '../../public/searchByTag.json';
+import searchByDrink from '../../public/searchByDrink.json';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -151,7 +152,6 @@ export const handlers = [
     const size = Number(url.searchParams.get('size')) || 10;
     const tags = (await request.json()) as string[];
 
-    console.log('EEEEEEEEEE', tags);
     const filteredResults = searchByTag[0].content.filter(post =>
       post.tags.some(tag => tags.includes(tag.tagName.trim())),
     );
@@ -162,8 +162,42 @@ export const handlers = [
     const totalElements = filteredResults.length;
     const totalPages = Math.ceil(totalElements / Number(size));
 
-    console.log('rrrrrrrrrrrrrrrrrrrrrrrrr', filteredResults);
-    console.log('sssssssssssssssssss', paginatedComments);
+    return HttpResponse.json({
+      totalElements,
+      totalPages,
+      size,
+      number: page,
+      content: paginatedComments,
+    });
+  }),
+
+  /** 검색페이지 특산주 이름으로 게시글 검색 API */
+  http.post('/api/search/post/drinks', async ({ request }) => {
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('page')) || 0;
+    const size = Number(url.searchParams.get('size')) || 10;
+    const drink = url.searchParams.get('drink');
+
+    if (!drink) {
+      return HttpResponse.json({
+        totalElements: 0,
+        totalPages: 0,
+        size,
+        number: page,
+        content: [],
+      });
+    }
+
+    console.log('Search term (drink):', drink);
+    const filteredResults = searchByDrink[0].content.filter(post =>
+      post.drink.name.includes(drink.trim()),
+    );
+
+    const start = Number(page) * Number(size);
+    const end = start + Number(size);
+    const paginatedComments = filteredResults.slice(start, end);
+    const totalElements = filteredResults.length;
+    const totalPages = Math.ceil(totalElements / Number(size));
 
     return HttpResponse.json({
       totalElements,
