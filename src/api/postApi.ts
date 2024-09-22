@@ -97,9 +97,14 @@ export const fetchAutoCompleteDrinkApi = async (name: string) => {
 };
 
 /** 검색페이지 태그로 게시글 검색 API */
-export const fetchTagResultsApi = async (page: number, size: number) => {
+export const fetchTagResultsApi = async (tagNames: string[], page: number, size: number) => {
   try {
-    const response = await axios.get(`api/search/post/tags?page=${page}&size=${size}`);
+    console.log('API 호출 시작:', tagNames, page, size);
+    const response = await axios.post(`/api/search/post/tags?page=${page}&size=${size}`, tagNames, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     console.log('검색결과 받아오자아아아아아', response.data);
     return response.data;
   } catch (err) {

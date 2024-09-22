@@ -145,15 +145,15 @@ export const handlers = [
   }),
 
   /** 검색페이지 태그로 게시글 검색 API */
-  http.post('api/search/post/tags', async ({ request }) => {
+  http.post('/api/search/post/tags', async ({ request }) => {
     const url = new URL(request.url);
-    const page = Number(url.searchParams.get('number')) || 0;
+    const page = Number(url.searchParams.get('page')) || 0;
     const size = Number(url.searchParams.get('size')) || 10;
+    const tags = (await request.json()) as string[];
 
-    const searchResults = (await request.json()) as string[];
-
+    console.log('EEEEEEEEEE', tags);
     const filteredResults = searchByTag[0].content.filter(post =>
-      post.tags.some(tag => searchResults.includes(tag.tagName)),
+      post.tags.some(tag => tags.includes(tag.tagName.trim())),
     );
 
     const start = Number(page) * Number(size);
@@ -161,6 +161,9 @@ export const handlers = [
     const paginatedComments = filteredResults.slice(start, end);
     const totalElements = filteredResults.length;
     const totalPages = Math.ceil(totalElements / Number(size));
+
+    console.log('rrrrrrrrrrrrrrrrrrrrrrrrr', filteredResults);
+    console.log('sssssssssssssssssss', paginatedComments);
 
     return HttpResponse.json({
       totalElements,
