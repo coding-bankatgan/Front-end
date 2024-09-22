@@ -163,13 +163,12 @@ const Search = () => {
         // 기존 태그에 중복되지 않으면 새로운 태그를 추가
         const newTag = { id: Date.now(), name: newTagName };
         const updatedTags = [...prevTags, newTag];
+        const tagNamesWithoutHash = updatedTags.map(tag => tag.name.replace('#', '')); // 검색 시 #제거
 
-        // 검색 결과 업데이트
-        const tagNames = updatedTags.map(tag => tag.name);
         if (searchType === 'tag') {
           setTimeout(async () => {
             try {
-              const results = await fetchTagResultsApi(tagNames, currentPage, size);
+              const results = await fetchTagResultsApi(tagNamesWithoutHash, currentPage, size);
               setSearchResults(results.content);
               setTotalElements(results.totalElements);
               setTotalPages(results.totalPages);
@@ -200,18 +199,16 @@ const Search = () => {
     }
   };
 
-  /** 뱃지 삭제 */
+  /** 뱃지 삭제 후 검색결과 재반영 */
   const handleBadgeRemove = async (id: number) => {
     setTags(prevTags => {
       const updatedTags = prevTags.filter(tag => tag.id !== id);
-
-      // 태그 목록을 바탕으로 검색 결과 업데이트
-      const tagNames = updatedTags.map(tag => tag.name);
+      const tagNamesWithoutHash = updatedTags.map(tag => tag.name.replace('#', '')); // 검색 시 #제거
 
       if (searchType === 'tag') {
         setTimeout(async () => {
           try {
-            const results = await fetchTagResultsApi(tagNames, currentPage, size);
+            const results = await fetchTagResultsApi(tagNamesWithoutHash, currentPage, size);
             setSearchResults(results.content);
             setTotalElements(results.totalElements);
             setTotalPages(results.totalPages);
