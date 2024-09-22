@@ -3,15 +3,30 @@ import { Button } from '@/components/ui/button';
 
 interface PostStep1Props {
   nextStep: () => void;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const PostStep1 = ({ nextStep }: PostStep1Props) => {
+const PostStep1 = ({ nextStep, setCategory }: PostStep1Props) => {
   return (
     <>
       <Title>어떤 글을 작성하실 건가요?</Title>
       <ButtonWrapper>
-        <Button onClick={nextStep}>리뷰</Button>
-        <Button onClick={nextStep}>광고</Button>
+        <Button
+          onClick={() => {
+            setCategory('REVIEW');
+            nextStep();
+          }}
+        >
+          리뷰
+        </Button>
+        <Button
+          onClick={() => {
+            setCategory('AD');
+            nextStep();
+          }}
+        >
+          광고
+        </Button>
       </ButtonWrapper>
     </>
   );

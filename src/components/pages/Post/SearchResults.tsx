@@ -1,18 +1,31 @@
 import { Button } from '@/components/ui/button';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
+import { Drink } from './PostStep2';
+import { useEffect, useState } from 'react';
+import { alcoholsData } from '@/data/alcoholsData';
 
 interface SearchResultsProps {
   nextStep: () => void;
+  setDrinkData: React.Dispatch<React.SetStateAction<Drink>>;
+  contents: Drink[];
 }
 
-const SearchResults = ({ nextStep }: SearchResultsProps) => {
+const SearchResults = ({ nextStep, setDrinkData, contents }: SearchResultsProps) => {
   const navigate = useNavigate();
-  const isEmpty = false;
+  const [isEmpty, setIsEmpty] = useState(false);
 
   const handleBtnClick = () => {
     nextStep();
   };
+
+  useEffect(() => {
+    if (contents.length === 0) {
+      setIsEmpty(true);
+    } else {
+      setIsEmpty(false);
+    }
+  }, [contents]);
 
   return (
     <>
@@ -23,12 +36,19 @@ const SearchResults = ({ nextStep }: SearchResultsProps) => {
         </NoResultsWrapper>
       ) : (
         <ResultsWrapper>
-          {Array.from({ length: 10 }, (_, idx) => (
-            <ListItem key={idx} onClick={handleBtnClick}>
-              <img src="https://picsum.photos/seed/picsum/50/60" alt="주류 이름" />
+          {contents.map((item, idx) => (
+            <ListItem
+              key={idx}
+              onClick={() => {
+                setDrinkData(item);
+                handleBtnClick();
+              }}
+            >
+              <img src={item.imageUrl} alt={item.name} />
               <ImgDesc>
-                <b>주류 이름</b>
-                <span>종류 / 맛 / 도수 / 가격 정보</span>
+                <b>{item.name}</b>
+                <span>{`주종 : ${alcoholsData[item.drinkType]}`}</span>
+                <span>{`도수 : ${item.degree}%`}</span>
               </ImgDesc>
             </ListItem>
           ))}
