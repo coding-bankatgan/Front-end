@@ -34,12 +34,16 @@ interface Post {
   id: number;
   title: string;
   content: string;
-  tags: string[]; // 태그가 문자열 배열이라고 가정
+  tags: string[];
 }
 
 interface Tag {
   id: number;
   name: string;
+}
+
+interface RankProps {
+  highlight: boolean;
 }
 
 const Search = () => {
@@ -337,7 +341,7 @@ const Search = () => {
             <RecommendContent>
               {suggestedData.map((item, idx) => (
                 <div key={idx}>
-                  <span>{idx + 1}</span>
+                  <Rank highlight={idx === 0 || idx === 1 || idx === 2}>{idx + 1}</Rank>
                   <span>
                     {searchType === 'tag'
                       ? (item as SuggestedTag).tagName
@@ -597,16 +601,17 @@ const RecommendContent = styled.div`
     padding: 5px 0;
     font-size: ${({ theme }) => theme.fontSizes.small};
 
-    span:nth-of-type(1) {
-      width: 15px;
-      font-weight: bold;
-      text-align: right;
-    }
-
     span:nth-of-type(2) {
       margin-left: 8px;
     }
   }
+`;
+
+const Rank = styled.span<RankProps>`
+  width: 15px;
+  color: ${({ highlight, theme }) => (highlight ? theme.colors.secondary : theme.colors.darkGray)};
+  font-weight: bold;
+  text-align: right;
 `;
 
 const NoResultsWrapper = styled.div`
