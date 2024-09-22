@@ -11,9 +11,11 @@ import {
   fetchAutoCompleteTagApi,
   fetchSuggestedDrinksApi,
   fetchSuggestedTagsApi,
+  fetchTagResultsApi,
 } from '@/api/postApi';
 import { Badge } from '@/components/ui/badge';
 import CloseIcon from './../../../assets/icons/CloseIcon';
+import CardItem from '@/components/layout/CardItem';
 
 interface SuggestedTag {
   tagId: number;
@@ -27,15 +29,32 @@ interface SuggestedDrink {
 
 type SuggestedData = SuggestedTag | SuggestedDrink;
 
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  tags: string[]; // 태그가 문자열 배열이라고 가정
+}
+
+interface Tag {
+  id: number;
+  name: string;
+}
+
 const Search = () => {
   const navigate = useNavigate();
   const [searchType, setSearchType] = useState<'tag' | 'drink'>('tag');
   const [suggestedData, setSuggestedData] = useState<SuggestedData[]>([]); // Top15
   const [inputValue, setInputValue] = useState<string>(''); // 기본 값은 태그일 때 #으로 시작
-  const [tags, setTags] = useState<{ id: number; name: string }[]>([]); // input 뱃지로 변환
+  const [tags, setTags] = useState<Tag[]>([]); // 뱃지로 변환
   const [autoCompleteData, setAutoCompleteData] = useState<string[]>([]); // 자동완성 데이터
   const [isAutoVisible, setIsAutoVisible] = useState(false); // 자동완성 비활성화
-  const [isInputDisabled, setIsInputDisabled] = useState(false); // 입력 필드 비활성화
+  const [searchResults, setSearchResults] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [size, setSize] = useState(10);
+  const [totalElements, setTotalElements] = useState();
+  const [totalPages, setTotalPages] = useState();
+  const [hasSearched, setHasSearched] = useState(false);
 
   const prevBtn = () => {
     navigate(-1);
@@ -53,6 +72,7 @@ const Search = () => {
         data = await fetchSuggestedDrinksApi();
       }
       setSuggestedData(data);
+      setHasSearched(false);
     };
 
     fetchData();
@@ -60,7 +80,7 @@ const Search = () => {
 
   /** 입력 값이 변경될 때 자동완성 데이터 업데이트 */
   useEffect(() => {
-    const fetchAutoCompleteData = async () => {
+    const debounceData = setTimeout(async () => {
       if (inputValue.trim().length > 1) {
         let data;
         if (searchType === 'tag') {
@@ -74,10 +94,23 @@ const Search = () => {
         setAutoCompleteData([]);
         setIsAutoVisible(false);
       }
-    };
+    }, 300);
 
-    fetchAutoCompleteData();
+    return () => {
+      clearTimeout(debounceData);
+    };
   }, [inputValue, searchType]);
+
+  /** 태그 삭제 시 검색결과 재반영 */
+  useEffect(() => {
+    const tagNames = tags.map(tag => tag.name);
+
+    const newFilteredResults = searchResults.filter((post: Post) =>
+      post.tags.some(tag => tagNames.includes(tag)),
+    );
+
+    console.log('newFilteredResults : ', newFilteredResults);
+  }, [tags, searchResults]);
 
   /** input value값 변경 */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,43 +143,87 @@ const Search = () => {
     setIsAutoVisible(false);
   };
 
-  /** 태그 추가 (=뱃지 변환) */
+  /* 태그 추가 (=뱃지 변환) */
   const handleTagAdd = () => {
-    if (inputValue.trim() && inputValue.trim() !== '#') {
-      setTags([{ id: Date.now(), name: inputValue.trim() }]);
-      setInputValue('#');
-      setIsAutoVisible(false);
-      setIsInputDisabled(true);
+    const trimmedInput = inputValue.trim();
+    const newTagName = trimmedInput.startsWith('#') ? trimmedInput : `#${trimmedInput}`;
+
+    if (trimmedInput && trimmedInput !== '#') {
+      setTags(prevTags => {
+        // 새로 입력된 태그가 기존 태그 목록에 있는지 확인
+        const existingTagIndex = prevTags.findIndex(tag => tag.name === newTagName);
+
+        if (existingTagIndex !== -1) {
+          // 새로 입력된 태그가 기존 태그와 중복되면, 새 태그는 추가하지 않고 기존 태그 유지
+          setInputValue('#');
+          setIsAutoVisible(false);
+          return prevTags;
+        }
+
+        // 기존 태그에 중복되지 않으면 새로운 태그를 추가
+        const newTag = { id: Date.now(), name: newTagName };
+        const updatedTags = [...prevTags, newTag];
+
+        // 검색 결과 업데이트
+        const tagNames = updatedTags.map(tag => tag.name);
+        if (searchType === 'tag') {
+          setTimeout(async () => {
+            try {
+              const results = await fetchTagResultsApi(tagNames, currentPage, size);
+              setSearchResults(results.content);
+              setTotalElements(results.totalElements);
+              setTotalPages(results.totalPages);
+              setHasSearched(true);
+            } catch (err) {
+              console.error('검색 중 오류 발생: ', err);
+            }
+          }, 100);
+        }
+
+        setInputValue('#');
+        setIsAutoVisible(false);
+        return updatedTags;
+      });
     }
   };
 
-  /** 뱃지 삭제 */
-  const handleBadgeRemove = () => {
-    setTags([]);
-    setInputValue('#');
-    setIsInputDisabled(false);
-  };
-
-  /** Enter 클릭 시 태그 추가 */
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  /* Enter 클릭 시 태그 추가 및 검색 결과 API 호출 */
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
 
       if (searchType === 'tag' && (inputValue === '#' || inputValue.trim() === '')) {
-        // 기본 #만 있을 때는 엔터 눌러도 아무 것도 하지 않음
         return;
       }
 
-      handleTagAdd();
-      setInputValue('');
+      handleTagAdd(); // 태그 추가
     }
   };
 
-  /** Recommend 컴포넌트 hidden */
-  const showRecommend =
-    searchType === 'tag'
-      ? (inputValue.length <= 1 || inputValue === '#') && tags.length === 0
-      : inputValue.trim() === '' && tags.length === 0;
+  /** 뱃지 삭제 */
+  const handleBadgeRemove = async (id: number) => {
+    setTags(prevTags => {
+      const updatedTags = prevTags.filter(tag => tag.id !== id);
+
+      // 태그 목록을 바탕으로 검색 결과 업데이트
+      const tagNames = updatedTags.map(tag => tag.name);
+
+      if (searchType === 'tag') {
+        setTimeout(async () => {
+          try {
+            const results = await fetchTagResultsApi(tagNames, currentPage, size);
+            setSearchResults(results.content);
+            setTotalElements(results.totalElements);
+            setTotalPages(results.totalPages);
+          } catch (err) {
+            console.error('검색 중 오류 발생: ', err);
+          }
+        }, 100);
+      }
+
+      return updatedTags;
+    });
+  };
 
   return (
     <SearchLayout>
@@ -172,23 +249,12 @@ const Search = () => {
             </div>
           </RadioGroupStyled>
           <SearchInput>
-            {/* 뱃지 UI */}
-            {tags.length > 0 && (
-              <BadgeStyled key={tags[0].id}>
-                <div>
-                  <span>{tags[0].name}</span>
-                  <span onClick={handleBadgeRemove}>
-                    <CloseIcon />
-                  </span>
-                </div>
-              </BadgeStyled>
-            )}
             <Input
               value={inputValue}
               onChange={handleInputChange}
               placeholder={searchType === 'tag' ? '#달달한 술' : '오메기술'}
               onKeyDown={handleKeyDown}
-              disabled={isInputDisabled}
+              disabled={tags.length === 3}
             />
             <SearchIcon />
             {/* 자동완성 UI */}
@@ -202,11 +268,27 @@ const Search = () => {
               </AutoCompleteList>
             )}
           </SearchInput>
-          <span>찾고 싶은 게시글의 태그 또는 특산주 이름을 입력해 주세요.</span>
+          {/* 뱃지 UI */}
+          <BadgeWrapper>
+            {tags.length >= 1 ? (
+              tags.map((tag, idx) => (
+                <BadgeStyled key={tag.id || idx}>
+                  <div>
+                    <span>{tag.name}</span>
+                    <span onClick={() => handleBadgeRemove(tag.id)}>
+                      <CloseIcon />
+                    </span>
+                  </div>
+                </BadgeStyled>
+              ))
+            ) : (
+              <span>찾고 싶은 게시글의 태그 또는 특산주 이름을 입력해 주세요.</span>
+            )}
+          </BadgeWrapper>
         </SearchContent>
       </SearchFixed>
       <RecommendResultWrapper>
-        {showRecommend && (
+        {tags.length === 0 && (
           <Recommend>
             <RecommendTitle>
               <b>
@@ -229,8 +311,22 @@ const Search = () => {
             </RecommendContent>
           </Recommend>
         )}
-        {/* 결과 입력 시 
-        <SearchResults />*/}
+        {hasSearched ? (
+          Array.isArray(searchResults) && searchResults.length > 0 ? (
+            <ResultsWrapper>
+              <span>검색결과 ({searchResults.length}개)</span>
+              <div>
+                {searchResults.map((result, idx) => (
+                  <CardItem key={idx} post={result} />
+                ))}
+              </div>
+            </ResultsWrapper>
+          ) : !tags.length && !searchResults.length ? null : (
+            <NoResultsWrapper>
+              <p>검색 결과가 없습니다.</p>
+            </NoResultsWrapper>
+          )
+        ) : null}
       </RecommendResultWrapper>
     </SearchLayout>
   );
@@ -298,15 +394,14 @@ const RadioGroupStyled = styled(RadioGroup)`
 const SearchInput = styled.div`
   position: relative;
   width: 100%;
+  height: 40px;
 
   input {
     height: 40px;
     padding-right: 45px;
     border: 1px solid ${({ theme }) => theme.colors.primary};
     border-radius: 20px;
-    overflow: hidden;
-    position: relative;
-    z-index: 5;
+    z-index: 10;
 
     :focus {
       box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
@@ -320,21 +415,37 @@ const SearchInput = styled.div`
     width: 20px;
     height: 20px;
     color: ${({ theme }) => theme.colors.primary};
-    z-index: 5;
+    z-index: 10;
+  }
+`;
+
+const BadgeWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: 25px;
+  margin-top: 11px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  ::-webkit-scrollbar {
+    display: none;
   }
 `;
 
 const BadgeStyled = styled(Badge)`
-  position: absolute;
-  top: 50%;
-  left: 5px;
-  transform: translateY(-50%);
+  flex-shrink: 0;
   width: auto;
-  height: 30px;
+  height: 100%;
+  margin-right: 8px;
   background-color: ${({ theme }) => theme.colors.secondary};
   font-size: ${({ theme }) => theme.fontSizes.small};
   font-weight: normal;
-  z-index: 10;
+
+  :nth-last-of-type(1) {
+    margin-right: 0;
+  }
 
   :hover {
     background-color: ${({ theme }) => theme.colors.secondary};
@@ -348,6 +459,7 @@ const BadgeStyled = styled(Badge)`
   }
 
   span:nth-of-type(1) {
+    margin-right: 5px;
     color: ${({ theme }) => theme.colors.white};
     font-size: ${({ theme }) => theme.fontSizes.small};
   }
@@ -359,23 +471,21 @@ const BadgeStyled = styled(Badge)`
     svg {
       width: 16px;
       height: 16px;
-      margin-left: 10px;
     }
   }
 `;
 
 const AutoCompleteList = styled.div`
   position: absolute;
-  top: 0;
+  top: 42px;
   width: 100%;
   min-height: 40px;
   height: auto;
   max-height: 350px;
-  padding-top: 45px;
   background-color: ${({ theme }) => theme.colors.white};
   overflow-y: auto;
-  box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
-  border-radius: 20px 20px 10px 10px;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 10px;
+  border-radius: 10px;
   z-index: 3;
 
   ::-webkit-scrollbar {
@@ -404,12 +514,13 @@ const SearchContent = styled.div`
 `;
 
 const RecommendResultWrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
   background-color: ${({ theme }) => theme.colors.white};
-  border: 3px solid pink;
+  overflow-y: scroll;
 `;
 
 const Recommend = styled.section`
@@ -458,6 +569,37 @@ const RecommendContent = styled.div`
     span:nth-of-type(2) {
       margin-left: 8px;
     }
+  }
+`;
+
+const NoResultsWrapper = styled.div`
+  margin-top: 40px;
+  color: ${({ theme }) => theme.colors.gray};
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  text-align: center;
+`;
+
+const ResultsWrapper = styled.div`
+  > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 70px;
+    padding: 0 20px;
+  }
+
+  > span {
+    position: fixed;
+    display: inline-block;
+    width: 100%;
+    height: auto;
+    padding: 15px 20px;
+    background-color: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.colors.darkGray};
+    border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
+    font-size: ${({ theme }) => theme.fontSizes.small};
+    font-weight: bold;
   }
 `;
 
