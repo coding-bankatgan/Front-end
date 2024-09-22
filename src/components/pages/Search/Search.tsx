@@ -151,7 +151,8 @@ const Search = () => {
   /* 태그 추가 (=뱃지 변환) */
   const handleTagAdd = () => {
     const trimmedInput = inputValue.trim();
-    const newTagName = trimmedInput.startsWith('#') ? trimmedInput : `#${trimmedInput}`;
+    const newTagName =
+      searchType === 'tag' && !trimmedInput.startsWith('#') ? `#${trimmedInput}` : trimmedInput;
 
     if (trimmedInput && trimmedInput !== '#') {
       setTags(prevTags => {
@@ -160,7 +161,7 @@ const Search = () => {
 
         if (existingTagIndex !== -1) {
           // 새로 입력된 태그가 기존 태그와 중복되면, 새 태그는 추가하지 않고 기존 태그 유지
-          setInputValue('#');
+          setInputValue(searchType === 'tag' ? '#' : '');
           setIsAutoVisible(false);
           return prevTags;
         }
@@ -184,7 +185,7 @@ const Search = () => {
           }, 100);
         }
 
-        setInputValue('#');
+        setInputValue(searchType === 'tag' ? '#' : '');
         setIsAutoVisible(false);
         return updatedTags;
       });
