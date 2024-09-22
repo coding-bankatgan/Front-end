@@ -1,76 +1,240 @@
 import styled from '@emotion/styled';
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Title } from './PostStep1';
 import { regions } from '@/data/regions';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Line } from '../Home/Home';
 import SearchIcon from '@/assets/icons/SearchIcon';
 import SearchResults from './SearchResults';
+import axios from 'axios';
+import { setegid } from 'process';
 
 interface PostStep2Props {
   nextStep: () => void;
+  setDrinkData: React.Dispatch<React.SetStateAction<Drink>>;
 }
 
-const PostStep2 = ({ nextStep }: PostStep2Props) => {
-  const [selectedRegion, setSelectedRegion] = useState<string>('');
-  const [viewName, setViewName] = useState(false);
+export interface Drink {
+  id: number;
+  placeName: string;
+  name: string;
+  drinkType: string;
+  degree: number;
+  sweetness: number;
+  cost: number;
+  averageRating: number;
+  description: string;
+  imageUrl: string;
+  createdAt: string;
+}
+
+interface ApiResponse {
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  content: Drink[];
+}
+
+const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
+  const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [viewAutocomplete, setViewAutocomplete] = useState(false);
+  const fixedSuggestions = ['111', '222', '333', '111', '222', '333', '111', '222', '333'];
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setViewAutocomplete(true); // 입력이 발생하면 자동완성 보이기
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchTerm(suggestion); // 추천 항목 클릭 시 검색어에 반영
+    setViewAutocomplete(false); // 선택 후 자동완성 목록 닫기
+  };
 
   const handleRegionChange = (value: string) => {
     setSelectedRegion(value);
-
-    setTimeout(() => {
-      setViewName(true);
-    }, 1000);
   };
+
+  useEffect(() => {
+    const regionsId = regions.find(region => region.name === selectedRegion)?.id;
+    setSelectedRegionId(regionsId ?? null);
+  }, [selectedRegion]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (searchTerm) {
+        setPage(0); // 페이지 초기화
+        setSearchResults([]); // 검색 결과 초기화
+        fetchSearchResults(); // 결과를 다시 불러오기
+      }
+    }, 800); // 1초 후에 실행
+
+    return () => {
+      clearTimeout(handler); // 컴포넌트 언마운트 시 타이머 취소
+    };
+  }, [searchTerm]);
 
   const handleBtnClick = () => {
     nextStep();
   };
 
+  const [searchResults, setSearchResults] = useState<Drink[]>([]);
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadingRef = useRef<HTMLDivElement | null>(null);
+
+  const fetchSearchResults = async () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+
+    try {
+      const response = await axios.get(`/api/search/drinks`, {
+        params: {
+          regionId: selectedRegionId,
+          drinkName: searchTerm,
+          size: 10,
+          page: page,
+        },
+      });
+
+      const data = response.data;
+      console.log(data.data[0].content);
+      setSearchResults(prevResults => [...prevResults, ...data.data[0].content]);
+      setHasMore(data.data[0].content.length > 0);
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (searchTerm !== '') {
+      fetchSearchResults();
+    }
+  }, [page]);
+
+  useEffect(() => {
+    setPage(0);
+    setHasMore(true);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore && !loading) {
+        setPage(prevPage => prevPage + 1); // `page`를 증가시키고
+      }
+    });
+
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current); // `loadingRef`를 관찰합니다.
+    }
+
+    return () => {
+      if (loadingRef.current) {
+        observer.unobserve(loadingRef.current);
+      }
+    };
+  }, [loadingRef, hasMore, loading]);
+
   return (
     <>
       <Title>어떤 특산주에 대해 작성하실 건가요?</Title>
       <SelectSearchGroup>
-        <Select value={selectedRegion} onValueChange={handleRegionChange}>
-          <SelectTrigger>
-            <SelectValue placeholder="시/도" />
-          </SelectTrigger>
-          <SelectContent>
-            {regions.map(region => (
-              <SelectItem value={region.value} key={region.value}>
-                {region.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <SelectStyled value={selectedRegion} onChange={e => handleRegionChange(e.target.value)}>
+          <option value="" disabled>
+            시/도
+          </option>
+          {regions.map(region => (
+            <option value={region.name} key={region.value}>
+              {region.name}
+            </option>
+          ))}
+        </SelectStyled>
         <Search>
-          <Input placeholder="특산주 이름을 입력하세요." />
+          <Input
+            value={searchTerm}
+            onChange={handleInputChange}
+            placeholder="특산주 이름을 입력하세요."
+          />
           <SearchIcon />
         </Search>
+        {searchTerm !== '' && viewAutocomplete && (
+          <AutocompleteList>
+            {fixedSuggestions.map((suggestion, idx) => (
+              <AutocompleteItem key={idx} onClick={() => handleSuggestionClick(suggestion)}>
+                {suggestion}
+              </AutocompleteItem>
+            ))}
+          </AutocompleteList>
+        )}
       </SelectSearchGroup>
       <Line />
       <ResultsContainer>
-        {/* <Suggest>
-          {viewName &&
-            Array.from({ length: 15 }, (_, idx) => (
-              <Button key={idx} onClick={handleBtnClick}>
-                특산주
-              </Button>
-            ))}
-        </Suggest> */}
-        <SearchResults nextStep={nextStep} />
+        {searchTerm !== '' && (
+          <>
+            <SearchResults
+              nextStep={nextStep}
+              setDrinkData={setDrinkData}
+              contents={searchResults}
+            ></SearchResults>
+            <div ref={loadingRef} style={{ height: '20px', background: 'transparent' }} />
+          </>
+        )}
+        {/* {searchResults.map(result => (
+          <div key={result.id}>
+            <h3>{result.name}</h3>
+            <p>{result.description}</p>
+            <img src={result.imageUrl} alt={result.name} />
+          </div>
+        ))}
+        {loading && <p>Loading...</p>}
+        <div ref={loadingRef} style={{ height: '20px', background: 'transparent' }} /> */}
       </ResultsContainer>
     </>
   );
 };
+const SelectStyled = styled.select`
+  width: 78px;
+  height: 40px;
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  padding: 3px 4px 3px 16px;
+  border-radius: 50px 0 0 50px;
+  border: 1px solid ${({ theme }) => theme.colors.primary};
+  position: absolute;
+  &:focus {
+    outline: none;
+  }
+`;
+
+const AutocompleteList = styled.ul`
+  position: absolute;
+  top: 39.8px;
+  right: 0;
+  width: calc(100% - 78px);
+  background: white;
+  box-shadow:
+    -4px 4px 8px rgba(0, 0, 0, 0.2),
+    4px 4px 8px rgba(0, 0, 0, 0.2);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1;
+`;
+
+const AutocompleteItem = styled.li`
+  padding: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.lightGray};
+  }
+`;
 
 const SelectSearchGroup = styled.section`
   display: flex;
