@@ -11,5 +11,4 @@ export type Announcement = {
 export interface AnnouncementRequestBody {
   title: string;
   content: string;
-  imageUrl: string | null;
 }

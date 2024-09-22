@@ -10,6 +10,9 @@ import ExProfileImg from '@/assets/ExProfileImg';
 import { fetchCommentsApi, fetchCommentWriteApi } from '@/api/postApi';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
+import { useMemberStore } from '@/store/useMemberStore';
+import { usePostsDetailStore } from '@/store/usePostsDetailStore';
+import useNotificationStore from '@/store/useNotificationStore';
 
 interface PostCommentsProps {
   postId: number;
@@ -93,6 +96,7 @@ const PostComments = ({ postId }: PostCommentsProps) => {
     setNewComment(e.target.value);
   };
 
+  const { postsDetail } = usePostsDetailStore();
   const handleCommentSubmit = async () => {
     if (newComment.trim() === '') return;
 
@@ -109,6 +113,31 @@ const PostComments = ({ postId }: PostCommentsProps) => {
         setComments(prevComments => [newCommentData, ...prevComments]);
         setNewComment('');
         setIsAnonymous(false);
+
+        const { currentUser } = useMemberStore.getState(); // 2
+        console.log('currentUser Id : ', currentUser?.id);
+        const post = postsDetail.find(post => post.id === postId);
+        if (!post) {
+          console.error('게시글을 찾을 수 없습니다.');
+          return;
+        }
+        const { memberId } = post;
+        console.log('post memberId : ', memberId);
+        const isNotificationChecked = useMemberStore.getState().isNotificationChecked; // 정상작동
+
+        if (currentUser && currentUser.id !== memberId && isNotificationChecked) {
+          const notification = {
+            id: Date.now(), // 임시 ID
+            memberId, // 게시글 작성자에게만 알림이 가야하나 댓글을 작성한 사용자에게도 알림이 가는중, 수정 필요
+            postId: postId,
+            type: 'COMMENT',
+            content: `${newCommentData.memberName}님이 귀하의 게시글에 댓글을 작성했습니다: "${newComment}"`,
+            createdAt: new Date().toISOString(),
+            isNew: true,
+          };
+          console.log(notification); // 디버깅 용
+          useNotificationStore.getState().addNewNotification(notification);
+        }
       }
     } catch (err) {
       console.error('Error submitting comment:', err);

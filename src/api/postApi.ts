@@ -265,3 +265,13 @@ export const fetchDeclarationsDetailApi = async (declarationId: number) => {
     console.error('Error fetching declarations: ', err);
   }
 };
+
+/** 알림 API */
+export const fetchNotificationsApi = async () => {
+  try {
+    const response = await axios.get(`/api/notifications`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching notifications: ', err);
+  }
+};
