@@ -73,6 +73,11 @@ const Search = () => {
       }
       setSuggestedData(data);
       setHasSearched(false);
+
+      setTags([]);
+      setSearchResults([]);
+      setAutoCompleteData([]);
+      setIsAutoVisible(false);
     };
 
     fetchData();
