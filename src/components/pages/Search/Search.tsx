@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import {
   fetchAutoCompleteDrinkApi,
   fetchAutoCompleteTagApi,
+  fetchDrinkResultsApi,
   fetchSuggestedDrinksApi,
   fetchSuggestedTagsApi,
   fetchTagResultsApi,
@@ -156,6 +157,12 @@ const Search = () => {
 
     if (trimmedInput && trimmedInput !== '#') {
       setTags(prevTags => {
+        if (searchType === 'tag' && prevTags.length >= 3) {
+          return prevTags;
+        } else if (searchType === 'drink' && prevTags.length >= 1) {
+          return prevTags;
+        }
+
         // 새로 입력된 태그가 기존 태그 목록에 있는지 확인
         const existingTagIndex = prevTags.findIndex(tag => tag.name === newTagName);
 
@@ -171,19 +178,29 @@ const Search = () => {
         const updatedTags = [...prevTags, newTag];
         const tagNamesWithoutHash = updatedTags.map(tag => tag.name.replace('#', '')); // 검색 시 #제거
 
-        if (searchType === 'tag') {
-          setTimeout(async () => {
-            try {
+        const drinkSearchTerm =
+          updatedTags.length === 1 ? updatedTags[0].name.replace('#', '') : '';
+
+        setTimeout(async () => {
+          try {
+            if (searchType === 'tag') {
               const results = await fetchTagResultsApi(tagNamesWithoutHash, currentPage, size);
               setSearchResults(results.content);
               setTotalElements(results.totalElements);
               setTotalPages(results.totalPages);
-              setHasSearched(true);
-            } catch (err) {
-              console.error('검색 중 오류 발생: ', err);
+            } else if (searchType === 'drink') {
+              if (drinkSearchTerm) {
+                const results = await fetchDrinkResultsApi(drinkSearchTerm, currentPage, size);
+                setSearchResults(results.content);
+                setTotalElements(results.totalElements);
+                setTotalPages(results.totalPages);
+              }
             }
-          }, 100);
-        }
+            setHasSearched(true);
+          } catch (err) {
+            console.error('검색 중 오류 발생: ', err);
+          }
+        }, 200);
 
         setInputValue(searchType === 'tag' ? '#' : '');
         setIsAutoVisible(false);
@@ -211,18 +228,25 @@ const Search = () => {
       const updatedTags = prevTags.filter(tag => tag.id !== id);
       const tagNamesWithoutHash = updatedTags.map(tag => tag.name.replace('#', '')); // 검색 시 #제거
 
-      if (searchType === 'tag') {
-        setTimeout(async () => {
-          try {
+      const drinkSearchTerm = updatedTags.length > 0 ? updatedTags[0].name.replace('#', '') : '';
+
+      setTimeout(async () => {
+        try {
+          if (searchType === 'tag') {
             const results = await fetchTagResultsApi(tagNamesWithoutHash, currentPage, size);
             setSearchResults(results.content);
             setTotalElements(results.totalElements);
             setTotalPages(results.totalPages);
-          } catch (err) {
-            console.error('검색 중 오류 발생: ', err);
+          } else if (searchType === 'drink') {
+            const results = await fetchDrinkResultsApi(drinkSearchTerm, currentPage, size);
+            setSearchResults(results.content);
+            setTotalElements(results.totalElements);
+            setTotalPages(results.totalPages);
           }
-        }, 100);
-      }
+        } catch (err) {
+          console.error('검색 중 오류 발생: ', err);
+        }
+      }, 200);
 
       return updatedTags;
     });
@@ -252,13 +276,23 @@ const Search = () => {
             </div>
           </RadioGroupStyled>
           <SearchInput>
-            <Input
-              value={inputValue}
-              onChange={handleInputChange}
-              placeholder={searchType === 'tag' ? '#달달한 술' : '오메기술'}
-              onKeyDown={handleKeyDown}
-              disabled={tags.length === 3}
-            />
+            {searchType === 'tag' ? (
+              <Input
+                value={inputValue}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                disabled={tags.length === 3}
+              />
+            ) : (
+              <Input
+                value={inputValue}
+                onChange={handleInputChange}
+                placeholder="오메기술"
+                onKeyDown={handleKeyDown}
+                disabled={tags.length === 1}
+              />
+            )}
+
             <SearchIcon />
             {/* 자동완성 UI */}
             {isAutoVisible && autoCompleteData.length > 0 && (
