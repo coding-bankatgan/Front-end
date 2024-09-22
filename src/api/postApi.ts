@@ -54,6 +54,72 @@ export const fetchCommentsApi = async (postId: number, page: number, size: numbe
   }
 };
 
+/** 검색페이지 태그 추천 API */
+export const fetchSuggestedTagsApi = async () => {
+  try {
+    const response = await axios.get('/api/suggest/tags');
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching suggestedTags: ', err);
+  }
+};
+
+/** 검색페이지 특산주 이름 추천 API */
+export const fetchSuggestedDrinksApi = async () => {
+  try {
+    const response = await axios.get('/api/suggest/drinks');
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching suggestedDrinks: ', err);
+  }
+};
+
+/** 검색페이지 태그 자동완성 API */
+export const fetchAutoCompleteTagApi = async (name: string) => {
+  try {
+    const response = await axios.get(`/api/auto-complete/tag?name=${name}`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching autoCompleteTag: ', err);
+  }
+};
+
+/** 검색페이지 특산주 이름 자동완성 API */
+export const fetchAutoCompleteDrinkApi = async (name: string) => {
+  try {
+    const response = await axios.get(`/api/auto-complete/drink?name=${name}`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching autoCompleteDrink: ', err);
+  }
+};
+
+/** 검색페이지 태그로 게시글 검색 API */
+export const fetchTagResultsApi = async (tagNames: string[], page: number, size: number) => {
+  try {
+    const response = await axios.post(`/api/search/post/tags?page=${page}&size=${size}`, tagNames, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching tagResults: ', err);
+  }
+};
+
+/** 검색페이지 특산주 이름으로 게시글 검색 API */
+export const fetchDrinkResultsApi = async (drink: string, page: number, size: number) => {
+  try {
+    const response = await axios.post(
+      `/api/search/post/drinks?drink=${drink}&page=${page}&size=${size}`,
+    );
+    return response.data;
+  } catch (err) {
+    console.error('Erro fetching DrinkResults: ', err);
+  }
+};
+
 /** Kakao 맵 api */
 export const getAddress = async (latitude: number | null, longitude: number | null) => {
   const apiKey = 'f21248c02fc4d05f9ce83b60e063d55d';
@@ -197,5 +263,15 @@ export const fetchDeclarationsDetailApi = async (declarationId: number) => {
     return response.data;
   } catch (err) {
     console.error('Error fetching declarations: ', err);
+  }
+};
+
+/** 알림 API */
+export const fetchNotificationsApi = async () => {
+  try {
+    const response = await axios.get(`/api/notifications`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching notifications: ', err);
   }
 };

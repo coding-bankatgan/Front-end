@@ -15,6 +15,15 @@ import announcements from '../../public/announcement.json';
 import AnnouncementWrite from '../../public/announcementWrite.json';
 import { Announcement, AnnouncementRequestBody } from '@/types/announcement';
 import { Declaration, DeclarationRequestBody } from '@/types/declaration';
+
+import suggestedTags from '../../public/suggestedTags.json';
+import suggestedDrinks from '../../public/suggestedDrinks.json';
+import autoCompleteTag from '../../public/autoCompleteTag.json';
+import autoCompleteDrink from '../../public/autoCompleteDrink.json';
+import searchByTag from '../../public/searchByTag.json';
+import searchByDrink from '../../public/searchByDrink.json';
+import notifications from '../../public/notification.json';
+
 import searchDrink from '../../public/searchDrink.json';
 
 const mockJwtToken =
@@ -112,6 +121,96 @@ export const handlers = [
     });
   }),
 
+  /** 검색페이지 태그 추천 API */
+  http.get('api/suggest/tags', async () => {
+    return HttpResponse.json(suggestedTags);
+  }),
+
+  /** 검색페이지 특산주 이름 추천 API */
+  http.get('api/suggest/drinks', async () => {
+    return HttpResponse.json(suggestedDrinks);
+  }),
+
+  /** 검색페이지 태그 자동완성 API */
+  http.get('/api/auto-complete/tag', async ({ request }) => {
+    const url = new URL(request.url);
+    const name = url.searchParams.get('name');
+    const filteredTags = autoCompleteTag.filter(tag => tag.includes(name ?? ''));
+
+    return HttpResponse.json(filteredTags);
+  }),
+
+  /** 검색페이지 특산주 이름 자동완성 API */
+  http.get('/api/auto-complete/drink', async ({ request }) => {
+    const url = new URL(request.url);
+    const name = url.searchParams.get('name');
+    const filteredDrinks = autoCompleteDrink.filter(drink => drink.includes(name ?? ''));
+
+    return HttpResponse.json(filteredDrinks);
+  }),
+
+  /** 검색페이지 태그로 게시글 검색 API */
+  http.post('/api/search/post/tags', async ({ request }) => {
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('page')) || 0;
+    const size = Number(url.searchParams.get('size')) || 10;
+    const tags = (await request.json()) as string[];
+
+    const filteredResults = searchByTag[0].content.filter(post =>
+      post.tags.some(tag => tags.includes(tag.tagName.trim())),
+    );
+
+    const start = Number(page) * Number(size);
+    const end = start + Number(size);
+    const paginatedComments = filteredResults.slice(start, end);
+    const totalElements = filteredResults.length;
+    const totalPages = Math.ceil(totalElements / Number(size));
+
+    return HttpResponse.json({
+      totalElements,
+      totalPages,
+      size,
+      number: page,
+      content: paginatedComments,
+    });
+  }),
+
+  /** 검색페이지 특산주 이름으로 게시글 검색 API */
+  http.post('/api/search/post/drinks', async ({ request }) => {
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('page')) || 0;
+    const size = Number(url.searchParams.get('size')) || 10;
+    const drink = url.searchParams.get('drink');
+
+    if (!drink) {
+      return HttpResponse.json({
+        totalElements: 0,
+        totalPages: 0,
+        size,
+        number: page,
+        content: [],
+      });
+    }
+
+    const filteredResults = searchByDrink[0].content.filter(post =>
+      post.drink.name.includes(drink.trim()),
+    );
+
+    const start = Number(page) * Number(size);
+    const end = start + Number(size);
+    const paginatedComments = filteredResults.slice(start, end);
+    const totalElements = filteredResults.length;
+    const totalPages = Math.ceil(totalElements / Number(size));
+
+    return HttpResponse.json({
+      totalElements,
+      totalPages,
+      size,
+      number: page,
+      content: paginatedComments,
+    });
+  }),
+
   //** 마이페이지 API */
   http.post('/mypage', async () => {
     return HttpResponse.json({ member, tag });
@@ -175,14 +274,14 @@ export const handlers = [
   http.post('/api/announcements', async ({ request }) => {
     const requestBody = (await request.json()) as AnnouncementRequestBody;
 
-    const { title, content, imageUrl } = requestBody;
+    const { title, content } = requestBody;
 
     const newAnnouncement: Announcement = {
       id: announcements.length + 1,
       memberId: 1,
       title: title,
       content: content,
-      imageUrl: imageUrl,
+      imageUrl: null,
       createdAt: new Date().toISOString(),
       updatedAt: null,
     };
@@ -274,6 +373,25 @@ export const handlers = [
   http.get('/api/declarations/:declarationId', async ({ params }) => {
     Number(params.declarationId);
     return HttpResponse.json(declarations);
+  }),
+
+  /** 알림 API */
+  http.get('/api/notifications', async () => {
+    const filteredNotifications = notifications.flatMap(notification => notification.content);
+
+    const size = 20;
+    const number = 0;
+    const paginatedNotifications = filteredNotifications.slice(0, size);
+    const totalElements = Math.min(notifications.length, 20);
+    const totalPages = 1;
+
+    return HttpResponse.json({
+      totalElements,
+      totalPages,
+      size,
+      number,
+      content: paginatedNotifications,
+    });
   }),
 
   /** 아이디 중복 검사 API */

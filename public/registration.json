@@ -33,7 +33,7 @@
         "description": "프리미엄 막걸리입니다.",
         "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00000957&targetNm=PRODUCT",
         "createdAt": "2024-08-28T00:00:00Z",
-        "approved": false
+        "approved": null
       },
       {
         "registId": 3,
@@ -48,7 +48,7 @@
         "description": "프리미엄 막걸리입니다.",
         "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00000941&targetNm=PRODUCT",
         "createdAt": "2024-08-28T00:00:00Z",
-        "approved": true
+        "approved": null
       },
       {
         "registId": 4,

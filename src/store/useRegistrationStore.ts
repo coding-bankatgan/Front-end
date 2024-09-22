@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import { fetchRegistrationsApi, fetchRegistrationsDetailApi } from '@/api/postApi';
+import useMemberStore from '@/store/useMemberStore';
+import useNotificationStore from '@/store/useNotificationStore';
 
 interface Registration {
   registId: number;
@@ -113,6 +115,32 @@ const useRegistrationStore = create<RegistrationState>(set => ({
       const updatedRegistrations = state.registrations.map(registration =>
         registration.registId === registId ? { ...registration, approved } : registration,
       );
+      const updatedRegistration = updatedRegistrations.find(reg => reg.registId === registId);
+
+      if (updatedRegistration) {
+        const { memberId, drinkName } = updatedRegistration;
+        const { currentUser } = useMemberStore.getState();
+
+        // 신청자의 memberId와 현재 사용자의 id가 일치하는 경우에만 알림 발송
+        if (currentUser && currentUser.id === memberId) {
+          const notification = {
+            id: Date.now(), // Temporary ID, normally this should come from the backend
+            memberId, // 신청한 사용자에게 알림 발송
+            postId: registId,
+            type: 'REGISTRATION',
+            content:
+              approved === 'true'
+                ? `전달주신 ${drinkName} 특산주 정보 확인되어 등록 완료되었습니다! :D`
+                : `전달주신 ${drinkName} 정보가 확인되지 않습니다. 재등록 또는 반려 사유의 경우 매니저에게 문의 바랍니다.`,
+            createdAt: new Date().toISOString(),
+            isNew: true,
+          };
+          console.log(notification);
+
+          useNotificationStore.getState().addNewNotification(notification);
+        }
+      }
+
       return { registrations: updatedRegistrations };
     }),
 }));

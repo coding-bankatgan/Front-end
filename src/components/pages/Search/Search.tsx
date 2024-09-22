@@ -1,17 +1,305 @@
 import styled from '@emotion/styled';
 import ArrowLeftIcon from './../../../assets/icons/ArrowLeftIcon';
 import { Input } from '@/components/ui/input';
-import { Line } from '../Home/Home';
-import { Badge } from '@/components/ui/badge';
-import handImg from '../../../assets/img/handimg.png';
-import SearchResults from './SearchResults';
 import { useNavigate } from 'react-router-dom';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import SearchIcon from './../../../assets/icons/SearchIcon';
+import { useEffect, useState } from 'react';
+import {
+  fetchAutoCompleteDrinkApi,
+  fetchAutoCompleteTagApi,
+  fetchDrinkResultsApi,
+  fetchSuggestedDrinksApi,
+  fetchSuggestedTagsApi,
+  fetchTagResultsApi,
+} from '@/api/postApi';
+import { Badge } from '@/components/ui/badge';
+import CloseIcon from './../../../assets/icons/CloseIcon';
+import CardItem from '@/components/layout/CardItem';
+import getWeekRange from '../../../utils/dateSearch';
+
+interface SuggestedTag {
+  tagId: number;
+  tagName: string;
+}
+
+interface SuggestedDrink {
+  drinkId: number;
+  drinkName: string;
+}
+
+type SuggestedData = SuggestedTag | SuggestedDrink;
+
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  tags: string[];
+}
+
+interface Tag {
+  id: number;
+  name: string;
+}
+
+interface RankProps {
+  highlight: boolean;
+}
 
 const Search = () => {
   const navigate = useNavigate();
+  const [searchType, setSearchType] = useState<'tag' | 'drink'>('tag');
+  const [suggestedData, setSuggestedData] = useState<SuggestedData[]>([]); // Top15
+  const [inputValue, setInputValue] = useState<string>(''); // 기본 값은 태그일 때 #으로 시작
+  const [tags, setTags] = useState<Tag[]>([]); // 뱃지로 변환
+  const [autoCompleteData, setAutoCompleteData] = useState<string[]>([]); // 자동완성 데이터
+  const [isAutoVisible, setIsAutoVisible] = useState(false); // 자동완성 비활성화
+  const [searchResults, setSearchResults] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [size, setSize] = useState(10);
+  const [totalElements, setTotalElements] = useState();
+  const [totalPages, setTotalPages] = useState();
+  const [hasSearched, setHasSearched] = useState(false);
 
   const prevBtn = () => {
     navigate(-1);
+  };
+
+  /** 검색 페이지 진입 시 Top15 데이터 불러오기 */
+  useEffect(() => {
+    const fetchData = async () => {
+      let data;
+      if (searchType === 'tag') {
+        setInputValue('#');
+        data = await fetchSuggestedTagsApi();
+      } else if (searchType === 'drink') {
+        setInputValue('');
+        data = await fetchSuggestedDrinksApi();
+      }
+      setSuggestedData(data);
+      setHasSearched(false);
+
+      setTags([]);
+      setSearchResults([]);
+      setAutoCompleteData([]);
+      setIsAutoVisible(false);
+    };
+
+    fetchData();
+  }, [searchType]);
+
+  /** 입력 값이 변경될 때 자동완성 데이터 업데이트 */
+  useEffect(() => {
+    const debounceData = setTimeout(async () => {
+      if (inputValue.trim().length > 1) {
+        let data;
+        if (searchType === 'tag') {
+          data = await fetchAutoCompleteTagApi(inputValue.replace('#', ''));
+        } else if (searchType === 'drink') {
+          data = await fetchAutoCompleteDrinkApi(inputValue);
+        }
+        setAutoCompleteData(data || []);
+        setIsAutoVisible(true);
+      } else {
+        setAutoCompleteData([]);
+        setIsAutoVisible(false);
+      }
+    }, 300);
+
+    return () => {
+      clearTimeout(debounceData);
+    };
+  }, [inputValue, searchType]);
+
+  /** 태그 삭제 시 검색결과 재반영 */
+  useEffect(() => {
+    const tagNames = tags.map(tag => tag.name);
+
+    searchResults.filter((post: Post) => post.tags.some(tag => tagNames.includes(tag)));
+  }, [tags]);
+
+  /** input value값 변경 */
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    // 태그 검색일 때에는 자동으로 # 붙이기
+    if (searchType === 'tag') {
+      // # 뒤에 공백이 오는 것을 방지
+      if (value === '# ') {
+        return;
+      }
+
+      if (!value.startsWith('#')) {
+        setInputValue(`#${value.replace(/^#+/, '')}`);
+      } else {
+        setInputValue(value);
+      }
+    } else {
+      setInputValue(value);
+    }
+  };
+
+  /** 자동완성 항목 클릭 시 # 추가 */
+  const handleAutoCompleteClick = (item: string) => {
+    if (searchType === 'tag') {
+      setInputValue(`#${item}`);
+    } else {
+      setInputValue(item);
+    }
+    setIsAutoVisible(false);
+  };
+
+  /* 태그 추가 (=뱃지 변환) */
+  const handleTagAdd = () => {
+    const trimmedInput = inputValue.trim();
+    const newTagName =
+      searchType === 'tag' && !trimmedInput.startsWith('#') ? `#${trimmedInput}` : trimmedInput;
+
+    if (trimmedInput && trimmedInput !== '#') {
+      setTags(prevTags => {
+        if (searchType === 'tag' && prevTags.length >= 3) {
+          return prevTags;
+        } else if (searchType === 'drink' && prevTags.length >= 1) {
+          return prevTags;
+        }
+
+        // 새로 입력된 태그가 기존 태그 목록에 있는지 확인
+        const existingTagIndex = prevTags.findIndex(tag => tag.name === newTagName);
+
+        if (existingTagIndex !== -1) {
+          // 새로 입력된 태그가 기존 태그와 중복되면, 새 태그는 추가하지 않고 기존 태그 유지
+          setInputValue(searchType === 'tag' ? '#' : '');
+          setIsAutoVisible(false);
+          return prevTags;
+        }
+
+        // 기존 태그에 중복되지 않으면 새로운 태그를 추가
+        const newTag = { id: Date.now(), name: newTagName };
+        const updatedTags = [...prevTags, newTag];
+        const tagNamesWithoutHash = updatedTags.map(tag => tag.name.replace('#', ''));
+
+        const drinkSearchTerm =
+          updatedTags.length === 1 ? updatedTags[0].name.replace('#', '') : '';
+
+        setTimeout(async () => {
+          try {
+            if (searchType === 'tag') {
+              const results = await fetchTagResultsApi(tagNamesWithoutHash, currentPage, size);
+              setSearchResults(results.content);
+              setTotalElements(results.totalElements);
+              setTotalPages(results.totalPages);
+            } else if (searchType === 'drink') {
+              if (drinkSearchTerm) {
+                const results = await fetchDrinkResultsApi(drinkSearchTerm, currentPage, size);
+                setSearchResults(results.content);
+                setTotalElements(results.totalElements);
+                setTotalPages(results.totalPages);
+              }
+            }
+            setHasSearched(true);
+          } catch (err) {
+            console.error('검색 중 오류 발생: ', err);
+          }
+        }, 200);
+
+        setInputValue(searchType === 'tag' ? '#' : '');
+        setIsAutoVisible(false);
+        return updatedTags;
+      });
+    }
+  };
+
+  /* Enter 클릭 시 태그 추가 및 검색 결과 API 호출 */
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+
+      if (searchType === 'tag' && (inputValue === '#' || inputValue.trim() === '')) {
+        return;
+      }
+
+      handleTagAdd(); // 태그 추가
+    }
+  };
+
+  /** 뱃지 삭제 후 검색결과 재반영 */
+  const handleBadgeRemove = async (id: number) => {
+    setTags(prevTags => {
+      const updatedTags = prevTags.filter(tag => tag.id !== id);
+      const tagNamesWithoutHash = updatedTags.map(tag => tag.name.replace('#', ''));
+
+      const drinkSearchTerm = updatedTags.length > 0 ? updatedTags[0].name.replace('#', '') : '';
+
+      setTimeout(async () => {
+        try {
+          if (searchType === 'tag') {
+            const results = await fetchTagResultsApi(tagNamesWithoutHash, currentPage, size);
+            setSearchResults(results.content);
+            setTotalElements(results.totalElements);
+            setTotalPages(results.totalPages);
+          } else if (searchType === 'drink') {
+            const results = await fetchDrinkResultsApi(drinkSearchTerm, currentPage, size);
+            setSearchResults(results.content);
+            setTotalElements(results.totalElements);
+            setTotalPages(results.totalPages);
+          }
+        } catch (err) {
+          console.error('검색 중 오류 발생: ', err);
+        }
+      }, 200);
+
+      return updatedTags;
+    });
+  };
+
+  /** 이번주 날짜 기준 */
+  const weekRange = getWeekRange();
+
+  /** Top15 항목 클릭 시 뱃지 변환 및 검색 결과 */
+  const handleSuggestedClick = (item: SuggestedTag | SuggestedDrink) => {
+    const newTagName =
+      searchType === 'tag'
+        ? `#${(item as SuggestedTag).tagName}`
+        : (item as SuggestedDrink).drinkName;
+
+    setTags(prevTags => {
+      if (
+        (searchType === 'tag' && prevTags.length >= 3) ||
+        (searchType === 'drink' && prevTags.length >= 1)
+      ) {
+        return [...prevTags];
+      }
+
+      if (prevTags.some(tag => tag.name === newTagName)) return prevTags;
+
+      const updatedTags = [...prevTags, { id: Date.now(), name: newTagName }];
+      searchByResults(updatedTags);
+      return updatedTags;
+    });
+  };
+
+  /** Top15 항목 클릭 시 검색 결과 */
+  const searchByResults = async (tags: Tag[]) => {
+    try {
+      const tagNames = tags.map(tag => tag.name.replace('#', ''));
+
+      if (searchType === 'tag') {
+        const results = await fetchTagResultsApi(tagNames, currentPage, size);
+        setSearchResults(results.content);
+        setTotalElements(results.totalElements);
+        setTotalPages(results.totalPages);
+      } else {
+        const drinkNames = tagNames[0];
+        const results = await fetchDrinkResultsApi(drinkNames, currentPage, size);
+        setSearchResults(results.content);
+        setTotalElements(results.totalElements);
+        setTotalPages(results.totalPages);
+      }
+      setHasSearched(true);
+    } catch (err) {
+      console.error('검색 중 오류 발생:', err);
+    }
   };
 
   return (
@@ -24,24 +312,109 @@ const Search = () => {
           검색하기
         </SearchTop>
         <SearchContent>
-          <Input placeholder="#달달한 술" />
-          <span>찾고 싶은 게시글의 태그를 입력해 주세요.</span>
-          <Line />
+          <RadioGroupStyled
+            defaultValue={searchType}
+            onValueChange={value => setSearchType(value as 'tag' | 'drink')}
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="tag" id="tag" />
+              <Label htmlFor="tag">태그 검색</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="drink" id="drink" />
+              <Label htmlFor="drink">특산주 검색</Label>
+            </div>
+          </RadioGroupStyled>
+          <SearchInput>
+            {searchType === 'tag' ? (
+              <Input
+                value={inputValue}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                disabled={tags.length === 3}
+              />
+            ) : (
+              <Input
+                value={inputValue}
+                onChange={handleInputChange}
+                placeholder="오메기술"
+                onKeyDown={handleKeyDown}
+                disabled={tags.length === 1}
+              />
+            )}
+
+            <SearchIcon />
+            {/* 자동완성 UI */}
+            {isAutoVisible && autoCompleteData.length > 0 && (
+              <AutoCompleteList>
+                {autoCompleteData.map((item, idx) => (
+                  <AutoCompleteItem key={idx} onClick={() => handleAutoCompleteClick(item)}>
+                    {item}
+                  </AutoCompleteItem>
+                ))}
+              </AutoCompleteList>
+            )}
+          </SearchInput>
+          {/* 뱃지 UI */}
+          <BadgeWrapper>
+            {tags.length >= 1 ? (
+              tags.map((tag, idx) => (
+                <BadgeStyled key={tag.id || idx}>
+                  <div>
+                    <span>{tag.name}</span>
+                    <span onClick={() => handleBadgeRemove(tag.id)}>
+                      <CloseIcon />
+                    </span>
+                  </div>
+                </BadgeStyled>
+              ))
+            ) : (
+              <span>찾고 싶은 게시글의 태그 또는 특산주 이름을 입력해 주세요.</span>
+            )}
+          </BadgeWrapper>
         </SearchContent>
       </SearchFixed>
-      <SearchWrapper>
-        <TagWrapper>
-          <div>
-            <img src={handImg} alt="추천" />
-            {Array.from({ length: 15 }, (_, idx) => (
-              <BadgeStyled variant="outline" key={idx}>
-                #달달한
-              </BadgeStyled>
-            ))}
-          </div>
-        </TagWrapper>
-        {/* <SearchResults /> */}
-      </SearchWrapper>
+      <RecommendResultWrapper>
+        {tags.length === 0 && (
+          <Recommend>
+            <RecommendTitle>
+              <b>
+                이번 주{' '}
+                <span>{searchType === 'tag' ? '인기 태그 Top 15' : '인기 특산주 Top 15'}</span>
+              </b>
+              <span>{weekRange} 기준</span>
+            </RecommendTitle>
+            <RecommendContent>
+              {suggestedData.map((item, idx) => (
+                <div key={idx}>
+                  <Rank highlight={idx === 0 || idx === 1 || idx === 2}>{idx + 1}</Rank>
+                  <span onClick={() => handleSuggestedClick(item)}>
+                    {searchType === 'tag'
+                      ? (item as SuggestedTag).tagName
+                      : (item as SuggestedDrink).drinkName}
+                  </span>
+                </div>
+              ))}
+            </RecommendContent>
+          </Recommend>
+        )}
+        {hasSearched ? (
+          Array.isArray(searchResults) && searchResults.length > 0 ? (
+            <ResultsWrapper>
+              <span>검색결과 ({searchResults.length}개)</span>
+              <div>
+                {searchResults.map((result, idx) => (
+                  <CardItem key={idx} post={result} />
+                ))}
+              </div>
+            </ResultsWrapper>
+          ) : !tags.length && !searchResults.length ? null : (
+            <NoResultsWrapper>
+              <p>검색 결과가 없습니다.</p>
+            </NoResultsWrapper>
+          )
+        ) : null}
+      </RecommendResultWrapper>
     </SearchLayout>
   );
 };
@@ -51,12 +424,10 @@ const SearchLayout = styled.div`
   justify-content: center;
   align-items: flex-start;
   position: relative;
-  min-width: 360px;
   width: 100%;
   max-width: auto;
-  min-height: 100vh;
-  height: auto;
-  padding: 40px 20px 20px 20px;
+  height: 100vh;
+  padding-top: 220px;
   background-color: ${({ theme }) => theme.colors.brightGray};
 `;
 
@@ -64,9 +435,9 @@ const SearchFixed = styled.section`
   position: fixed;
   top: 0;
   width: 100vw;
-  height: auto;
+  height: 210px;
   padding: 40px 20px 0;
-  background-color: ${({ theme }) => theme.colors.brightGray};
+  background-color: ${({ theme }) => theme.colors.white};
   z-index: 10;
 `;
 
@@ -85,58 +456,239 @@ const SearchTop = styled.div`
   }
 `;
 
-const SearchContent = styled.div`
-  margin-top: 20px;
+const RadioGroupStyled = styled(RadioGroup)`
+  display: flex;
+  margin-bottom: 10px;
+
+  button {
+    border: 1px solid ${({ theme }) => theme.colors.secondary};
+  }
+
+  button[aria-checked='true'] {
+    background-color: ${({ theme }) => theme.colors.secondary};
+    border: 1px solid ${({ theme }) => theme.colors.secondary};
+
+    svg {
+      color: ${({ theme }) => theme.colors.white};
+      width: 10px;
+      height: 10px;
+      margin-top: 2px;
+    }
+  }
+`;
+
+const SearchInput = styled.div`
+  position: relative;
+  width: 100%;
+  height: 40px;
 
   input {
-    height: 45px;
-    font-size: ${({ theme }) => theme.fontSizes.base};
+    height: 40px;
+    padding-right: 45px;
     border: 1px solid ${({ theme }) => theme.colors.primary};
-    border-radius: 30px;
+    border-radius: 20px;
+    z-index: 10;
 
-    &:focus {
+    :focus {
       box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
     }
   }
 
-  span {
-    color: ${({ theme }) => theme.colors.darkGray};
-    font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  > svg {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    width: 20px;
+    height: 20px;
+    color: ${({ theme }) => theme.colors.primary};
+    z-index: 10;
   }
 `;
 
-const SearchWrapper = styled.div`
+const BadgeWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  min-width: 320px;
-  width: auto;
-  height: 100%;
-  margin-top: 170px;
-`;
+  width: 100%;
+  height: 25px;
+  margin-top: 11px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
-const TagWrapper = styled.div`
-  padding: 5px;
-  height: auto;
-
-  > div {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  img {
-    margin: 0 5px 5px 0;
+  ::-webkit-scrollbar {
+    display: none;
   }
 `;
 
 const BadgeStyled = styled(Badge)`
-  padding: 6px 10px;
-  margin: 0 5px 5px 0;
-  background-color: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.primary};
-  font-weight: normal;
-  border: 1px solid ${({ theme }) => theme.colors.primary};
+  flex-shrink: 0;
+  width: auto;
+  height: 100%;
+  margin-right: 8px;
+  background-color: ${({ theme }) => theme.colors.secondary};
   font-size: ${({ theme }) => theme.fontSizes.small};
+  font-weight: normal;
+
+  :nth-last-of-type(1) {
+    margin-right: 0;
+  }
+
+  :hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;
+  }
+
+  span:nth-of-type(1) {
+    margin-right: 5px;
+    color: ${({ theme }) => theme.colors.white};
+    font-size: ${({ theme }) => theme.fontSizes.small};
+  }
+
+  span:nth-of-type(2) {
+    color: ${({ theme }) => theme.colors.white};
+    font-size: ${({ theme }) => theme.fontSizes.base};
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+`;
+
+const AutoCompleteList = styled.div`
+  position: absolute;
+  top: 42px;
+  width: 100%;
+  min-height: 40px;
+  height: auto;
+  max-height: 350px;
+  background-color: ${({ theme }) => theme.colors.white};
+  overflow-y: auto;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 10px;
+  border-radius: 10px;
+  z-index: 3;
+
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+`;
+
+const AutoCompleteItem = styled.div`
+  padding: 10px;
+  font-size: ${({ theme }) => theme.fontSizes.small};
+
+  :hover {
+    background-color: ${({ theme }) => theme.colors.brightGray};
+  }
+`;
+
+const SearchContent = styled.div`
+  margin-top: 30px;
+
+  span {
+    margin-bottom: 20px;
+    color: ${({ theme }) => theme.colors.gray};
+    font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  }
+`;
+
+const RecommendResultWrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: ${({ theme }) => theme.colors.white};
+  overflow-y: scroll;
+`;
+
+const Recommend = styled.section`
+  width: 100%;
+  padding: 20px;
+`;
+
+const RecommendTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 15px;
+
+  b {
+    span {
+      background: linear-gradient(to top, rgba(255, 209, 140, 0.4) 45%, transparent 15%);
+    }
+  }
+
+  > span {
+    color: ${({ theme }) => theme.colors.darkGray};
+    font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  }
+`;
+const RecommendContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 300px;
+
+  div {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 50%;
+    margin-bottom: 5px;
+    padding: 5px 0;
+    font-size: ${({ theme }) => theme.fontSizes.small};
+
+    span:nth-of-type(2) {
+      margin-left: 8px;
+    }
+  }
+`;
+
+const Rank = styled.span<RankProps>`
+  width: 15px;
+  color: ${({ highlight, theme }) => (highlight ? theme.colors.secondary : theme.colors.darkGray)};
+  font-weight: bold;
+  text-align: right;
+`;
+
+const NoResultsWrapper = styled.div`
+  margin-top: 40px;
+  color: ${({ theme }) => theme.colors.gray};
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  text-align: center;
+`;
+
+const ResultsWrapper = styled.div`
+  > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 70px;
+    padding: 0 20px;
+  }
+
+  > span {
+    position: fixed;
+    display: inline-block;
+    width: 100%;
+    height: auto;
+    padding: 15px 20px;
+    background-color: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.colors.darkGray};
+    border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
+    font-size: ${({ theme }) => theme.fontSizes.small};
+    font-weight: bold;
+  }
 `;
 
 export default Search;

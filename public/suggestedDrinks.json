@@ -1,0 +1,62 @@
+[
+  {
+    "drinkId": 1,
+    "drinkName": "이강주"
+  },
+  {
+    "drinkId": 2,
+    "drinkName": "문배주"
+  },
+  {
+    "drinkId": 3,
+    "drinkName": "한산소곡주"
+  },
+  {
+    "drinkId": 4,
+    "drinkName": "안동소주"
+  },
+  {
+    "drinkId": 5,
+    "drinkName": "경주법주"
+  },
+  {
+    "drinkId": 6,
+    "drinkName": "백련막걸리"
+  },
+  {
+    "drinkId": 7,
+    "drinkName": "산사춘"
+  },
+  {
+    "drinkId": 8,
+    "drinkName": "감홍로"
+  },
+  {
+    "drinkId": 9,
+    "drinkName": "죽력고"
+  },
+  {
+    "drinkId": 10,
+    "drinkName": "청주"
+  },
+  {
+    "drinkId": 11,
+    "drinkName": "백화수복"
+  },
+  {
+    "drinkId": 12,
+    "drinkName": "솔송주"
+  },
+  {
+    "drinkId": 13,
+    "drinkName": "대나무술"
+  },
+  {
+    "drinkId": 14,
+    "drinkName": "오메기술"
+  },
+  {
+    "drinkId": 15,
+    "drinkName": "두견주"
+  }
+]

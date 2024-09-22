@@ -8,31 +8,98 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import BellIcon from '@/assets/icons/BellIcon';
+import dayjs from 'dayjs';
 import { Badge } from '@/components/ui/badge';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useNotificationStore from '@/store/useNotificationStore';
+import { useMemberStore } from '@/store/useMemberStore';
+
+interface Notification {
+  id: number;
+  memberId: number;
+  postId: number | null;
+  type: string;
+  content: string;
+  createdAt: string;
+  isNew: boolean;
+}
+
+const getNotificationTitle = (type: Notification['type']) => {
+  switch (type) {
+    case 'COMMENT':
+      return '💬 새로운 댓글이 달렸습니다.';
+    case 'DECLARATION':
+      return '🚨 신고 처리 결과를 확인하세요.';
+    case 'REGISTRATION':
+      return '🎉 특산주 신청 처리 결과를 확인하세요';
+    case 'REMOVED':
+      return '⚠️ 게시글이 삭제 되었습니다.';
+    case 'FOLLOW':
+      return '🔔 팔로우한 태그에 새로운 글이 올라왔습니다.';
+    default:
+      return '알림';
+  }
+};
 
 const Notification = () => {
+  const navigate = useNavigate();
+  const { notifications, newNotificationCount, fetchNotifications, markAsRead } =
+    useNotificationStore();
+  const { currentUser } = useMemberStore();
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
+
+  const handleNotificationClick = (notification: Notification) => {
+    const { type, postId, memberId } = notification;
+    markAsRead(notification.id);
+
+    if (type === 'DECLARATION' || type === 'REMOVED' || postId === null) {
+      return;
+    }
+    if (type === 'COMMENT') {
+      if (memberId === currentUser?.id) {
+        navigate(`/post/${postId}`);
+      }
+    } else if (type === 'REGISTRATION') {
+      navigate(`/specialty-drink/${postId}`);
+    } else if (type === 'FOLLOW') {
+      navigate(`/post/${postId}`);
+    }
+
+    setIsOpen(false);
+  };
+
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTriggerStyled>
-        <span></span>
+        {newNotificationCount > 0 && <span />} {/* 새로운 알림이 있으면 빨간 점 */}
         <BellIcon />
       </SheetTriggerStyled>
       <SheetContentStyled>
         <SheetHeaderStyled>
           <SheetTitle>
-            알림 <span>(새로운 알림 00개)</span>
+            알림 <span>(새로운 알림 {newNotificationCount}개)</span>
           </SheetTitle>
           <SheetDescriptionStyled>※ 알림은 최대 20개까지만 보여집니다.</SheetDescriptionStyled>
         </SheetHeaderStyled>
         <NoticeWrapper>
-          {Array.from({ length: 10 }, (_, idx) => (
-            <NoticeSection key={idx}>
+          {notifications.map(notification => (
+            <NoticeSection
+              key={notification.id}
+              onClick={() => handleNotificationClick(notification)}
+            >
               <NoticeTop>
-                <Badge variant="outline">New</Badge>
-                <span>2000.01.01</span>
+                {notification.isNew && <Badge variant="outline">New!</Badge>}
+                <span>{dayjs(notification.createdAt).format('YYYY.MM.DD')}</span>
               </NoticeTop>
-              <NoticeTitle>🚨 [잘못된 정보] 게시글 수정 건에 대한 알림입니다.</NoticeTitle>
-              <NoticeContent>수정이 완료되었습니다. 정보 제공에 감사드립니다.</NoticeContent>
+              <NoticeTitle>{getNotificationTitle(notification.type)}</NoticeTitle>
+              <NoticeContent style={{ whiteSpace: 'pre-line' }}>
+                {notification.content}
+              </NoticeContent>
             </NoticeSection>
           ))}
         </NoticeWrapper>

@@ -1,0 +1,254 @@
+[
+  {
+    "totalElements": 1,
+    "totalPages": 1,
+    "size": 10,
+    "number": 0,
+    "content": [
+      {
+        "id": 1,
+        "memberId": 1,
+        "memberName": "알코올러버",
+        "drink": {
+          "id": 1,
+          "placeName": "서울특별시",
+          "name": "미나리싱싱주",
+          "drinkType": "MAKGEOLLI",
+          "degree": 7,
+          "sweetness": 3,
+          "cost": 12000,
+          "description": "프리미엄 막걸리입니다.",
+          "imageUrl": "http://example.com/image.png",
+          "createdAt": "2024-09-09T13:36:49.714+00:00"
+        },
+        "type": "REVIEW",
+        "content": "미나리를 넣은 부대찌개, 미나리전 등도 좋고, 육류, 해산물이나 기름지고 강한 맛을 가진 음식과 궁합이 좋습니다.",
+        "rating": 4.8,
+        "tags": [
+          {
+            "tagId": 1,
+            "tagName": "고소"
+          },
+          {
+            "tagId": 2,
+            "tagName": "풍미"
+          },
+          {
+            "tagId": 3,
+            "tagName": "상큼"
+          },
+          {
+            "tagId": 4,
+            "tagName": "달달"
+          }
+        ],
+        "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00000874&targetNm=PRODUCT",
+        "viewCount": 50,
+        "createdAt": "2024-09-08T22:51:38.513+00:00",
+        "updatedAt": "2024-09-08T22:51:38.513+00:00"
+      },
+      {
+        "id": 2,
+        "memberId": 2,
+        "memberName": "고래밥",
+        "drink": {
+          "id": 1,
+          "placeName": "서울특별시",
+          "name": "독산 30",
+          "drinkType": "MAKGEOLLI",
+          "degree": 7,
+          "sweetness": 3,
+          "cost": 12000,
+          "description": "프리미엄 막걸리입니다.",
+          "imageUrl": "http://example.com/image.png",
+          "createdAt": "2024-09-09T13:36:49.714+00:00"
+        },
+        "type": "REVIEW",
+        "content": "구수하면서도 알싸한 향과, 깔끔한 목넘김이 매력적인 소주라 맛있어요",
+        "rating": 4.8,
+        "tags": [
+          {
+            "tagId": 1,
+            "tagName": "고소"
+          },
+          {
+            "tagId": 2,
+            "tagName": "풍미"
+          },
+          {
+            "tagId": 3,
+            "tagName": "과일향"
+          }
+        ],
+        "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00000957&targetNm=PRODUCT",
+        "viewCount": 20,
+        "createdAt": "2024-09-09T22:51:38.513+00:00",
+        "updatedAt": "2024-09-09T22:51:38.513+00:00"
+      },
+      {
+        "id": 3,
+        "memberId": 3,
+        "memberName": "술고래",
+        "drink": {
+          "id": 1,
+          "placeName": "서울특별시",
+          "name": "참주가 서해밤바다",
+          "drinkType": "MAKGEOLLI",
+          "degree": 7,
+          "sweetness": 3,
+          "cost": 12000,
+          "description": "프리미엄 막걸리입니다.",
+          "imageUrl": "http://example.com/image.png",
+          "createdAt": "2024-09-09T13:36:49.714+00:00"
+        },
+        "type": "ADVERTISEMENT",
+        "content": "우리 쌀을 발효하여 증류한 술에 국내산 매실을 침출하여 만들어진 술이다. 숙취가 좋으면 목넘김이 깔끔하다.",
+        "rating": 4.8,
+        "tags": [
+          {
+            "tagId": 1,
+            "tagName": "고소"
+          },
+          {
+            "tagId": 2,
+            "tagName": "달달"
+          }
+        ],
+        "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00000941&targetNm=PRODUCT",
+        "viewCount": 1050,
+        "createdAt": "2024-09-10T22:51:38.513+00:00",
+        "updatedAt": "2024-09-10T22:51:38.513+00:00"
+      },
+      {
+        "id": 4,
+        "memberId": 4,
+        "memberName": "유부초밥",
+        "drink": {
+          "id": 1,
+          "placeName": "서울특별시",
+          "name": "만월 24/40",
+          "drinkType": "MAKGEOLLI",
+          "degree": 7,
+          "sweetness": 3,
+          "cost": 12000,
+          "description": "프리미엄 막걸리입니다.",
+          "imageUrl": "http://example.com/image.png",
+          "createdAt": "2024-09-09T13:36:49.714+00:00"
+        },
+        "type": "REVIEW",
+        "content": "높은 도수와 반대로 목 넘김이 부드러웁니다. 또한, 색소를 사용하지 않고 복분자 원료가 들어가 선명한 붉은색을 띄며 복분자 향이 은은하게 납니다.",
+        "rating": 4.8,
+        "tags": [
+          {
+            "tagId": 1,
+            "tagName": "고소"
+          },
+          {
+            "tagId": 2,
+            "tagName": "풍미"
+          },
+          {
+            "tagId": 3,
+            "tagName": "상큼"
+          },
+          {
+            "tagId": 4,
+            "tagName": "조화로운"
+          },
+          {
+            "tagId": 5,
+            "tagName": "달달"
+          }
+        ],
+        "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00001147&targetNm=PRODUCT",
+        "viewCount": 20,
+        "createdAt": "2024-09-09T22:51:38.513+00:00",
+        "updatedAt": "2024-09-09T22:51:38.513+00:00"
+      },
+      {
+        "id": 5,
+        "memberId": 5,
+        "memberName": "고슴도치",
+        "drink": {
+          "id": 1,
+          "placeName": "서울특별시",
+          "name": "스파클링와인 오미로제 결",
+          "drinkType": "MAKGEOLLI",
+          "degree": 7,
+          "sweetness": 3,
+          "cost": 12000,
+          "description": "프리미엄 막걸리입니다.",
+          "imageUrl": "http://example.com/image.png",
+          "createdAt": "2024-09-09T13:36:49.714+00:00"
+        },
+        "type": "REVIEW",
+        "content": "정말 구수하게 맛있어요!!!!",
+        "rating": 4.8,
+        "tags": [
+          {
+            "tagId": 1,
+            "tagName": "고소"
+          },
+          {
+            "tagId": 2,
+            "tagName": "풍미"
+          },
+          {
+            "tagId": 3,
+            "tagName": "상큼"
+          },
+          {
+            "tagId": 4,
+            "tagName": "달달"
+          }
+        ],
+        "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00000415&targetNm=PRODUCT",
+        "viewCount": 1200,
+        "createdAt": "2024-09-12T22:51:38.513+00:00",
+        "updatedAt": "2024-09-12T22:51:38.513+00:00"
+      },
+      {
+        "id": 6,
+        "memberId": 6,
+        "memberName": "술은생명수",
+        "drink": {
+          "id": 1,
+          "placeName": "서울특별시",
+          "name": "맵시 막걸리 화이트",
+          "drinkType": "MAKGEOLLI",
+          "degree": 7,
+          "sweetness": 3,
+          "cost": 12000,
+          "description": "프리미엄 막걸리입니다.",
+          "imageUrl": "http://example.com/image.png",
+          "createdAt": "2024-09-09T13:36:49.714+00:00"
+        },
+        "type": "ADVERTISEMENT",
+        "content": "일반 전통주에서 맛볼 수 없던 특유의 감칠맛을 맛볼 수 있습니다.",
+        "rating": 4.8,
+        "tags": [
+          {
+            "tagId": 1,
+            "tagName": "고소"
+          },
+          {
+            "tagId": 2,
+            "tagName": "풍미"
+          },
+          {
+            "tagId": 3,
+            "tagName": "씁쓸"
+          },
+          {
+            "tagId": 4,
+            "tagName": "달달"
+          }
+        ],
+        "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00001216&targetNm=PRODUCT",
+        "viewCount": 50,
+        "createdAt": "2024-09-12T22:51:38.513+00:00",
+        "updatedAt": "2024-09-12T22:51:38.513+00:00"
+      }
+    ]
+  }
+]
