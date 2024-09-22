@@ -17,6 +17,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import CloseIcon from './../../../assets/icons/CloseIcon';
 import CardItem from '@/components/layout/CardItem';
+import getWeekRange from '../../../utils/dateSearch';
 
 interface SuggestedTag {
   tagId: number;
@@ -256,6 +257,8 @@ const Search = () => {
     });
   };
 
+  const weekRange = getWeekRange();
+
   return (
     <SearchLayout>
       <SearchFixed>
@@ -336,7 +339,7 @@ const Search = () => {
                 이번 주{' '}
                 <span>{searchType === 'tag' ? '인기 태그 Top 15' : '인기 특산주 Top 15'}</span>
               </b>
-              <span>09.16 ~ 09.22 기준</span>
+              <span>{weekRange} 기준</span>
             </RecommendTitle>
             <RecommendContent>
               {suggestedData.map((item, idx) => (
