@@ -1,0 +1,62 @@
+[
+  {
+    "tagId": 1,
+    "tagName": "달달한"
+  },
+  {
+    "tagId": 2,
+    "tagName": "상큼한"
+  },
+  {
+    "tagId": 3,
+    "tagName": "쌉쌀한"
+  },
+  {
+    "tagId": 4,
+    "tagName": "부드러운"
+  },
+  {
+    "tagId": 5,
+    "tagName": "진한"
+  },
+  {
+    "tagId": 6,
+    "tagName": "고소한"
+  },
+  {
+    "tagId": 7,
+    "tagName": "청량한"
+  },
+  {
+    "tagId": 8,
+    "tagName": "과일향"
+  },
+  {
+    "tagId": 9,
+    "tagName": "선물하기 좋은"
+  },
+  {
+    "tagId": 10,
+    "tagName": "오크향"
+  },
+  {
+    "tagId": 11,
+    "tagName": "향긋한"
+  },
+  {
+    "tagId": 12,
+    "tagName": "도수 낮은"
+  },
+  {
+    "tagId": 13,
+    "tagName": "부케향"
+  },
+  {
+    "tagId": 14,
+    "tagName": "달콤한"
+  },
+  {
+    "tagId": 15,
+    "tagName": "숙성된"
+  }
+]
