@@ -15,6 +15,7 @@ import announcements from '../../public/announcement.json';
 import AnnouncementWrite from '../../public/announcementWrite.json';
 import { Announcement, AnnouncementRequestBody } from '@/types/announcement';
 import { Declaration, DeclarationRequestBody } from '@/types/declaration';
+import searchDrink from '../../public/searchDrink.json';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -313,6 +314,39 @@ export const handlers = [
 
   /**회원가입 post Test  */
   http.post(`api/members/signup`, async ({ request }) => {
+    const requestBody = await request.json();
+    console.log(requestBody);
+    return new Response();
+  }),
+
+  http.get(`/api/search/drinks`, ({ request }) => {
+    const requestUrl = new URL(request.url);
+    const regionId = requestUrl.searchParams.get('regionId');
+    const drinkName = requestUrl.searchParams.get('drinkName');
+    const size = requestUrl.searchParams.get('size');
+    const page = requestUrl.searchParams.get('page');
+
+    const data = searchDrink.filter((item, idx) => item.number === Number(page));
+    const emptyData = searchDrink.filter((item, idx) => item.number === Number(page) + 100);
+    console.log(regionId);
+
+    if (drinkName === '1') {
+      return HttpResponse.json({
+        data: emptyData,
+      });
+    }
+
+    return HttpResponse.json({
+      data,
+    });
+  }),
+  http.post(`/api/image`, ({ request }) => {
+    delay(200);
+    return HttpResponse.json(
+      'https://thesool.com/common/imageView.do?targetId=PR00000941&targetNm=PRODUCT',
+    );
+  }),
+  http.post('/api/post', async ({ request }) => {
     const requestBody = await request.json();
     console.log(requestBody);
     return new Response();
