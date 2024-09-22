@@ -188,7 +188,6 @@ export const handlers = [
       });
     }
 
-    console.log('Search term (drink):', drink);
     const filteredResults = searchByDrink[0].content.filter(post =>
       post.drink.name.includes(drink.trim()),
     );

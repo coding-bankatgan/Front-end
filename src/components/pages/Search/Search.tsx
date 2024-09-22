@@ -116,12 +116,8 @@ const Search = () => {
   useEffect(() => {
     const tagNames = tags.map(tag => tag.name);
 
-    const newFilteredResults = searchResults.filter((post: Post) =>
-      post.tags.some(tag => tagNames.includes(tag)),
-    );
-
-    console.log('newFilteredResults : ', newFilteredResults);
-  }, [tags, searchResults]);
+    searchResults.filter((post: Post) => post.tags.some(tag => tagNames.includes(tag)));
+  }, [tags]);
 
   /** input value값 변경 */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -181,7 +177,7 @@ const Search = () => {
         // 기존 태그에 중복되지 않으면 새로운 태그를 추가
         const newTag = { id: Date.now(), name: newTagName };
         const updatedTags = [...prevTags, newTag];
-        const tagNamesWithoutHash = updatedTags.map(tag => tag.name.replace('#', '')); // 검색 시 #제거
+        const tagNamesWithoutHash = updatedTags.map(tag => tag.name.replace('#', ''));
 
         const drinkSearchTerm =
           updatedTags.length === 1 ? updatedTags[0].name.replace('#', '') : '';
@@ -231,7 +227,7 @@ const Search = () => {
   const handleBadgeRemove = async (id: number) => {
     setTags(prevTags => {
       const updatedTags = prevTags.filter(tag => tag.id !== id);
-      const tagNamesWithoutHash = updatedTags.map(tag => tag.name.replace('#', '')); // 검색 시 #제거
+      const tagNamesWithoutHash = updatedTags.map(tag => tag.name.replace('#', ''));
 
       const drinkSearchTerm = updatedTags.length > 0 ? updatedTags[0].name.replace('#', '') : '';
 
@@ -257,7 +253,54 @@ const Search = () => {
     });
   };
 
+  /** 이번주 날짜 기준 */
   const weekRange = getWeekRange();
+
+  /** Top15 항목 클릭 시 뱃지 변환 및 검색 결과 */
+  const handleSuggestedClick = (item: SuggestedTag | SuggestedDrink) => {
+    const newTagName =
+      searchType === 'tag'
+        ? `#${(item as SuggestedTag).tagName}`
+        : (item as SuggestedDrink).drinkName;
+
+    setTags(prevTags => {
+      if (
+        (searchType === 'tag' && prevTags.length >= 3) ||
+        (searchType === 'drink' && prevTags.length >= 1)
+      ) {
+        return [...prevTags];
+      }
+
+      if (prevTags.some(tag => tag.name === newTagName)) return prevTags;
+
+      const updatedTags = [...prevTags, { id: Date.now(), name: newTagName }];
+      searchByResults(updatedTags);
+      return updatedTags;
+    });
+  };
+
+  /** Top15 항목 클릭 시 검색 결과 */
+  const searchByResults = async (tags: Tag[]) => {
+    try {
+      const tagNames = tags.map(tag => tag.name.replace('#', ''));
+
+      if (searchType === 'tag') {
+        const results = await fetchTagResultsApi(tagNames, currentPage, size);
+        setSearchResults(results.content);
+        setTotalElements(results.totalElements);
+        setTotalPages(results.totalPages);
+      } else {
+        const drinkNames = tagNames[0];
+        const results = await fetchDrinkResultsApi(drinkNames, currentPage, size);
+        setSearchResults(results.content);
+        setTotalElements(results.totalElements);
+        setTotalPages(results.totalPages);
+      }
+      setHasSearched(true);
+    } catch (err) {
+      console.error('검색 중 오류 발생:', err);
+    }
+  };
 
   return (
     <SearchLayout>
@@ -345,7 +388,7 @@ const Search = () => {
               {suggestedData.map((item, idx) => (
                 <div key={idx}>
                   <Rank highlight={idx === 0 || idx === 1 || idx === 2}>{idx + 1}</Rank>
-                  <span>
+                  <span onClick={() => handleSuggestedClick(item)}>
                     {searchType === 'tag'
                       ? (item as SuggestedTag).tagName
                       : (item as SuggestedDrink).drinkName}
@@ -383,7 +426,6 @@ const SearchLayout = styled.div`
   position: relative;
   width: 100%;
   max-width: auto;
-
   height: 100vh;
   padding-top: 220px;
   background-color: ${({ theme }) => theme.colors.brightGray};
@@ -575,8 +617,8 @@ const Recommend = styled.section`
 const RecommendTitle = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  align-items: flex-end;
+  margin-bottom: 15px;
 
   b {
     span {
@@ -591,9 +633,10 @@ const RecommendTitle = styled.div`
 `;
 const RecommendContent = styled.div`
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   width: 100%;
-  height: auto;
+  height: 300px;
 
   div {
     display: flex;
