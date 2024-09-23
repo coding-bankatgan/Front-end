@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "memberId": 1,
+    "memberName": "멤버A",
+    "placeName": "서울특별시",
+    "drinkName": "미나리싱싱주",
+    "type": "MAKGEOLLI",
+    "degree": 7,
+    "sweetness": 3,
+    "cost": 5000,
+    "description": "프리미엄 막걸리입니다.",
+    "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00000874&targetNm=PRODUCT",
+    "createdAt": "2024-08-28T00:00:00Z",
+    "approved": null
+  }
+]

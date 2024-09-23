@@ -3,17 +3,21 @@ import cardItem from '../../public/cardItem.json';
 import cardItemDetail from '../../public/cardItemDetail.json';
 import specialtyDrink from '../../public/specialtyDrink.json';
 import regions from '../../public/regions.json';
-import registrations from '../../public/registration.json';
 import comments from '../../public/comments.json';
-import member from '../../public/member.json';
 import commentWrite from '../../public/commentWrite.json';
-import declarationWrite from '../../public/reportWrite.json';
-import tag from '../../public/tag.json';
-import declarations from '../../public/report.json';
 import { Comment, CommentRequestBody } from '@/types/comment';
+
+import member from '../../public/member.json';
+import { MemberRequestBody } from '@/types/member';
+
+import tag from '../../public/tag.json';
+
 import announcements from '../../public/announcement.json';
-import AnnouncementWrite from '../../public/announcementWrite.json';
+import announcementWrite from '../../public/announcementWrite.json';
 import { Announcement, AnnouncementRequestBody } from '@/types/announcement';
+
+import declarations from '../../public/report.json';
+import declarationWrite from '../../public/reportWrite.json';
 import { Declaration, DeclarationRequestBody } from '@/types/declaration';
 
 import suggestedTags from '../../public/suggestedTags.json';
@@ -26,6 +30,10 @@ import notifications from '../../public/notification.json';
 
 import searchDrink from '../../public/searchDrink.json';
 
+import registrations from '../../public/registration.json';
+import registrationWrite from '../../public/registrationWrite.json';
+import { Registration, RegistrationRequestBody } from '@/types/registration';
+
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 /** 받아올 내용
@@ -36,8 +44,9 @@ const mockJwtToken =
 }*/
 
 let commentsData: Comment[] = [...commentWrite];
-let announcementData: Announcement[] = [...AnnouncementWrite];
+let announcementData: Announcement[] = [...announcementWrite];
 let declarationsData: Declaration[] = [...declarationWrite];
+let registrationData: Registration[] = [...registrationWrite];
 
 export const handlers = [
   /** 로그인 테스트 API */
@@ -51,11 +60,6 @@ export const handlers = [
         status: 401,
       });
     }
-  }),
-
-  /** 회원정보 조회 API */
-  http.get('/api/members', async () => {
-    return HttpResponse.json(member);
   }),
 
   /** 전체 게시글 조회 API */
@@ -211,19 +215,60 @@ export const handlers = [
     });
   }),
 
-  //** 마이페이지 API */
-  http.post('/mypage', async () => {
-    return HttpResponse.json({ member, tag });
+  /** 회원정보 조회 API */
+  http.get('/api/members', async () => {
+    return HttpResponse.json(member);
   }),
 
-  /** 마이페이지 회원정보수정 API */
-  http.post('/mypage/edit', async () => {
-    return HttpResponse.json({ specialtyDrink, member });
+  /** 회원정보 수정 API */
+  http.post('/api/members', async ({ request }) => {
+    const requestBody = (await request.json()) as MemberRequestBody;
+
+    const { id, name, favorDrink, alarmEnabled } = requestBody;
+    const memberIndex = member.findIndex(member => member.id === id);
+
+    const updatedMember = {
+      ...member[memberIndex],
+      name: name || member[memberIndex].name,
+      favorDrink: favorDrink || member[memberIndex].favorDrinkType,
+      alarmEnabled:
+        typeof alarmEnabled === 'boolean' ? alarmEnabled : member[memberIndex].alarmEnabled, // 알람 설정 업데이트
+    };
+
+    console.log(updatedMember);
+    member[memberIndex] = updatedMember;
+    return HttpResponse.json(member);
   }),
 
   /** 특산주 등록 신청 API */
-  http.post('/api/drinks/registrations', async () => {
-    return HttpResponse.json({ registrations, regions });
+  http.post('/api/drinks/registrations', async ({ request }) => {
+    const requestBody = (await request.json()) as RegistrationRequestBody;
+
+    const { regionId, drinkName, type, degree, sweetness, cost, description, imageUrl } =
+      requestBody;
+
+    const region = regions.find(r => r.regionId === regionId);
+    const placeName = region ? region.placeName : 'Unknown';
+
+    const newRegistration: Registration = {
+      id: registrations.length + 1,
+      memberId: 1,
+      memberName: '멤버 A',
+      placeName: placeName,
+      drinkName: drinkName,
+      type: type,
+      degree: degree,
+      sweetness: sweetness,
+      cost: cost,
+      description: description,
+      imageUrl: imageUrl,
+      createdAt: new Date().toISOString(),
+      approved: null,
+    };
+
+    registrationData = [...registrationData, newRegistration];
+    console.log(registrationData);
+    return HttpResponse.json(newRegistration);
   }),
 
   /** 특산주 신청 목록 조회 API */
@@ -251,8 +296,8 @@ export const handlers = [
   }),
 
   /** 특산주 신청 글 조회 API */
-  http.get('/api/drinks/registrations/:registId', async ({ params }) => {
-    Number(params.registId);
+  http.get('/api/drinks/registrations/:id', async ({ params }) => {
+    Number(params.id);
     return HttpResponse.json(registrations);
   }),
 
@@ -392,6 +437,11 @@ export const handlers = [
       number,
       content: paginatedNotifications,
     });
+  }),
+
+  /** 지역 목록 조회 API */
+  http.get('/api/regions', async () => {
+    return HttpResponse.json(regions);
   }),
 
   /** 아이디 중복 검사 API */

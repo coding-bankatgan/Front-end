@@ -64,7 +64,7 @@ const Router = ({ showAlert }: RouterProps) => {
         <Route path="/announcement/form" element={<AnnouncementForm />} />
 
         <Route path="/mypage" element={<MyPage />} />
-        <Route path="/mypage/edit" element={<EditMyPage />} />
+        <Route path="/mypage/edit" element={<EditMyPage showAlert={showAlert} />} />
         <Route path="/mypage/follow-tag-list" element={<FollowTagList />} />
         <Route path="/mypage/my-posts" element={<MyPosts />} />
 
@@ -78,8 +78,11 @@ const Router = ({ showAlert }: RouterProps) => {
         <Route path="/signup" element={<SignUp />} />
 
         <Route path="/specialty-drink" element={<SpecialtyDrinkBoard />} />
-        <Route path="/specialty-drink/:registId" element={<SpecialtyDrinkDetail />} />
-        <Route path="/specialty-drink/form" element={<SpecialtyDrinkForm />} />
+        <Route path="/specialty-drink/:id" element={<SpecialtyDrinkDetail />} />
+        <Route
+          path="/specialty-drink/form"
+          element={<SpecialtyDrinkForm showAlert={showAlert} />}
+        />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
