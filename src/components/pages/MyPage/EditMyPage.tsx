@@ -171,12 +171,12 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
             navigate('/mypage');
           } else {
             setSaveAlertVisible(true);
-            setTimeout(() => setSaveAlertVisible(false), 1500);
+            setTimeout(() => setSaveAlertVisible(false), 3000);
           }
         } catch (error) {
           console.error('Error saving member info:', error);
           setSaveAlertVisible(true);
-          setTimeout(() => setSaveAlertVisible(false), 1500);
+          setTimeout(() => setSaveAlertVisible(false), 3000);
         }
       }
     } else {

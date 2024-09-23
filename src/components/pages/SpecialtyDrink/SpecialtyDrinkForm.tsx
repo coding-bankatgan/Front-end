@@ -236,7 +236,7 @@ const Label = styled.label`
 
 const SelectStyled = styled.select`
   display: flex;
-  width: 100px;
+  width: 150px;
   height: 35px;
   margin-bottom: 8px;
   font-size: ${({ theme }) => theme.fontSizes.small};
