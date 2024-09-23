@@ -6,7 +6,7 @@
     "number": 0,
     "content": [
       {
-        "registId": 1,
+        "id": 1,
         "memberId": 1,
         "memberName": "알코올러버",
         "placeName": "서울특별시",
@@ -21,7 +21,7 @@
         "approved": null
       },
       {
-        "registId": 2,
+        "id": 2,
         "memberId": 2,
         "memberName": "고래밥",
         "placeName": "서울특별시",
@@ -36,7 +36,7 @@
         "approved": null
       },
       {
-        "registId": 3,
+        "id": 3,
         "memberId": 3,
         "memberName": "술고래",
         "placeName": "서울특별시",
@@ -51,7 +51,7 @@
         "approved": null
       },
       {
-        "registId": 4,
+        "id": 4,
         "memberId": 4,
         "memberName": "술고래",
         "placeName": "서울특별시",
@@ -66,7 +66,7 @@
         "approved": true
       },
       {
-        "registId": 5,
+        "id": 5,
         "memberId": 5,
         "memberName": "술고래",
         "placeName": "서울특별시",
@@ -81,7 +81,7 @@
         "approved": true
       },
       {
-        "registId": 6,
+        "id": 6,
         "memberId": 6,
         "memberName": "술고래",
         "placeName": "서울특별시",
@@ -96,7 +96,7 @@
         "approved": true
       },
       {
-        "registId": 7,
+        "id": 7,
         "memberId": 7,
         "memberName": "술고래",
         "placeName": "서울특별시",
@@ -111,7 +111,7 @@
         "approved": true
       },
       {
-        "registId": 8,
+        "id": 8,
         "memberId": 8,
         "memberName": "술고래",
         "placeName": "서울특별시",
@@ -126,7 +126,7 @@
         "approved": true
       },
       {
-        "registId": 9,
+        "id": 9,
         "memberId": 9,
         "memberName": "술고래",
         "placeName": "서울특별시",
@@ -141,7 +141,7 @@
         "approved": true
       },
       {
-        "registId": 10,
+        "id": 10,
         "memberId": 10,
         "memberName": "술고래",
         "placeName": "서울특별시",
@@ -156,7 +156,7 @@
         "approved": true
       },
       {
-        "registId": 11,
+        "id": 11,
         "memberId": 11,
         "memberName": "술고래",
         "placeName": "서울특별시",
@@ -171,7 +171,7 @@
         "approved": true
       },
       {
-        "registId": 12,
+        "id": 12,
         "memberId": 12,
         "memberName": "술고래",
         "placeName": "서울특별시",

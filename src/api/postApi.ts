@@ -144,6 +144,42 @@ export const getAddress = async (latitude: number | null, longitude: number | nu
   }
 };
 
+//** 특산주 등록 신청 */
+export const fetchRegistrationWriteApi = async (
+  regionId: number,
+  drinkName: string,
+  type: string,
+  degree: number,
+  sweetness: number,
+  cost: number,
+  description: string,
+  imageUrl: string,
+) => {
+  try {
+    const response = await axios.post(
+      '/api/drinks/registrations',
+      {
+        regionId: regionId,
+        drinkName: drinkName,
+        type: type,
+        degree: degree,
+        sweetness: sweetness,
+        cost: cost,
+        description: description,
+        imageUrl: imageUrl,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching registrationWrite: ', error);
+  }
+};
+
 //** 특산주 신청 목록 조회 API */
 export const fetchRegistrationsApi = async (page: number, size: number) => {
   try {
@@ -166,16 +202,6 @@ export const fetchRegistrationsDetailApi = async (registId: number) => {
   }
 };
 
-//** 회원정보 조회 API */
-export const fetchMembers = async () => {
-  try {
-    const response = await axios.get(`/api/members`);
-    return response.data;
-  } catch (err) {
-    console.error('Error fetching member: ', err);
-  }
-};
-
 /** 공지사항 조회 API */
 export const fetchAnnouncementApi = async (page: number, size: number) => {
   try {
@@ -195,18 +221,13 @@ export const fetchAnnouncementDetailApi = async (id: number) => {
 };
 
 /** 공지사항 등록 API */
-export const fetchAnnouncementWriteApi = async (
-  title: string,
-  content: string,
-  imageUrl: string,
-) => {
+export const fetchAnnouncementWriteApi = async (title: string, content: string) => {
   try {
     const response = await axios.post(
       '/api/announcements',
       {
         title: title,
         content: content,
-        imageUrl: imageUrl,
       },
       {
         headers: {
@@ -273,5 +294,70 @@ export const fetchNotificationsApi = async () => {
     return response.data;
   } catch (err) {
     console.error('Error fetching notifications: ', err);
+  }
+};
+
+/** 이미지 업로드 API */
+export const fetchImageUploadApi = async (file: File) => {
+  const formData = new FormData();
+  formData.append('multipartFile', file);
+
+  try {
+    const response = await axios.post(`/api/image`, formData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching image: ', err);
+  }
+};
+
+/** 지역 목록 조회 API */
+export const fetchRegionApi = async () => {
+  try {
+    const response = await axios.get(`/api/regions`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching regions: ', err);
+  }
+};
+
+/** 회원정보 조회 API */
+export const fetchMemberApi = async () => {
+  try {
+    const response = await axios.get(`/api/members`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching members: ', err);
+  }
+};
+
+/** 회원정보 수정 API */
+export const fetchMemberWriteApi = async (
+  id: number,
+  name: string,
+  favorDrink: string[],
+  alarmEnabled: boolean,
+) => {
+  try {
+    const response = await axios.post(
+      '/api/members',
+      {
+        id: id,
+        name: name,
+        favorDrink: favorDrink,
+        alarmEnabled: alarmEnabled,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching memberWrite: ', error);
   }
 };

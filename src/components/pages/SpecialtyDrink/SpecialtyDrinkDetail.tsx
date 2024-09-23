@@ -64,17 +64,38 @@ const SpecialtyDrinkDetail = () => {
     <NoFooterLayoutSub>
       <ContentWrapper>
         <HeaderStyled>
-          <h1>특산주 신청합니다!</h1>
+          <h1>{registration?.drinkName}</h1>
         </HeaderStyled>
         <TitleStyled>
           <img src={registration?.imageUrl} alt={registration?.drinkName} />
-          <DrinkInfo>
-            <Label htmlFor="text">특산주 이름</Label>
-            <span>{registration?.drinkName}</span>
-            <Label htmlFor="text">지역</Label>
-            <span>{registration?.placeName}</span>
-          </DrinkInfo>
         </TitleStyled>
+        <ContentStyled>
+          <DrinkInfo>
+            <div>
+              <Label htmlFor="text">지역</Label>
+              <span>{registration?.placeName}</span>
+            </div>
+            <div>
+              <Label htmlFor="text">종류</Label>
+              <span>{registration?.type}</span>
+            </div>
+            <div>
+              <Label htmlFor="text">당도</Label>
+              <span>{registration?.sweetness}</span>
+            </div>
+          </DrinkInfo>
+          <DrinkInfo>
+            <div>
+              <Label htmlFor="text">도수</Label>
+              <span>{registration?.degree} 도</span>
+            </div>
+            <div>
+              <Label htmlFor="text">가격</Label>
+              <span>{registration?.cost} 원</span>
+            </div>
+          </DrinkInfo>
+        </ContentStyled>
+        <Label htmlFor="text">특산주 정보</Label>
         <TextareaStyled value={registration?.description} readOnly />
         <Line />
         <BottomStyled>
@@ -121,10 +142,10 @@ const TitleStyled = styled.div`
   display: flex;
 
   img {
-    min-width: 150px;
+    min-width: 316px;
     width: auto;
     height: auto;
-    max-height: 150px;
+    max-height: 316px;
     object-fit: contain;
     margin-bottom: 10px;
     border: 1px solid ${({ theme }) => theme.colors.brightGray};
@@ -134,9 +155,10 @@ const TitleStyled = styled.div`
 
 const DrinkInfo = styled.div`
   display: flex;
-  margin-left: 10px;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
+  margin-top: 5px;
+  margin-bottom: 5px;
 
   span {
     margin-bottom: 16px;
@@ -147,11 +169,23 @@ const DrinkInfo = styled.div`
 const Label = styled.label`
   font-size: ${({ theme }) => theme.fontSizes.small};
   font-weight: bold;
+  margin-right: 10px;
 
   ::before {
     content: '*';
     margin-right: 3px;
     color: ${({ theme }) => theme.colors.tertiary};
+  }
+`;
+
+const ContentStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+
+  span {
+    margin-right: 20px;
   }
 `;
 
