@@ -1,34 +1,25 @@
-import axios from 'axios';
 import create from 'zustand';
+import { fetchRegionApi } from '@/api/postApi';
 
-interface regions {
-  region_id: number;
-  place_name: string;
+interface Region {
+  id: number;
+  placeName: string;
   latitude: number;
   longitude: number;
-  create_at: string;
+  createAt: string;
 }
 
 interface regionsState {
-  allRegions: string[];
+  regions: Region[];
   fetchRegions: () => Promise<void>;
 }
 
 export const useRegionStore = create<regionsState>(set => ({
-  allRegions: [],
+  regions: [],
   fetchRegions: async () => {
     try {
-      const response = await axios.get<regions[]>('/regions.json');
-      const regionsName = Array.from(new Set(response.data.map(item => item.place_name)));
-      console.log(regionsName);
-      if (Array.isArray(regionsName)) {
-        set({
-          allRegions: regionsName,
-        });
-      } else {
-        console.error('error: ', regionsName);
-        set({ allRegions: [] });
-      }
+      const data = await fetchRegionApi();
+      set({ regions: data });
     } catch (err) {
       console.error('Error fetching array: ', err);
     }
