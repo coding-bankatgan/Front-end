@@ -6,12 +6,13 @@ import styled from '@emotion/styled';
 import { Textarea } from '@/components/ui/textarea';
 import useRegistrationStore from '@/store/useRegistrationStore';
 import { useMemberStore } from '@/store/useMemberStore';
+import { mapDrinkType } from '@/data/drinkTypes';
 
 const SpecialtyDrinkDetail = () => {
   const { registrations, fetchRegistrationsDetail, updateApprovalStatus } = useRegistrationStore();
   const { currentUser, fetchMembers } = useMemberStore();
-  const { registId } = useParams();
-  const id = Number(registId);
+  const { id } = useParams();
+  const registId = Number(id);
   const isManager = currentUser?.role === 'MANAGER';
 
   useEffect(() => {
@@ -23,15 +24,15 @@ const SpecialtyDrinkDetail = () => {
   const location = useLocation();
   const newRegistration = location.state;
 
+  useEffect(() => {
+    fetchRegistrationsDetail(registId);
+  }, [fetchRegistrationsDetail, registId]);
+
   const registration =
-    registrations.find(registration => registration.registId === id) || newRegistration;
+    registrations.find(registration => registration.id === registId) || newRegistration;
 
   const [selectedApproval, setSelectedApproval] = useState<'true' | 'false' | null>(null);
   const [isSelectDisabled, setIsSelectDisabled] = useState<boolean>(false);
-
-  useEffect(() => {
-    fetchRegistrationsDetail(id);
-  }, [fetchRegistrationsDetail, id]);
 
   useEffect(() => {
     if (registration) {
@@ -50,8 +51,8 @@ const SpecialtyDrinkDetail = () => {
   };
   const handleUpdateClick = async () => {
     if (selectedApproval !== null) {
-      updateApprovalStatus(id, selectedApproval);
-      console.log(id);
+      updateApprovalStatus(registId, selectedApproval);
+      console.log(registId);
       console.log(selectedApproval);
       navigate('/specialty-drink');
     }
@@ -72,26 +73,26 @@ const SpecialtyDrinkDetail = () => {
         <ContentStyled>
           <DrinkInfo>
             <div>
+              <Label htmlFor="text">종류</Label>
+              <span>{mapDrinkType(registration?.type || '')}</span>
+            </div>
+            <div style={{ width: '150px' }}>
               <Label htmlFor="text">지역</Label>
               <span>{registration?.placeName}</span>
             </div>
+          </DrinkInfo>
+          <DrinkInfo>
             <div>
-              <Label htmlFor="text">종류</Label>
-              <span>{registration?.type}</span>
+              <Label htmlFor="text">가격</Label>
+              <span>{registration?.cost} 원</span>
             </div>
             <div>
               <Label htmlFor="text">당도</Label>
               <span>{registration?.sweetness}</span>
             </div>
-          </DrinkInfo>
-          <DrinkInfo>
             <div>
               <Label htmlFor="text">도수</Label>
               <span>{registration?.degree} 도</span>
-            </div>
-            <div>
-              <Label htmlFor="text">가격</Label>
-              <span>{registration?.cost} 원</span>
             </div>
           </DrinkInfo>
         </ContentStyled>
@@ -163,6 +164,13 @@ const DrinkInfo = styled.div`
   span {
     margin-bottom: 16px;
     font-size: ${({ theme }) => theme.fontSizes.base};
+  }
+
+  div {
+    display: flex;
+    width: 100px;
+    margin-right: 10px;
+    flex-direction: column;
   }
 `;
 

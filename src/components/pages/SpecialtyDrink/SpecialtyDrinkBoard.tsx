@@ -16,6 +16,7 @@ const SpecialtyDrinkBoard = () => {
     registrations: state.registrations,
     pagination: state.pagination,
     fetchRegistrations: state.fetchRegistrations,
+    setRegistrations: state.setRegistrations,
   }));
 
   useEffect(() => {
@@ -24,6 +25,10 @@ const SpecialtyDrinkBoard = () => {
 
   const handlePageChange = (newPage: number) => {
     fetchRegistrations(newPage, pagination.size);
+  };
+
+  const handleItemClick = (id: number) => {
+    navigate(`/specialty-drink/${id}`);
   };
 
   return (
@@ -35,10 +40,7 @@ const SpecialtyDrinkBoard = () => {
         </ListTitleStyled>
         <ListContentStyled>
           {registrations.map(registration => (
-            <li
-              key={registration.registId}
-              onClick={() => navigate(`/specialty-drink/${registration.registId}`)}
-            >
+            <li key={registration.id} onClick={() => handleItemClick(registration.id)}>
               <div>
                 <span>{registration.drinkName}</span>
                 {registration.approved === null ? (

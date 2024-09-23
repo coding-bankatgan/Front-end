@@ -4,7 +4,7 @@ import useMemberStore from '@/store/useMemberStore';
 import useNotificationStore from '@/store/useNotificationStore';
 
 interface Registration {
-  registId: number;
+  id: number;
   memberId: number;
   memberName: string;
   placeName: string;
@@ -33,16 +33,13 @@ interface RegistrationState {
 
   setRegistrations: (registrations: Registration[]) => void;
   addRegistration: (
-    registration: Omit<
-      Registration,
-      'registId' | 'memberId' | 'memberName' | 'createdAt' | 'approved'
-    >,
+    registration: Omit<Registration, 'id' | 'memberId' | 'memberName' | 'createdAt' | 'approved'>,
   ) => void;
 
-  updateApprovalStatus: (registId: number, approved: 'true' | 'false') => void;
+  updateApprovalStatus: (id: number, approved: 'true' | 'false') => void;
 
   fetchRegistrations: (page: number, size: number) => Promise<void>;
-  fetchRegistrationsDetail: (registId: number) => Promise<void>;
+  fetchRegistrationsDetail: (id: number) => Promise<void>;
 }
 
 const useRegistrationStore = create<RegistrationState>(set => ({
@@ -77,9 +74,10 @@ const useRegistrationStore = create<RegistrationState>(set => ({
       });
     }
   },
-  fetchRegistrationsDetail: async registId => {
+  fetchRegistrationsDetail: async id => {
     try {
-      const data = await fetchRegistrationsDetailApi(registId);
+      const data = await fetchRegistrationsDetailApi(id);
+      console.log(data);
       set({ registrationsDetail: data });
     } catch (err) {
       console.error('Error fetching posts: ', err);
@@ -93,13 +91,13 @@ const useRegistrationStore = create<RegistrationState>(set => ({
       const newRegistration: Registration = {
         memberId: 1,
         memberName: 'test',
-        registId: state.registrations.length + 1, // 임시 ID 생성, 실제 구현에서는 서버에서 반환된 ID 사용
+        id: state.registrations.length + 1, // 임시 ID 생성, 실제 구현에서는 서버에서 반환된 ID 사용
         createdAt: new Date().toISOString(), // 현재 시간 설정
         approved: null, // 초기 승인 상태는 null
         ...registration,
       };
 
-      newRegistId = newRegistration.registId;
+      newRegistId = newRegistration.id;
       console.log('uuuuuuuu', newRegistration);
 
       return {
@@ -113,9 +111,9 @@ const useRegistrationStore = create<RegistrationState>(set => ({
   updateApprovalStatus: (registId: number, approved: 'true' | 'false') =>
     set(state => {
       const updatedRegistrations = state.registrations.map(registration =>
-        registration.registId === registId ? { ...registration, approved } : registration,
+        registration.id === registId ? { ...registration, approved } : registration,
       );
-      const updatedRegistration = updatedRegistrations.find(reg => reg.registId === registId);
+      const updatedRegistration = updatedRegistrations.find(reg => reg.id === registId);
 
       if (updatedRegistration) {
         const { memberId, drinkName } = updatedRegistration;

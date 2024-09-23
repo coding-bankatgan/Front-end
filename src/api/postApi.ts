@@ -184,7 +184,6 @@ export const fetchRegistrationWriteApi = async (
 export const fetchRegistrationsApi = async (page: number, size: number) => {
   try {
     const response = await axios.get(`/api/drinks/registrations?page=${page}&size=${size}`);
-    console.log('api', response.data);
     return response.data;
   } catch (err) {
     console.error('Error fetching specialtyDrink: ', err);
@@ -192,9 +191,9 @@ export const fetchRegistrationsApi = async (page: number, size: number) => {
 };
 
 //** 특산주 신청 글 조회 API */
-export const fetchRegistrationsDetailApi = async (registId: number) => {
+export const fetchRegistrationsDetailApi = async (id: number) => {
   try {
-    const response = await axios.get(`/api/drinks/registrations/${registId}`);
+    const response = await axios.get(`/api/drinks/registrations/${id}`);
     console.log('api', response.data);
     return response.data;
   } catch (err) {

@@ -78,7 +78,7 @@ const Router = ({ showAlert }: RouterProps) => {
         <Route path="/signup" element={<SignUp />} />
 
         <Route path="/specialty-drink" element={<SpecialtyDrinkBoard />} />
-        <Route path="/specialty-drink/:registId" element={<SpecialtyDrinkDetail />} />
+        <Route path="/specialty-drink/:id" element={<SpecialtyDrinkDetail />} />
         <Route
           path="/specialty-drink/form"
           element={<SpecialtyDrinkForm showAlert={showAlert} />}

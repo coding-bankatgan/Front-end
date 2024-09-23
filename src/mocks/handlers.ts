@@ -296,8 +296,8 @@ export const handlers = [
   }),
 
   /** 특산주 신청 글 조회 API */
-  http.get('/api/drinks/registrations/:registId', async ({ params }) => {
-    Number(params.registId);
+  http.get('/api/drinks/registrations/:id', async ({ params }) => {
+    Number(params.id);
     return HttpResponse.json(registrations);
   }),
 
