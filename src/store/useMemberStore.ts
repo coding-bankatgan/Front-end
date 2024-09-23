@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { create } from 'zustand';
-import { fetchMembers } from '@/api/postApi';
+import { fetchMemberApi } from '@/api/postApi';
 
 interface Tag {
   id?: number;
@@ -55,7 +55,7 @@ export const useMemberStore = create<MemberState>(set => ({
   //   })),
   fetchMembers: async () => {
     try {
-      const response = await fetchMembers();
+      const response = await fetchMemberApi();
       set({ members: response });
 
       const currentUser = response.find((member: Member) => member.id === 2) || null;
