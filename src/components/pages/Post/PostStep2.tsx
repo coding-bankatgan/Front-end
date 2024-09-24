@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { Button } from '@/components/ui/button';
 import { Title } from './PostStep1';
 import { regions } from '@/data/regions';
 import { useEffect, useRef, useState } from 'react';
@@ -8,7 +7,6 @@ import { Line } from '../Home/Home';
 import SearchIcon from '@/assets/icons/SearchIcon';
 import SearchResults from './SearchResults';
 import axios from 'axios';
-import { setegid } from 'process';
 
 interface PostStep2Props {
   nextStep: () => void;
@@ -27,14 +25,6 @@ export interface Drink {
   description: string;
   imageUrl: string;
   createdAt: string;
-}
-
-interface ApiResponse {
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-  content: Drink[];
 }
 
 const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
@@ -76,10 +66,6 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
       clearTimeout(handler); // 컴포넌트 언마운트 시 타이머 취소
     };
   }, [searchTerm]);
-
-  const handleBtnClick = () => {
-    nextStep();
-  };
 
   const [searchResults, setSearchResults] = useState<Drink[]>([]);
   const [page, setPage] = useState(0);
@@ -289,25 +275,6 @@ const ResultsContainer = styled.section`
   min-height: 300px;
   height: auto;
   margin: 25px 0;
-`;
-
-const Suggest = styled.div`
-  padding: 0 5px;
-
-  button {
-    display: inline-block;
-    margin: 0 5px 5px 0;
-    height: 36px;
-    background-color: ${({ theme }) => theme.colors.brightGray};
-    color: ${({ theme }) => theme.colors.darkGray};
-    font-size: ${({ theme }) => theme.fontSizes.base};
-    border-radius: 5px;
-
-    &:hover {
-      background-color: ${({ theme }) => theme.colors.primary};
-      color: ${({ theme }) => theme.colors.white};
-    }
-  }
 `;
 
 export default PostStep2;
