@@ -8,9 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import { fetchAnnouncementWriteApi } from '@/api/postApi';
 import PlusIcon from '@/assets/icons/PlusIcon';
 
-const writeAnnouncement = async (title: string, content: string, imageUrl: string) => {
+const writeAnnouncement = async (title: string, content: string) => {
   try {
-    const response = await fetchAnnouncementWriteApi(title, content, imageUrl);
+    const response = await fetchAnnouncementWriteApi(title, content);
     return response;
   } catch (err) {
     console.error('Error writing announcement: ', err);
@@ -21,12 +21,11 @@ const AnnouncementForm = () => {
   const navigate = useNavigate();
   const [newTitle, setNewTitle] = useState('');
   const [newContent, setNewContent] = useState('');
-  const [newImg, setNewImg] = useState('');
   const handleAnnouncementSubmit = async () => {
     if (newTitle.trim() === '' || newContent.trim() === '') return;
 
     try {
-      const response = await writeAnnouncement(newTitle, newContent, newImg);
+      const response = await writeAnnouncement(newTitle, newContent);
 
       if (response) {
         const newAnnouncementData = {
@@ -36,7 +35,6 @@ const AnnouncementForm = () => {
 
         setNewTitle('');
         setNewContent('');
-        setNewImg('');
 
         navigate(`/announcement/${newAnnouncementData.id}`, { state: newAnnouncementData });
         // navigate('/announcement', { state: { newAnnouncement: newAnnouncementData } });
