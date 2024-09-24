@@ -54,10 +54,10 @@ export const handlers = [
     const { email, password } = (await request.json()) as { email: string; password: string };
 
     if (email === 'man@naver.com' && password === 'man123456') {
-      return HttpResponse.json({ token: mockJwtToken });
+      return HttpResponse.json({ accessToken: mockJwtToken, refreshToken: mockJwtToken });
     } else {
       throw new HttpResponse(null, {
-        status: 401,
+        status: 403,
       });
     }
   }),
@@ -461,7 +461,9 @@ export const handlers = [
     });
   }),
   /** 데일리 추천 api */
-  http.get(`api/suggest/drink`, ({ request }) => {
+  http.get(`/api/suggest/drink`, ({ request }) => {
+    console.log(request);
+
     const requestUrl = new URL(request.url);
     const lat = requestUrl.searchParams.get('lat');
     const lon = requestUrl.searchParams.get('lon');
