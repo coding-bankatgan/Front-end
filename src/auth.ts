@@ -5,19 +5,22 @@ import Cookies from 'js-cookie';
 export const login = async (email: string, password: string) => {
   try {
     const response = await axios.post('/login', { email, password });
-    const token = response.data.token;
+    console.log(response.data.accessToken);
 
-    /**  JWT 토큰을 쿠키에 저장  */
-    const cookie = Cookies.get('jwt');
+    const accessToken = response.data.accessToken;
+    const refreshToken = response.data.refreshToken;
+
+    Cookies.remove('access_token');
+    Cookies.remove('refresh_token');
+    const cookie = Cookies.get('access_token');
+    console.log(cookie);
 
     if (cookie === undefined) {
-      Cookies.set('jwt', token, { expires: 7 });
+      Cookies.set('access_token', accessToken, { expires: 7 });
+      Cookies.set('refresh_token', refreshToken, { expires: 7 });
 
       console.log('로그인 성공! 토큰이 저장되었습니다.');
     }
-
-    /** token test용 후에 지우기 */
-    // displaySub;
   } catch (error) {
     console.error('로그인 실패:', error);
     throw error;
