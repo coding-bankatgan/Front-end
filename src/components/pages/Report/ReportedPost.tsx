@@ -36,7 +36,7 @@ const ReportedPost = () => {
     const approvalState = declaration?.approved !== null ? declaration?.approved : selectedApproval;
     switch (approvalState) {
       case true:
-        return '신고 주신 부분 검토하였으며, 게시글 내 사유와 관련된 부분 확인되어 게시글 비공개 진행하였습니다. 제보에 감사드립니다.';
+        return '신고 주신 부분 검토하였으며, 게시글 내 사유와 관련된 부분 확인되어 게시글 삭제 진행하였습니다. 제보에 감사드립니다.';
       case false:
         return '신고 주신 부분 검토하였으나, 수정이 필요한 부분 확인되지 않아 신고 요청 반려되었습니다.';
       default:
