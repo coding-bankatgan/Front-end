@@ -14,13 +14,14 @@ import {
   AlertDialogDescription,
   AlertDialogAction,
   AlertDialogCancel,
-} from '@/components/ui/alert-dialog'; // 적절한 경로로 변경
+} from '@/components/ui/alert-dialog';
 import { useSpecialtyStore } from '@/store/useSpecialtyStore';
 import { useMemberStore } from '@/store/useMemberStore';
 import { mapDrinkType } from '@/data/drinkTypes';
 import ExProfileImg from '@/assets/ExProfileImg';
 import styled from '@emotion/styled';
 import CustomAlert from '@/components/layout/CustomAlert';
+import WithDraw from './WithDraw';
 import { fetchMemberWriteApi } from '@/api/postApi';
 
 interface EditMyPageProps {
@@ -47,7 +48,6 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
   /** alert 및 알람 관리 */
   const [isAgreeChecked, setIsAgreeChecked] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [saveAlertVisible, setSaveAlertVisible] = useState(false);
 
@@ -199,13 +199,6 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
     }
   };
 
-  /** 탈퇴 */
-  const handleWithdraw = () => {
-    console.log('회원 탈퇴 처리 중...');
-    showAlert('success', '회원탈퇴가 완료되었습니다.');
-    setIsWithdrawDialogOpen(false);
-  };
-
   return (
     <NoFooterLayout>
       <ContentWrapper>
@@ -312,33 +305,7 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
             </div>
           </SwitchWrapper>
         </EditBottom>
-        <WithdrawWrapper>
-          <AlertDialog open={isWithdrawDialogOpen} onOpenChange={setIsWithdrawDialogOpen}>
-            <AlertDialogTrigger asChild>
-              <p onClick={() => setIsWithdrawDialogOpen(true)} style={{ cursor: 'pointer' }}>
-                회원탈퇴
-              </p>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>회원 탈퇴 시 주의사항 안내</AlertDialogTitle>
-                <AlertDialogDescription>
-                  <p>회원 탈퇴 시 작성하신 게시글의 경우 삭제되지 않으니 </p>
-                  <p>공개를 원하지 않는 게시글은 직접 삭제 요청드립니다.</p>
-                  <br />
-                  <p>회원 가입 시 입력하신 개인정보는 </p>
-                  <p>즉시 파기되며 복구하실 수 없습니다.</p>
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancelStyled onClick={() => setIsWithdrawDialogOpen(false)}>
-                  취소
-                </AlertDialogCancelStyled>
-                <AlertDialogActionStyled onClick={handleWithdraw}>탈퇴</AlertDialogActionStyled>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </WithdrawWrapper>
+        <WithDraw showAlert={showAlert} />
         <ConfirmWrapper>
           <Button onClick={() => navigate('/mypage')}>취소</Button>
           <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -482,16 +449,6 @@ const EditBottom = styled.div`
   label::before {
     content: '* ';
     color: ${({ theme }) => theme.colors.tertiary};
-  }
-`;
-
-const WithdrawWrapper = styled.div`
-  display: flex;
-  margin-top: 20px;
-
-  p {
-    font-size: ${({ theme }) => theme.fontSizes.small};
-    color: ${({ theme }) => theme.colors.gray};
   }
 `;
 
