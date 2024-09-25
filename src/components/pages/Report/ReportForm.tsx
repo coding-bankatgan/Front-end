@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { getRoleFromToken } from '@/auth';
+//import { getRoleFromToken } from '@/auth';
 
 interface ReportFormProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -48,7 +48,7 @@ const ReportForm = ({ showAlert }: ReportFormProps) => {
     window.open(postLink, '_blank');
   };
 
-  const role = getRoleFromToken();
+  //const role = getRoleFromToken();
 
   const handleCancelClick = () => {
     // if (role !== 'MANAGER') {

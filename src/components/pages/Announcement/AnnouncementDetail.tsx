@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Textarea } from '@/components/ui/textarea';

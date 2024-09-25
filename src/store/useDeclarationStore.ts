@@ -80,7 +80,7 @@ const useDeclarationStore = create<DeclarationState>(set => ({
       );
 
       const declaration = updatedDeclarations.find(decl => decl.id === id);
-      const { memberId, type, content } = declaration || {};
+      const { type, content } = declaration || {};
 
       if (declaration) {
         const { addNewNotification } = useNotificationStore.getState();

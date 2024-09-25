@@ -1,25 +1,18 @@
 import { delay, http, HttpResponse } from 'msw';
 import cardItem from '../../public/cardItem.json';
 import cardItemDetail from '../../public/cardItemDetail.json';
-import specialtyDrink from '../../public/specialtyDrink.json';
 import regions from '../../public/regions.json';
 import comments from '../../public/comments.json';
 import commentWrite from '../../public/commentWrite.json';
 import { Comment, CommentRequestBody } from '@/types/comment';
-
 import member from '../../public/member.json';
 import { MemberRequestBody } from '@/types/member';
-
-import tag from '../../public/tag.json';
-
 import announcements from '../../public/announcement.json';
 import announcementWrite from '../../public/announcementWrite.json';
 import { Announcement, AnnouncementRequestBody } from '@/types/announcement';
-
 import declarations from '../../public/report.json';
 import declarationWrite from '../../public/reportWrite.json';
 import { Declaration, DeclarationRequestBody } from '@/types/declaration';
-
 import suggestedTags from '../../public/suggestedTags.json';
 import suggestedDrinks from '../../public/suggestedDrinks.json';
 import autoCompleteTag from '../../public/autoCompleteTag.json';
@@ -27,9 +20,7 @@ import autoCompleteDrink from '../../public/autoCompleteDrink.json';
 import searchByTag from '../../public/searchByTag.json';
 import searchByDrink from '../../public/searchByDrink.json';
 import notifications from '../../public/notification.json';
-
 import searchDrink from '../../public/searchDrink.json';
-
 import registrations from '../../public/registration.json';
 import registrationWrite from '../../public/registrationWrite.json';
 import { Registration, RegistrationRequestBody } from '@/types/registration';
@@ -493,11 +484,10 @@ export const handlers = [
     const requestUrl = new URL(request.url);
     const regionId = requestUrl.searchParams.get('regionId');
     const drinkName = requestUrl.searchParams.get('drinkName');
-    const size = requestUrl.searchParams.get('size');
     const page = requestUrl.searchParams.get('page');
 
-    const data = searchDrink.filter((item, idx) => item.number === Number(page));
-    const emptyData = searchDrink.filter((item, idx) => item.number === Number(page) + 100);
+    const data = searchDrink.filter(item => item.number === Number(page));
+    const emptyData = searchDrink.filter(item => item.number === Number(page) + 100);
     console.log(regionId);
 
     if (drinkName === '1') {
@@ -512,11 +502,14 @@ export const handlers = [
   }),
   http.post(`/api/image`, ({ request }) => {
     delay(200);
+    console.log(request.headers);
+
     return HttpResponse.json(
       'https://thesool.com/common/imageView.do?targetId=PR00000941&targetNm=PRODUCT',
     );
   }),
   http.post('/api/post', async ({ request }) => {
+    console.log(request.headers);
     const requestBody = await request.json();
     console.log(requestBody);
     return new Response();

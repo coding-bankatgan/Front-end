@@ -7,13 +7,15 @@ import styled from '@emotion/styled';
 import dayjs from 'dayjs';
 import PrevBtn from '@/components/layout/PrevBtn';
 import Pagination from './../../layout/Pagination';
-import { getRoleFromToken } from '@/auth'; // 경로를 알맞게 수정하세요
+//import { getRoleFromToken } from '@/auth'; // 경로를 알맞게 수정하세요
 
 interface ReportListProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
 }
 
 const ReportBoard = ({ showAlert }: ReportListProps) => {
+  console.log(showAlert);
+
   const navigate = useNavigate();
   const { declarations, pagination, fetchDeclarations } = useDeclarationStore(state => ({
     declarations: state.declarations,
@@ -29,7 +31,7 @@ const ReportBoard = ({ showAlert }: ReportListProps) => {
     fetchDeclarations(newPage, pagination.size);
   };
 
-  const role = getRoleFromToken();
+  // const role = getRoleFromToken();
 
   const handleItemClick = (id: number) => {
     // if (role !== 'MANAGER') {
