@@ -63,6 +63,7 @@ const CardStyled = styled(Card)`
   margin-bottom: 10px;
   border-radius: 10px;
   border: 1px solid ${({ theme }) => theme.colors.lightGray};
+  box-shadow: none;
   overflow: hidden;
 `;
 
@@ -86,7 +87,7 @@ const CardContentStyled = styled(CardContent)`
   p {
     display: -webkit-box;
     height: 42px;
-    margin-top: 5px;
+    margin-top: 2px;
     font-size: ${({ theme }) => theme.fontSizes.small};
     text-align: left;
     letter-spacing: -0.2px;
@@ -121,7 +122,11 @@ const ContentTop = styled.div`
 `;
 
 const DrinkName = styled.span`
-  background: linear-gradient(to top, #e9d7cb 40%, transparent 15%);
+  background: linear-gradient(
+    to top,
+    ${({ theme }) => theme.colors.focusShadow} 45%,
+    transparent 15%
+  );
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
 `;
 
