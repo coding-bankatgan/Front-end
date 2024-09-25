@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import EllipsisVerticalIcon from './../../assets/icons/EllipsisVerticalIcon';
 import {
   DropdownMenu,
   DropdownMenuContent,
