@@ -105,7 +105,7 @@ const Daily = () => {
             </Img>
             <ImgDesc>
               <b>{dailyData.name}</b>
-              <span>종류 / 맛 / 도수 / 가격 정보</span>
+              <span>주종 / 당도 / 도수 / 가격 정보</span>
             </ImgDesc>
           </>
         )}
@@ -122,53 +122,13 @@ const Daily = () => {
   );
 };
 
-const ValiText = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 70px;
-  font-weight: bold;
-  button {
-    margin-top: 4px;
-    padding: 2px 12px 2px 12px;
-    background: ${({ theme }) => theme.colors.success};
-    border-radius: 8px;
-    color: ${({ theme }) => theme.colors.white};
-  }
-`;
-
-const LoadingContainer = styled.div<{ rotate: boolean | string }>`
-  position: absolute;
-  right: 3px;
-  bottom: 3px;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  transition: transform 1s ease;
-  ${({ rotate }) =>
-    rotate === 'true' &&
-    `
-  transform: rotate(360deg);
-`}
-
-  svg {
-    width: 100%;
-    height: 100%;
-  }
-`;
-
 const DailySection = styled.section`
   position: relative;
   width: 100%;
   height: auto;
-  padding: 10px 15px;
+  margin-bottom: 10px;
+  padding: 20px;
   background: ${({ theme }) => theme.colors.white};
-  border-radius: 10px;
-  box-shadow:
-    rgba(17, 17, 26, 0.05) 0px 1px 0px,
-    rgba(17, 17, 26, 0.05) 0px 0px 8px;
 `;
 
 const DailyTop = styled.div`
@@ -190,6 +150,7 @@ const DailyTop = styled.div`
     svg {
       width: 16px;
       height: 16px;
+      color: ${({ theme }) => theme.colors.darkGray};
     }
   }
 `;
@@ -197,6 +158,44 @@ const DailyTop = styled.div`
 const DailyDesc = styled.span`
   color: ${({ theme }) => theme.colors.gray};
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
+`;
+
+const ValiText = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 70px;
+  font-weight: bold;
+  button {
+    margin-top: 4px;
+    padding: 2px 12px 2px 12px;
+    background: ${({ theme }) => theme.colors.success};
+    border-radius: 8px;
+    color: ${({ theme }) => theme.colors.white};
+  }
+`;
+
+const LoadingContainer = styled.div<{ rotate: boolean | string }>`
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 16px;
+  height: 16px;
+  color: ${({ theme }) => theme.colors.darkGray};
+  cursor: pointer;
+  transition: transform 1s ease;
+  ${({ rotate }) =>
+    rotate === 'true' &&
+    `
+  transform: rotate(360deg);
+`}
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const DailyBottom = styled.div`
@@ -213,8 +212,8 @@ const Img = styled.div`
   width: 70px;
   height: 70px;
   margin-right: 10px;
-  border-radius: 10px;
   overflow: hidden;
+
   img {
     height: 100%;
   }
@@ -224,10 +223,12 @@ const Img = styled.div`
   }
 `;
 
-const ImgDesc = styled.span`
+const ImgDesc = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  min-width: 210px;
+  width: auto;
 
   b {
     font-size: ${({ theme }) => theme.fontSizes.small};
