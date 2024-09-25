@@ -1,38 +1,37 @@
 import { delay, http, HttpResponse } from 'msw';
-import cardItem from '../../public/cardItem.json';
-import cardItemDetail from '../../public/cardItemDetail.json';
-import specialtyDrink from '../../public/specialtyDrink.json';
-import regions from '../../public/regions.json';
-import comments from '../../public/comments.json';
-import commentWrite from '../../public/commentWrite.json';
+import cardItem from './data/cardItem.json';
+import cardItemDetail from './data/cardItemDetail.json';
+import regions from './data/regions.json';
+import comments from './data/comments.json';
+import commentWrite from './data/commentWrite.json';
 import { Comment, CommentRequestBody } from '@/types/comment';
 
-import member from '../../public/member.json';
+import member from './data/member.json';
 import { MemberRequestBody } from '@/types/member';
 
-import tag from '../../public/tag.json';
+import tag from './data/tag.json';
 import { Tag, TagRequestBody } from '@/types/tag';
 
-import announcements from '../../public/announcement.json';
-import announcementWrite from '../../public/announcementWrite.json';
+import announcements from './data/announcement.json';
+import announcementWrite from './data/announcementWrite.json';
 import { Announcement, AnnouncementRequestBody } from '@/types/announcement';
 
-import declarations from '../../public/report.json';
-import declarationWrite from '../../public/reportWrite.json';
+import declarations from './data/report.json';
+import declarationWrite from './data/reportWrite.json';
 import { Declaration, DeclarationRequestBody } from '@/types/declaration';
 
-import suggestedTags from '../../public/suggestedTags.json';
-import suggestedDrinks from '../../public/suggestedDrinks.json';
-import autoCompleteTag from '../../public/autoCompleteTag.json';
-import autoCompleteDrink from '../../public/autoCompleteDrink.json';
-import searchByTag from '../../public/searchByTag.json';
-import searchByDrink from '../../public/searchByDrink.json';
-import notifications from '../../public/notification.json';
+import suggestedTags from './data/suggestedTags.json';
+import suggestedDrinks from './data/suggestedDrinks.json';
+import autoCompleteTag from './data/autoCompleteTag.json';
+import autoCompleteDrink from './data/autoCompleteDrink.json';
+import searchByTag from './data/searchByTag.json';
+import searchByDrink from './data/searchByDrink.json';
+import notifications from './data/notification.json';
 
-import searchDrink from '../../public/searchDrink.json';
+import searchDrink from './data/searchDrink.json';
 
-import registrations from '../../public/registration.json';
-import registrationWrite from '../../public/registrationWrite.json';
+import registrations from './data/registration.json';
+import registrationWrite from './data/registrationWrite.json';
 import { Registration, RegistrationRequestBody } from '@/types/registration';
 
 const mockJwtToken =
