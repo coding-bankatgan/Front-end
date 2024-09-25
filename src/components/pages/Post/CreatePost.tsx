@@ -194,11 +194,10 @@ const CreatePost = () => {
 const CreatePostWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 320px;
   width: 100%;
-  min-height: calc(100vh - 100px);
+  min-height: calc(100vh - 60px);
   height: auto;
-  margin: 20px;
+  background-color: ${({ theme }) => theme.colors.brightGray};
 `;
 
 export default CreatePost;
