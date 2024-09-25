@@ -11,6 +11,7 @@ import member from '../../public/member.json';
 import { MemberRequestBody } from '@/types/member';
 
 import tag from '../../public/tag.json';
+import { Tag, TagRequestBody } from '@/types/tag';
 
 import announcements from '../../public/announcement.json';
 import announcementWrite from '../../public/announcementWrite.json';
@@ -47,6 +48,7 @@ let commentsData: Comment[] = [...commentWrite];
 let announcementData: Announcement[] = [...announcementWrite];
 let declarationsData: Declaration[] = [...declarationWrite];
 let registrationData: Registration[] = [...registrationWrite];
+let tagData: Tag[] = [...tag];
 
 export const handlers = [
   /** 로그인 테스트 API */
@@ -232,13 +234,41 @@ export const handlers = [
       name: name || member[memberIndex].name,
       favorDrink: favorDrink || member[memberIndex].favorDrinkType,
       alarmEnabled:
-        typeof alarmEnabled === 'boolean' ? alarmEnabled : member[memberIndex].alarmEnabled, // 알람 설정 업데이트
+        typeof alarmEnabled === 'boolean' ? alarmEnabled : member[memberIndex].alarmEnabled,
     };
 
     console.log(updatedMember);
     member[memberIndex] = updatedMember;
     return HttpResponse.json(member);
   }),
+
+  /** 태그 팔로우 목록 조회 API */
+  http.get('/api/members/tags/follows', async () => {
+    return HttpResponse.json(tag);
+  }),
+
+  /** 태그 팔로우 추가 API */
+  http.post('/api/tags/follows', async ({ request }) => {
+    const requestBody = (await request.json()) as TagRequestBody;
+
+    const { tagId } = requestBody;
+
+    const foundTag = tag.find(t => t.tagId === tagId);
+    const tagName = foundTag ? foundTag.tagName : 'Unknown';
+
+    const addTag: Tag = {
+      id: 1,
+      memberId: 1,
+      memberName: 'John',
+      tagId: tag.length + 1,
+      tagName: tagName,
+    };
+    tagData = [...tagData, addTag];
+    console.log(tagData);
+    return HttpResponse.json(addTag);
+  }),
+
+  /** 태그 팔로우 삭제 API */
 
   /** 특산주 등록 신청 API */
   http.post('/api/drinks/registrations', async ({ request }) => {

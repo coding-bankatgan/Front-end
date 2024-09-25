@@ -8,6 +8,8 @@ import ReactStars from 'react-stars';
 import { useEffect, useRef, useState } from 'react';
 import { Drink } from './PostStep2';
 import { alcoholsData } from '@/data/alcoholsData';
+import useMemberStore from '@/store/useMemberStore';
+import useNotificationStore from '@/store/useNotificationStore';
 
 interface PostStep3Props {
   category: string;
@@ -100,6 +102,29 @@ const PostStep3 = ({
     setFormattedContent(formatted);
   }, [postContent]);
 
+  /** 알림 발송 */
+  const { currentUser, followTags } = useMemberStore();
+  const { addNewNotification } = useNotificationStore();
+
+  const handlePostSubmit = async () => {
+    await submitPost();
+
+    tags.forEach(tag => {
+      if (followTags.some(followTag => followTag.tagName === tag.slice(1))) {
+        addNewNotification({
+          id: Date.now(), // 임시 ID
+          memberId: currentUser?.id!,
+          postId: 10, // 임시 postId
+          type: 'FOLLOW',
+          content: `새로운 포스팅이 있습니다: ${tag}`,
+          createdAt: new Date().toISOString(),
+          isNew: true,
+        });
+      }
+      console.log('success');
+    });
+  };
+
   return (
     <>
       <PostTitle>
@@ -190,7 +215,7 @@ const PostStep3 = ({
           />
         </TagsContainer>
       </PostContent>
-      <ButtonStyled onClick={submitPost}>완료</ButtonStyled>
+      <ButtonStyled onClick={handlePostSubmit}>완료</ButtonStyled>
     </>
   );
 };

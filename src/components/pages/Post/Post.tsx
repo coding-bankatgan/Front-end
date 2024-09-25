@@ -5,7 +5,7 @@ import ViewIcon from './../../../assets/icons/ViewIcon';
 import AlertDialogTag from '@/components/layout/AlertDialogTag';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { usePostsDetailStore } from '@/store/usePostsDetailStore';
 import PostComments from './PostComments';
 import EllipsisHorizontalIcon from '@/assets/icons/EllipsisHorizontalIcon';
@@ -19,7 +19,11 @@ const typeMap = {
   REVIEW: '리뷰',
 };
 
-const Post = () => {
+interface PostProps {
+  showAlert: (type: 'success' | 'error', message: string) => void;
+}
+
+const Post = ({ showAlert }: PostProps) => {
   const { postsDetail, fetchPostsDetail } = usePostsDetailStore();
   const { id } = useParams();
   const postId = Number(id);
@@ -74,7 +78,7 @@ const Post = () => {
           <EtcWrap>
             <TagWrapper>
               {post?.tags.map(tag => (
-                <AlertDialogTag key={tag.tagId} tagId={tag.tagId}>
+                <AlertDialogTag key={tag.tagId} tagId={tag.tagId} showAlert={showAlert}>
                   {tag.tagName}
                 </AlertDialogTag>
               ))}
