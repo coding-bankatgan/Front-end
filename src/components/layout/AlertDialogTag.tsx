@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,31 +12,54 @@ import {
 } from '@/components/ui/alert-dialog';
 import styled from '@emotion/styled';
 import { useMemberStore } from '@/store/useMemberStore';
+import { fetchTagAddApi } from '@/api/postApi';
 
 interface AlertDialogTagProps {
   children: React.ReactNode;
   tagId: number;
+  showAlert: (type: 'success' | 'error', message: string) => void;
 }
 
-const AlertDialogTag = ({ children, tagId }: AlertDialogTagProps) => {
-  const { currentUser, addFollowTag } = useMemberStore();
+const AlertDialogTag = ({ children, tagId, showAlert }: AlertDialogTagProps) => {
+  const { currentUser, followTags, addFollowTag, fetchFollowTags } = useMemberStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  useEffect(() => {
+    if (currentUser) {
+      fetchFollowTags();
+    }
+  }, [currentUser, fetchFollowTags]);
+
   const tagName = typeof children === 'string' ? children : '';
-  console.log(currentUser);
 
   const handleAddTagToFollow = async () => {
     if (currentUser) {
+      const isTagAlreadyFollowed = followTags.some(tag => tag.tagName === tagName);
+      console.log(isTagAlreadyFollowed);
+      console.log(tagName);
+
+      if (isTagAlreadyFollowed) {
+        showAlert('error', '해당 태그는 이미 팔로우 되어 있습니다');
+        return;
+      }
+
       const followTag = {
         memberId: currentUser.id,
         memberName: currentUser.name,
         tagId,
         tagName,
       };
-      await addFollowTag(followTag);
-      setIsDialogOpen(false);
+
+      const addedTag = await fetchTagAddApi(tagId, tagName);
+
+      if (addedTag) {
+        await addFollowTag(followTag);
+        setIsDialogOpen(false);
+      } else {
+        showAlert('error', '태그 추가에 실패했습니다.');
+      }
     } else {
-      console.error('no user');
+      showAlert('error', '오류가 발생했습니다.');
     }
   };
 

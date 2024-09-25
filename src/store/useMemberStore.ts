@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { create } from 'zustand';
-import { fetchMemberApi } from '@/api/postApi';
+import { fetchMemberApi, fetchTagApi } from '@/api/postApi';
 
 interface Tag {
   id?: number;
@@ -43,7 +42,7 @@ export interface MemberState {
   fetchFollowTags: () => Promise<void>;
 }
 
-export const useMemberStore = create<MemberState>(set => ({
+export const useMemberStore = create<MemberState>((set, get) => ({
   members: [],
   followTags: [],
   currentUser: null,
@@ -58,38 +57,41 @@ export const useMemberStore = create<MemberState>(set => ({
       const response = await fetchMemberApi();
       set({ members: response });
 
-      const currentUser = response.find((member: Member) => member.id === 2) || null;
+      const currentUser = response.find((member: Member) => member.id === 1) || null;
       set({ currentUser }); // currentUser Manager
     } catch (err) {
       console.log('Error', err);
     }
   },
-
   fetchFollowTags: async () => {
-    try {
-      const response = await axios.get('/tag.json');
-      set({ followTags: response.data });
-    } catch (err) {
-      console.log('Error', err);
+    const state = get();
+    const currentUser = state.currentUser;
+
+    if (currentUser) {
+      try {
+        const response = await fetchTagApi();
+        const userFollowTags = response.filter((tag: Tag) => tag.memberId === currentUser.id);
+        console.log(userFollowTags);
+        set({ followTags: userFollowTags });
+      } catch (err) {
+        console.log('Error fetching tags:', err);
+      }
     }
   },
   addFollowTag: async (tag: Tag) => {
     set(state => {
       const currentUser = state.currentUser;
       if (currentUser && Array.isArray(currentUser.followTags)) {
-        if (!currentUser.followTags.find(t => t.tagId === tag.tagId)) {
-          return {
-            ...state,
-            currentUser: {
-              ...currentUser,
-              followTags: [...currentUser.followTags, tag],
-            },
-          };
-        }
+        return {
+          ...state,
+          currentUser: {
+            ...currentUser,
+            followTags: [...currentUser.followTags, tag],
+          },
+        };
       }
       return state;
     });
-    console.log('success');
   },
   removeFollowTag: (tagId: number) => {
     set(state => {

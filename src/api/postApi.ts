@@ -360,3 +360,36 @@ export const fetchMemberWriteApi = async (
     console.error('Error fetching memberWrite: ', error);
   }
 };
+
+/** 태그 팔로우 추가 API */
+export const fetchTagAddApi = async (tagId: number, tagName: string) => {
+  try {
+    const response = await axios.post(
+      '/api/tags/follows',
+      {
+        tagId: tagId,
+        tagName: tagName,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching tagAdd: ', error);
+  }
+};
+
+/** 태그 팔로우 목록 조회 API */
+export const fetchTagApi = async () => {
+  try {
+    const response = await axios.get(`/api/members/tags/follows`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching tags: ', err);
+  }
+};
+
+/** 태그 팔로우 삭제 API */

@@ -1,28 +1,37 @@
 import { delay, http, HttpResponse } from 'msw';
-import cardItem from '../../public/cardItem.json';
-import cardItemDetail from '../../public/cardItemDetail.json';
-import regions from '../../public/regions.json';
-import comments from '../../public/comments.json';
-import commentWrite from '../../public/commentWrite.json';
+import cardItem from './data/cardItem.json';
+import cardItemDetail from './data/cardItemDetail.json';
+import regions from './data/regions.json';
+import comments from './data/comments.json';
+import commentWrite from './data/commentWrite.json';
 import { Comment, CommentRequestBody } from '@/types/comment';
-import member from '../../public/member.json';
+
+import member from './data/member.json';
 import { MemberRequestBody } from '@/types/member';
-import announcements from '../../public/announcement.json';
-import announcementWrite from '../../public/announcementWrite.json';
+
+import tag from './data/tag.json';
+import { Tag, TagRequestBody } from '@/types/tag';
+
+import announcements from './data/announcement.json';
+import announcementWrite from './data/announcementWrite.json';
 import { Announcement, AnnouncementRequestBody } from '@/types/announcement';
-import declarations from '../../public/report.json';
-import declarationWrite from '../../public/reportWrite.json';
+
+import declarations from './data/report.json';
+import declarationWrite from './data/reportWrite.json';
 import { Declaration, DeclarationRequestBody } from '@/types/declaration';
-import suggestedTags from '../../public/suggestedTags.json';
-import suggestedDrinks from '../../public/suggestedDrinks.json';
-import autoCompleteTag from '../../public/autoCompleteTag.json';
-import autoCompleteDrink from '../../public/autoCompleteDrink.json';
-import searchByTag from '../../public/searchByTag.json';
-import searchByDrink from '../../public/searchByDrink.json';
-import notifications from '../../public/notification.json';
-import searchDrink from '../../public/searchDrink.json';
-import registrations from '../../public/registration.json';
-import registrationWrite from '../../public/registrationWrite.json';
+
+import suggestedTags from './data/suggestedTags.json';
+import suggestedDrinks from './data/suggestedDrinks.json';
+import autoCompleteTag from './data/autoCompleteTag.json';
+import autoCompleteDrink from './data/autoCompleteDrink.json';
+import searchByTag from './data/searchByTag.json';
+import searchByDrink from './data/searchByDrink.json';
+import notifications from './data/notification.json';
+
+import searchDrink from './data/searchDrink.json';
+
+import registrations from './data/registration.json';
+import registrationWrite from './data/registrationWrite.json';
 import { Registration, RegistrationRequestBody } from '@/types/registration';
 
 const mockJwtToken =
@@ -38,6 +47,7 @@ let commentsData: Comment[] = [...commentWrite];
 let announcementData: Announcement[] = [...announcementWrite];
 let declarationsData: Declaration[] = [...declarationWrite];
 let registrationData: Registration[] = [...registrationWrite];
+let tagData: Tag[] = [...tag];
 
 export const handlers = [
   /** 로그인 테스트 API */
@@ -223,13 +233,38 @@ export const handlers = [
       name: name || member[memberIndex].name,
       favorDrink: favorDrink || member[memberIndex].favorDrinkType,
       alarmEnabled:
-        typeof alarmEnabled === 'boolean' ? alarmEnabled : member[memberIndex].alarmEnabled, // 알람 설정 업데이트
+        typeof alarmEnabled === 'boolean' ? alarmEnabled : member[memberIndex].alarmEnabled,
     };
 
     console.log(updatedMember);
     member[memberIndex] = updatedMember;
     return HttpResponse.json(member);
   }),
+
+  /** 태그 팔로우 목록 조회 API */
+  http.get('/api/members/tags/follows', async () => {
+    return HttpResponse.json(tag);
+  }),
+
+  /** 태그 팔로우 추가 API */
+  http.post('/api/tags/follows', async ({ request }) => {
+    const requestBody = (await request.json()) as TagRequestBody;
+
+    const { tagId, tagName } = requestBody;
+
+    const addTag: Tag = {
+      id: 1,
+      memberId: 1,
+      memberName: 'John',
+      tagId: tag.length + 1,
+      tagName: tagName,
+    };
+    tagData = [...tagData, addTag];
+    console.log(tagData);
+    return HttpResponse.json(addTag);
+  }),
+
+  /** 태그 팔로우 삭제 API */
 
   /** 특산주 등록 신청 API */
   http.post('/api/drinks/registrations', async ({ request }) => {

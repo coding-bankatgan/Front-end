@@ -28,7 +28,7 @@ export const useSpecialtyStore = create<SpecialtyState>((set, get) => ({
   selectedDrinks: [],
   fetchDrinks: async () => {
     try {
-      const response = await axios.get<specialtyDrink[]>('/specialtyDrink.json');
+      const response = await axios.get<specialtyDrink[]>('/src/mocks/data/specialtyDrink.json');
       const drinksType = Array.from(new Set(response.data.map(item => mapDrinkType(item.type))));
       console.log(drinksType);
       if (Array.isArray(drinksType)) {
