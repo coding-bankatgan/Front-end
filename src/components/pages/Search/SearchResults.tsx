@@ -1,4 +1,3 @@
-import CardItemList from '@/components/layout/CardItemList';
 import styled from '@emotion/styled';
 
 const SearchResults = () => {
@@ -13,7 +12,6 @@ const SearchResults = () => {
       ) : (
         <ResultsWrapper>
           <span>검색결과 (00개)</span>
-          <CardItemList />
         </ResultsWrapper>
       )}
     </>
