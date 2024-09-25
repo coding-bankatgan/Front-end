@@ -82,15 +82,13 @@ export const useMemberStore = create<MemberState>((set, get) => ({
     set(state => {
       const currentUser = state.currentUser;
       if (currentUser && Array.isArray(currentUser.followTags)) {
-        if (!currentUser.followTags.find(t => t.tagId === tag.tagId)) {
-          return {
-            ...state,
-            currentUser: {
-              ...currentUser,
-              followTags: [...currentUser.followTags, tag],
-            },
-          };
-        }
+        return {
+          ...state,
+          currentUser: {
+            ...currentUser,
+            followTags: [...currentUser.followTags, tag],
+          },
+        };
       }
       return state;
     });

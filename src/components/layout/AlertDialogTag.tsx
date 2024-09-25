@@ -35,6 +35,8 @@ const AlertDialogTag = ({ children, tagId, showAlert }: AlertDialogTagProps) => 
   const handleAddTagToFollow = async () => {
     if (currentUser) {
       const isTagAlreadyFollowed = followTags.some(tag => tag.tagName === tagName);
+      console.log(isTagAlreadyFollowed);
+      console.log(tagName);
 
       if (isTagAlreadyFollowed) {
         showAlert('error', '해당 태그는 이미 팔로우 되어 있습니다');
@@ -48,7 +50,7 @@ const AlertDialogTag = ({ children, tagId, showAlert }: AlertDialogTagProps) => 
         tagName,
       };
 
-      const addedTag = await fetchTagAddApi(tagId);
+      const addedTag = await fetchTagAddApi(tagId, tagName);
 
       if (addedTag) {
         await addFollowTag(followTag);

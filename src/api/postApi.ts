@@ -362,12 +362,13 @@ export const fetchMemberWriteApi = async (
 };
 
 /** 태그 팔로우 추가 API */
-export const fetchTagAddApi = async (tagId: number) => {
+export const fetchTagAddApi = async (tagId: number, tagName: string) => {
   try {
     const response = await axios.post(
       '/api/tags/follows',
       {
         tagId: tagId,
+        tagName: tagName,
       },
       {
         headers: {

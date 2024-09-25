@@ -8,4 +8,5 @@ export type Tag = {
 
 export interface TagRequestBody {
   tagId: number;
+  tagName: string;
 }

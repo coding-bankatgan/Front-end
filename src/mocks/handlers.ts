@@ -251,10 +251,7 @@ export const handlers = [
   http.post('/api/tags/follows', async ({ request }) => {
     const requestBody = (await request.json()) as TagRequestBody;
 
-    const { tagId } = requestBody;
-
-    const foundTag = tag.find(t => t.tagId === tagId);
-    const tagName = foundTag ? foundTag.tagName : 'Unknown';
+    const { tagId, tagName } = requestBody;
 
     const addTag: Tag = {
       id: 1,
