@@ -519,11 +519,10 @@ export const handlers = [
     const requestUrl = new URL(request.url);
     const regionId = requestUrl.searchParams.get('regionId');
     const drinkName = requestUrl.searchParams.get('drinkName');
-    const size = requestUrl.searchParams.get('size');
     const page = requestUrl.searchParams.get('page');
 
-    const data = searchDrink.filter((item, idx) => item.number === Number(page));
-    const emptyData = searchDrink.filter((item, idx) => item.number === Number(page) + 100);
+    const data = searchDrink.filter(item => item.number === Number(page));
+    const emptyData = searchDrink.filter(item => item.number === Number(page) + 100);
     console.log(regionId);
 
     if (drinkName === '1') {
@@ -538,11 +537,14 @@ export const handlers = [
   }),
   http.post(`/api/image`, ({ request }) => {
     delay(200);
+    console.log(request.headers);
+
     return HttpResponse.json(
       'https://thesool.com/common/imageView.do?targetId=PR00000941&targetNm=PRODUCT',
     );
   }),
   http.post('/api/post', async ({ request }) => {
+    console.log(request.headers);
     const requestBody = await request.json();
     console.log(requestBody);
     return new Response();

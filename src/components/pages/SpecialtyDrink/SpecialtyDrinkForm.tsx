@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import PlusIcon from '@/assets/icons/PlusIcon';
 import useRegistrationStore from '@/store/useRegistrationStore';
-import { fetchImageUploadApi } from '@/api/postApi';
+//import { fetchImageUploadApi } from '@/api/postApi';
 
 interface SpecialtyDrinkFormProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -39,6 +39,7 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
   const [degree, setDegree] = useState<number | undefined>(undefined);
   const [sweetness, setSweetness] = useState<number>(1);
   const [cost, setCost] = useState<number | undefined>(undefined);
+  console.log(img);
 
   const addRegistration = useRegistrationStore(state => state.addRegistration);
   const navigate = useNavigate();

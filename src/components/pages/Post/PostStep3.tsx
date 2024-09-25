@@ -29,7 +29,6 @@ interface PostStep3Props {
 const PostStep3 = ({
   category,
   drinkData,
-  nextStep,
   setFormData,
   setImageName,
   setFormattedContent,
