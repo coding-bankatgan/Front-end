@@ -5,7 +5,7 @@ const WarningIcon = () => {
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="currentColor"
+      stroke="#E97979"
       className="size-6"
     >
       <path

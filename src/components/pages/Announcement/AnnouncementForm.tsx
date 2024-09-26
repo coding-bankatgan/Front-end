@@ -94,6 +94,7 @@ const AnnouncementForm = () => {
 };
 
 const TitleStyled = styled.span`
+  color: ${({ theme }) => theme.colors.black};
   font-size: ${({ theme }) => theme.fontSizes.medium};
   font-weight: bold;
   margin-bottom: 10px;
@@ -101,25 +102,27 @@ const TitleStyled = styled.span`
 
 const FormContentWrapper = styled.div`
   input {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     background-color: ${({ theme }) => theme.colors.brightGray};
   }
 
   > input,
   textarea {
     &:focus {
-      border-color: ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      border-color: ${({ theme }) => theme.colors.focusShadowGray};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     }
   }
 `;
 
 const Label = styled.label`
   margin: 5px 0;
+  color: ${({ theme }) => theme.colors.black};
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
   :not(:last-child)::before {
-    content: '* ';
-    color: ${({ theme }) => theme.colors.tertiary};
+    content: '*';
+    margin-right: 3px;
+    color: ${({ theme }) => theme.colors.point};
   }
   :last-child {
     font-size: ${({ theme }) => theme.fontSizes.xxsmall};
@@ -128,20 +131,22 @@ const Label = styled.label`
 `;
 
 const TextareaStyled = styled(Textarea)`
-  height: 150px;
+  height: 100px;
+  margin-bottom: 10px;
   background-color: ${({ theme }) => theme.colors.brightGray};
   resize: none;
 `;
 
 const FormImgWrapper = styled.div`
-  min-width: 316px;
-  width: auto;
-  height: 316px;
   display: flex;
-  margin-bottom: 8px;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 316px;
+  margin-top: -3px;
   background-color: ${({ theme }) => theme.colors.brightGray};
+  border-radius: 5px;
+  object-fit: contain;
 
   input {
     display: none;
@@ -163,16 +168,18 @@ const FormImgWrapper = styled.div`
 const FormBottomStyled = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 40px;
+  margin-top: 30px;
 
   button {
     width: 48%;
     height: 45px;
+    color: ${({ theme }) => theme.colors.white};
     font-size: ${({ theme }) => theme.fontSizes.base};
     border-radius: 30px;
 
     :nth-of-type(1) {
-      background-color: ${({ theme }) => theme.colors.gray};
+      background-color: ${({ theme }) => theme.colors.lightGray};
+      color: ${({ theme }) => theme.colors.darkGray};
     }
 
     :nth-of-type(2) {

@@ -1,5 +1,5 @@
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -88,6 +88,8 @@ const TitleStyled = styled.h1`
 `;
 
 const ListContentStyled = styled.ul`
+  color: ${({ theme }) => theme.colors.black};
+
   li {
     display: flex;
     flex-direction: column;

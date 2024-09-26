@@ -62,6 +62,8 @@ const Search = () => {
   const [totalPages, setTotalPages] = useState();
   const [hasSearched, setHasSearched] = useState(false);
 
+  console.log(setCurrentPage, setSize, totalElements, totalPages);
+
   const prevBtn = () => {
     navigate(-1);
   };
@@ -429,6 +431,7 @@ const SearchLayout = styled.div`
   height: 100vh;
   padding-top: 220px;
   background-color: ${({ theme }) => theme.colors.brightGray};
+  color: ${({ theme }) => theme.colors.black};
 `;
 
 const SearchFixed = styled.section`
@@ -445,7 +448,7 @@ const SearchTop = styled.div`
   display: flex;
   align-items: center;
   width: auto;
-  color: ${({ theme }) => theme.colors.darkGray};
+  color: ${({ theme }) => theme.colors.black};
   font-size: ${({ theme }) => theme.fontSizes.medium};
   font-weight: bold;
 
@@ -490,7 +493,7 @@ const SearchInput = styled.div`
     z-index: 10;
 
     :focus {
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowOrange};
     }
   }
 
@@ -684,7 +687,7 @@ const ResultsWrapper = styled.div`
     height: auto;
     padding: 15px 20px;
     background-color: ${({ theme }) => theme.colors.white};
-    color: ${({ theme }) => theme.colors.darkGray};
+    color: ${({ theme }) => theme.colors.black};
     border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
     font-size: ${({ theme }) => theme.fontSizes.small};
     font-weight: bold;

@@ -6,6 +6,7 @@ declare module '@emotion/react' {
       primary: string;
       secondary: string;
       tertiary: string;
+      point: string;
       black: string;
       white: string;
       gray: string;
@@ -16,7 +17,8 @@ declare module '@emotion/react' {
       success: string;
       error: string;
       heart: string;
-      focusShadow: string;
+      focusShadowOrange: string;
+      focusShadowGray: string;
     };
     fontSizes: {
       xxsmall: string;

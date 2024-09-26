@@ -210,7 +210,7 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
     <NoFooterLayout>
       <ContentWrapper>
         <EditTop>
-          <span>회원정보 수정</span>
+          <b>회원정보 수정</b>
           <ImgWrapper onClick={() => document.getElementById('profileImageInput')?.click()}>
             {profileImage ? (
               <img src={profileImage} alt="Profile" />
@@ -378,17 +378,18 @@ const EditTop = styled.div`
   flex-direction: column;
   align-items: center;
 
-  span {
-    font-size: ${({ theme }) => theme.fontSizes.large};
+  b {
+    color: ${({ theme }) => theme.colors.black};
+    font-size: ${({ theme }) => theme.fontSizes.medium};
     font-weight: bold;
     padding-bottom: 20px;
   }
 `;
 
 const AlertText = styled.p`
-  height: 5px;
-  margin-bottom: 12px;
-
+  margin-top: -7px;
+  height: 11px;
+  line-height: 11px;
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
   color: ${({ theme }) => theme.colors.error};
 `;
@@ -402,31 +403,31 @@ const Validation = styled.span`
 const ImgWrapper = styled.div`
   display: flex;
   position: relative;
-  height: 120px;
+  height: 100px;
   margin-bottom: 20px;
   justify-content: center;
   align-items: flex-end;
 
   svg {
     position: absolute;
-    width: 120px;
-    height: 120px;
-    border: 1px solid ${({ theme }) => theme.colors.tertiary};
+    width: 100px;
+    height: 100px;
+    border: 1px solid ${({ theme }) => theme.colors.lightGray};
     border-radius: 50%;
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
   }
 `;
 
 const EditMid = styled.ul`
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 
   input {
-    margin-bottom: 8px;
-    background-color: ${({ theme }) => theme.colors.lightGray};
-    &:focus {
-      border-color: ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    margin-bottom: 10px;
+    background-color: ${({ theme }) => theme.colors.brightGray};
+
+    :focus {
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     }
+
     ::placeholder {
       color: ${({ theme }) => theme.colors.darkGray};
       opacity: 1;
@@ -435,11 +436,14 @@ const EditMid = styled.ul`
 `;
 
 const Label = styled.label`
+  margin-top: 5px;
+  color: ${({ theme }) => theme.colors.black};
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
   :not(:first-of-type)::before {
-    content: '* ';
-    color: ${({ theme }) => theme.colors.tertiary};
+    content: '*';
+    margin-right: 3px;
+    color: ${({ theme }) => theme.colors.point};
   }
 `;
 
@@ -450,12 +454,13 @@ interface AlcoholItemProps {
 const AlcoholList = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   overflow-y: scroll;
   width: 100%;
   gap: 10px;
   scrollbar-width: none;
   -ms-overflow-style: none;
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -465,12 +470,14 @@ const AlcoholItem = styled.button<AlcoholItemProps>`
   width: 90px;
   height: 90px;
   background-color: ${({ isSelected, theme }) =>
-    isSelected ? theme.colors.tertiary : theme.colors.lightGray};
+    isSelected ? theme.colors.tertiary : theme.colors.brightGray};
+  color: ${({ theme }) => theme.colors.darkGray};
   border-radius: 10px;
   border: none;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: ${({ theme }) => theme.fontSizes.small};
   cursor: pointer;
 `;
 
@@ -480,8 +487,9 @@ const EditBottom = styled.div`
   }
 
   label::before {
-    content: '* ';
-    color: ${({ theme }) => theme.colors.tertiary};
+    content: '*';
+    margin-right: 3px;
+    color: ${({ theme }) => theme.colors.point};
   }
 `;
 
@@ -491,7 +499,7 @@ const WithdrawWrapper = styled.div`
 
   p {
     font-size: ${({ theme }) => theme.fontSizes.small};
-    color: ${({ theme }) => theme.colors.gray};
+    color: ${({ theme }) => theme.colors.error};
   }
 `;
 
@@ -501,9 +509,15 @@ const SwitchWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
 
+  span {
+    color: ${({ theme }) => theme.colors.black};
+    font-size: ${({ theme }) => theme.fontSizes.small};
+  }
+
   div {
     display: flex;
     align-items: center;
+    color: ${({ theme }) => theme.colors.black};
     font-size: ${({ theme }) => theme.fontSizes.xsmall};
     button {
       margin-left: 5px;
@@ -512,21 +526,25 @@ const SwitchWrapper = styled.div`
   }
 
   button[data-state='checked'] {
-    background-color: ${({ theme }) => theme.colors.tertiary};
+    background-color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
 const ConfirmWrapper = styled.div`
   display: flex;
-  margin-top: 40px;
-  justify-content: space-around;
+  margin-top: 30px;
+  justify-content: space-between;
 
   button {
-    width: 140px;
+    width: 48%;
+    height: 45px;
+    font-size: ${({ theme }) => theme.fontSizes.base};
     border-radius: 30px;
+    color: ${({ theme }) => theme.colors.white};
 
     :nth-of-type(1) {
-      background-color: ${({ theme }) => theme.colors.gray};
+      background-color: ${({ theme }) => theme.colors.lightGray};
+      color: ${({ theme }) => theme.colors.darkGray};
     }
     :nth-of-type(2) {
       background-color: ${({ theme }) => theme.colors.primary};
@@ -546,10 +564,10 @@ const AlertDialogTitleStyled = styled(AlertDialogTitle)`
 `;
 
 const AlertDialogActionStyled = styled(AlertDialogAction)`
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.error};
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.secondary};
+    background-color: ${({ theme }) => theme.colors.heart};
   }
 `;
 

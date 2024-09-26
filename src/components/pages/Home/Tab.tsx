@@ -80,11 +80,6 @@ const TabsStyled = styled(Tabs)`
     margin-left: auto;
     margin-top: 10px;
     border: 1px solid ${({ theme }) => theme.colors.lightGray};
-
-    :focus {
-      border-color: ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
-    }
   }
 `;
 
@@ -122,8 +117,8 @@ const SelectStyled = styled.select`
 
   :focus,
   :active {
-    border-color: ${({ theme }) => theme.colors.focusShadow};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    border-color: ${({ theme }) => theme.colors.focusShadowGray};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     outline: none;
   }
 `;

@@ -93,7 +93,7 @@ const Notification = () => {
               onClick={() => handleNotificationClick(notification)}
             >
               <NoticeTop>
-                {notification.isNew && <Badge variant="outline">New!</Badge>}
+                {notification.isNew && <Badge variant="outline">New</Badge>}
                 <span>{dayjs(notification.createdAt).format('YYYY.MM.DD')}</span>
               </NoticeTop>
               <NoticeTitle>{getNotificationTitle(notification.type)}</NoticeTitle>
@@ -116,8 +116,8 @@ const SheetTriggerStyled = styled(SheetTrigger)`
     position: absolute;
     top: -3px;
     right: -2px;
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     background-color: ${({ theme }) => theme.colors.error};
     border-radius: 20px;
   }
@@ -125,6 +125,7 @@ const SheetTriggerStyled = styled(SheetTrigger)`
 
 const SheetContentStyled = styled(SheetContent)`
   padding: 20px 15px 15px 15px;
+  color: ${({ theme }) => theme.colors.black};
 
   > button {
     &:focus {
@@ -138,6 +139,7 @@ const SheetHeaderStyled = styled(SheetHeader)`
 
   h2 {
     margin-bottom: 10px;
+    color: ${({ theme }) => theme.colors.black};
     text-align: left;
 
     > span {
@@ -171,9 +173,9 @@ const NoticeTop = styled.span`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   color: ${({ theme }) => theme.colors.gray};
-  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
   > div {
     background-color: ${({ theme }) => theme.colors.primary};
@@ -192,7 +194,7 @@ const NoticeTitle = styled.b`
 
 const NoticeContent = styled.span`
   display: inline-block;
-  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
   line-height: 15px;
   text-align: justify;
   letter-spacing: -0.3px;

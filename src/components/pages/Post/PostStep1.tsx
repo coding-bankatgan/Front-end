@@ -37,6 +37,7 @@ export const Title = styled.b`
   width: 100%;
   padding: 0 20px 20px 20px;
   background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.black};
   font-size: ${({ theme }) => theme.fontSizes.medium};
 `;
 

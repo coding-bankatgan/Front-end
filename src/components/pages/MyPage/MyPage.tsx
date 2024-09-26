@@ -1,15 +1,14 @@
 import { ContentWrapper, PageLayout } from '@/styles/CommonStyles';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import styled from '@emotion/styled';
 import MyPageTab from './MyPageTab';
 import ExProfileImg from '@/assets/ExProfileImg';
 import SettingIcon from '@/assets/icons/SettingIcon';
-import HandIcon from '@/assets/icons/HandIcon';
 import { useMemberStore } from '@/store/useMemberStore';
 import { mapDrinkType } from '@/data/drinkTypes';
+import handleImg from '../../../assets/img/handimg.png';
 
 const MyPage = () => {
   /** 유저 정보 */
@@ -33,7 +32,7 @@ const MyPage = () => {
           <h2>{currentUser?.name}</h2>
         </UserNameWrapper>
         <BadgeWrapper>
-          <HandIcon />
+          <img src={handleImg} alt="선호 주종 리스트" />
           {currentUser?.favorDrinkType?.map(drinkType => (
             <BadgeStyled key={drinkType}>{mapDrinkType(drinkType)}</BadgeStyled>
           ))}
@@ -44,54 +43,53 @@ const MyPage = () => {
   );
 };
 
-const ImgWrapper = styled.div`
-  display: flex;
+const ImgWrapper = styled.span`
   position: relative;
-  height: 120px;
-  margin-bottom: 15px;
+  display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 10px;
 
-  svg {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    :first-child {
-      border: 1px solid ${({ theme }) => theme.colors.tertiary};
-      border-radius: 50%;
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
-    }
+  > svg {
+    width: 100px;
+    height: 100px;
+    border: 1px solid ${({ theme }) => theme.colors.lightGray};
+    border-radius: 50%;
   }
 `;
 
-const EditMyPage = styled(Button)`
+const EditMyPage = styled.span`
   position: absolute;
-  top: 85px;
-  right: 125px;
-  padding: 0;
-  background-color: transparent;
-  border: none;
+  bottom: 0;
+  right: 0;
+  border: 1px solid ${({ theme }) => theme.colors.lightGray};
+  border-radius: 30px;
+  z-index: 10;
 
   > svg {
-    width: 25px;
-    height: 25px;
-    color: ${({ theme }) => theme.colors.gray};
+    width: 27px;
+    height: 27px;
+    padding: 3px;
     background-color: ${({ theme }) => theme.colors.white};
-    border-radius: 50%;
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    color: ${({ theme }) => theme.colors.gray};
+    border-radius: 30px;
   }
 `;
 
 const UserNameWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 
   h2 {
-    width: 100px;
+    width: auto;
+    padding: 0 10px;
+    background: linear-gradient(to top, rgba(255, 209, 140, 0.4) 45%, transparent 15%);
+    color: ${({ theme }) => theme.colors.black};
     text-align: center;
-    font-size: ${({ theme }) => theme.fontSizes.large};
-    background: linear-gradient(to top, #e9d7cb 40%, transparent 15%);
+    font-size: ${({ theme }) => theme.fontSizes.medium};
   }
 `;
 
@@ -99,18 +97,20 @@ const BadgeWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 4px;
+  align-items: center;
 `;
 
 const BadgeStyled = styled(Badge)`
   margin: 0 4px 0 4px;
+  padding: 0px 15px;
+  height: 27px;
   background-color: ${({ theme }) => theme.colors.primary};
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-weight: normal;
 
   &:focus,
   &:hover {
     background-color: ${({ theme }) => theme.colors.primary};
-    border-color: ${({ theme }) => theme.colors.focusShadow};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
   }
 `;
 

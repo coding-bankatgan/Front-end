@@ -5,7 +5,7 @@ const ViewIcon = () => {
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="currentColor"
+      stroke="#dddddd"
       className="size-6"
     >
       <path

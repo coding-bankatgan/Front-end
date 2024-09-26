@@ -70,7 +70,6 @@ const SignUpStep2 = ({
         <Container>
           <Header ref={containerRef}>
             좋아하는 주종을 선택해 주세요 :)
-            <br />
             <AlarmText validated={validatedAlcohols}>※ 3 ~ 5개를 선택해 주세요.</AlarmText>
           </Header>
           <AlcoholList>
@@ -86,7 +85,6 @@ const SignUpStep2 = ({
           </AlcoholList>
         </Container>
       </ScrollCont>
-
       <Button onClick={() => handleSubmit()}>완료</Button>
     </Wrapper>
   );
@@ -97,10 +95,9 @@ export default SignUpStep2;
 const AlcoholList = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   overflow-y: scroll;
   width: 100%;
-
   gap: 10px;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -110,7 +107,6 @@ const AlcoholList = styled.div`
   }
 `;
 const AlarmText = styled.p<{ validated: boolean }>`
-  margin-top: 5px;
   color: ${({ validated, theme }) => (validated ? theme.colors.gray : theme.colors.error)};
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
 `;
@@ -129,5 +125,5 @@ const AlcoholItem = styled.button<AlcoholItemProps>`
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
+  font-size: ${({ theme }) => theme.fontSizes.small};
 `;

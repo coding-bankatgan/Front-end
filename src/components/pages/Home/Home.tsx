@@ -17,7 +17,7 @@ const HomeLayout = styled.div`
   justify-content: center;
   align-items: flex-start;
   width: 100%;
-  height: calc(100vh-60px);
+  height: auto;
   padding-top: 60px;
   background-color: ${({ theme }) => theme.colors.brightGray};
 `;

@@ -265,7 +265,7 @@ const Search = styled.div`
     overflow: hidden;
 
     :focus {
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowOrange};
     }
   }
 

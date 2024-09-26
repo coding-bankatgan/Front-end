@@ -29,7 +29,6 @@ interface PostStep3Props {
 const PostStep3 = ({
   category,
   drinkData,
-  nextStep,
   setFormData,
   setImageName,
   setFormattedContent,
@@ -237,20 +236,6 @@ const DeleteButton = styled.button`
   }
 `;
 
-const TagsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-
-  input {
-    border: none;
-
-    ::placeholder {
-      color: ${({ theme }) => theme.colors.darkGray};
-    }
-  }
-`;
-
 const BadgeWrapper = styled.div`
   display: flex;
   width: 100%;
@@ -350,6 +335,7 @@ const PostTitle = styled.b`
   padding: 0 20px 20px 20px;
   font-size: ${({ theme }) => theme.fontSizes.medium};
   background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.black};
 
   span {
     display: inline-block;
@@ -387,7 +373,8 @@ const ImgSelect = styled.div`
   }
 
   button {
-    background-color: ${({ theme }) => theme.colors.gray};
+    background-color: ${({ theme }) => theme.colors.tertiary};
+    color: ${({ theme }) => theme.colors.white};
     width: 50px;
     height: 50px;
     padding: 0;
@@ -424,6 +411,7 @@ const PostContent = styled.section`
   label {
     width: 30px;
     margin-right: 10px;
+    color: ${({ theme }) => theme.colors.black};
   }
 
   input {
@@ -433,7 +421,7 @@ const PostContent = styled.section`
     border: 1px solid ${({ theme }) => theme.colors.gray};
 
     &:focus {
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     }
 
     &::placeholder {
@@ -445,17 +433,21 @@ const PostContent = styled.section`
     min-height: 200px;
     height: auto;
     background-color: ${({ theme }) => theme.colors.brightGray};
+    color: ${({ theme }) => theme.colors.black};
     resize: none;
 
     &:focus {
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     }
   }
+
   #rating {
     display: flex;
     align-items: center;
     width: 100%;
     padding-left: 10px;
+    color: ${({ theme }) => theme.colors.black};
+
     > span {
       padding-left: 10px;
     }
@@ -466,6 +458,7 @@ const PostContent = styled.section`
     justify-content: center;
     width: 100%;
     padding: 40px 0 20px 0;
+    color: ${({ theme }) => theme.colors.black};
   }
 `;
 
@@ -481,6 +474,21 @@ const ButtonStyled = styled(Button)`
   &:active,
   &:hover {
     background-color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
+
+const TagsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  color: ${({ theme }) => theme.colors.black};
+
+  input {
+    border: 0 !important;
+
+    ::placeholder {
+      color: ${({ theme }) => theme.colors.darkGray};
+    }
   }
 `;
 

@@ -1,4 +1,3 @@
-import { PageLayout } from '@/styles/CommonStyles';
 import styled from '@emotion/styled';
 import ExProfileImg from '@/assets/ExProfileImg';
 import ViewIcon from './../../../assets/icons/ViewIcon';
@@ -128,9 +127,10 @@ const PostLayout = styled.div`
   justify-content: center;
   align-items: flex-start;
   width: 100%;
-  height: calc(100vh-60px);
+  height: auto;
   padding-top: 60px;
   background-color: ${({ theme }) => theme.colors.brightGray};
+  color: ${({ theme }) => theme.colors.black};
 `;
 
 const PostTitleSection = styled.div`

@@ -123,8 +123,9 @@ const Label = styled.label`
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
   :not(:last-child)::before {
-    content: '* ';
-    color: ${({ theme }) => theme.colors.tertiary};
+    content: '*';
+    margin-right: 3px;
+    color: ${({ theme }) => theme.colors.point};
   }
 
   :last-child {
@@ -142,8 +143,8 @@ const FormContentStyled = styled.div`
   > button,
   > textarea {
     &:focus {
-      border-color: ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      border-color: ${({ theme }) => theme.colors.focusShadowGray};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     }
   }
 `;
@@ -159,8 +160,8 @@ const SelectStyled = styled.select`
   border-radius: 5px;
   &:focus,
   &:active {
-    border-color: ${({ theme }) => theme.colors.focusShadow};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    border-color: ${({ theme }) => theme.colors.focusShadowGray};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     outline: none;
   }
 `;

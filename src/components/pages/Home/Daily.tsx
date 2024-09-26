@@ -139,6 +139,7 @@ const DailyTop = styled.div`
 
   strong {
     font-size: ${({ theme }) => theme.fontSizes.base};
+    color: ${({ theme }) => theme.colors.black};
   }
 
   span {
@@ -229,6 +230,7 @@ const ImgDesc = styled.div`
   align-items: flex-start;
   min-width: 210px;
   width: auto;
+  color: ${({ theme }) => theme.colors.black};
 
   b {
     font-size: ${({ theme }) => theme.fontSizes.small};

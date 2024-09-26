@@ -45,6 +45,8 @@ const MyPageTab = () => {
 };
 
 const TabsStyled = styled(Tabs)`
+  margin-top: 5px;
+
   > button {
     height: 30px;
     margin-left: auto;
@@ -57,23 +59,30 @@ const TabsListStyled = styled(TabsList)`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-auto-flow: column;
-  justify-content: space-around;
+  justify-content: space-between;
   width: 100%;
-  height: 40px;
+  height: auto;
   background-color: ${({ theme }) => theme.colors.white};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
+  border-radius: 0;
+  padding: 0;
 
   button {
-    transition: none;
-    padding: 6px 15px;
+    padding: 10px 0;
+    border-radius: 0;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.white};
+
     &[data-state='active'] {
-      box-shadow: none;
       border-bottom: 1px solid ${({ theme }) => theme.colors.primary};
+      box-shadow: none;
       > svg {
         color: ${({ theme }) => theme.colors.primary};
       }
     }
 
     svg {
+      width: 22px;
+      height: 20px;
       color: ${({ theme }) => theme.colors.darkGray};
     }
   }
