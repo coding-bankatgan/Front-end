@@ -5,6 +5,7 @@ import axios from 'axios';
 import { getAddress } from '@/api/postApi';
 import Loading from '@/assets/icons/Loading';
 import { Skeleton } from '@/components/ui/skeleton';
+import api from '@/api/axios';
 
 const Daily = () => {
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -47,9 +48,10 @@ const Daily = () => {
         );
         if (latitude !== null && longitude !== null) {
           const date = async () => {
-            const item = await axios.get(`api/suggest/drink?lat=${latitude}&lon=${longitude}`);
-            setDailyData(item.data.answer);
-            console.log(item.data.answer);
+            const item = await api.get(`/suggest/drink?lat=${latitude}&lon=${longitude}`);
+            console.log(item);
+
+            setDailyData(item.data);
           };
 
           date();
@@ -98,13 +100,13 @@ const Daily = () => {
             <Img>
               {imageLoading && <Skeleton />}
               <img
-                src={dailyData.image_url}
-                alt={dailyData.name}
+                src={dailyData?.image_url}
+                alt={dailyData?.name}
                 onLoad={() => setImageLoading(false)}
               />
             </Img>
             <ImgDesc>
-              <b>{dailyData.name}</b>
+              <b>{dailyData?.name}</b>
               <span>주종 / 당도 / 도수 / 가격 정보</span>
             </ImgDesc>
           </>

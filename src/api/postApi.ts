@@ -1,4 +1,5 @@
 import axios from 'axios';
+import api from './axios';
 
 /** 전체 게시글 조회 API */
 export const fetchPostsApi = async () => {
@@ -289,7 +290,7 @@ export const fetchDeclarationsDetailApi = async (declarationId: number) => {
 /** 알림 API */
 export const fetchNotificationsApi = async () => {
   try {
-    const response = await axios.get(`/api/notifications`);
+    const response = await api.get(`/notifications`);
     return response.data;
   } catch (err) {
     console.error('Error fetching notifications: ', err);
