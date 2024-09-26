@@ -251,6 +251,7 @@ export const handlers = [
     const requestBody = (await request.json()) as TagRequestBody;
 
     const { tagId, tagName } = requestBody;
+    console.log(tagId);
 
     const addTag: Tag = {
       id: 1,
