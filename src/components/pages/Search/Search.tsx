@@ -62,10 +62,13 @@ const Search = () => {
   const [totalPages, setTotalPages] = useState();
   const [hasSearched, setHasSearched] = useState(false);
 
-  console.log(totalElements);
-  console.log(totalPages);
-  setCurrentPage(0);
-  setSize(10);
+  useEffect(() => {
+    console.log(totalElements);
+    console.log(totalPages);
+    setCurrentPage(0);
+    setSize(10);
+  },[])
+ 
 
   const prevBtn = () => {
     navigate(-1);
