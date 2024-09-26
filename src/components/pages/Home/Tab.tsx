@@ -3,7 +3,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePostsStore } from '@/store/usePostsStore';
 import { useEffect, useState } from 'react';
 import CardItem from '@/components/layout/CardItem';
-import { worker } from '@/mocks/browser';
 
 const Tab = () => {
   const { posts, fetchPosts } = usePostsStore();
@@ -12,12 +11,11 @@ const Tab = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await worker.start();
       fetchPosts();
     };
 
     fetchData();
-  }, [worker, fetchPosts]);
+  }, [fetchPosts]);
 
   const filteredPosts = Array.isArray(posts)
     ? selectedTab === 'all'
