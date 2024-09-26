@@ -10,7 +10,13 @@ api.interceptors.request.use(
   config => {
     console.log(config.url);
 
-    if (config.url && (config.url.startsWith('/login') || config.url.startsWith('/signup'))) {
+    if (
+      config.url &&
+      (config.url.startsWith('/members/signin') ||
+        config.url.startsWith('/members/signup') ||
+        config.url.startsWith('/google/join') ||
+        config.url.startsWith('/google/login-uri'))
+    ) {
       return config;
     }
 
@@ -19,7 +25,7 @@ api.interceptors.request.use(
     if (accessToken) {
       config.headers['Access-Token'] = accessToken;
     } else {
-      //window.location.href = '/login';
+      // window.location.href = '/login';
     }
     return config;
   },

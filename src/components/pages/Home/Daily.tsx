@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import MapPinIcon from '../../../assets/icons/MapPinIcon';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { getAddress } from '@/api/postApi';
 import Loading from '@/assets/icons/Loading';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -16,10 +15,10 @@ const Daily = () => {
   const [rotate, setRotate] = useState('false');
   const [imageLoading, setImageLoading] = useState(true);
   const [dailyData, setDailyData] = useState({
-    drink_id: 0,
+    id: 0,
     name: '브라우저 권한을 확인해주세요!',
-    place_name: '',
-    image_url: '',
+    placeName: '',
+    imageUrl: '',
     lat: 0,
     lon: 0,
   });
@@ -100,7 +99,7 @@ const Daily = () => {
             <Img>
               {imageLoading && <Skeleton />}
               <img
-                src={dailyData?.image_url}
+                src={dailyData?.imageUrl}
                 alt={dailyData?.name}
                 onLoad={() => setImageLoading(false)}
               />
