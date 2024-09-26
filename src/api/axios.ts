@@ -19,7 +19,7 @@ api.interceptors.request.use(
     if (accessToken) {
       config.headers['Access-Token'] = accessToken;
     } else {
-      window.location.href = '/login';
+      //window.location.href = '/login';
     }
     return config;
   },
