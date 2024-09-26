@@ -180,8 +180,8 @@ const TitleStyled = styled.div`
 
   > textarea {
     &:focus {
-      border-color: ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      border-color: ${({ theme }) => theme.colors.focusShadowGray};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     }
   }
 `;
@@ -194,8 +194,8 @@ const FormStyled = styled.div`
     border: 1px solid ${({ theme }) => theme.colors.lightGray};
     margin-bottom: 10px;
     &:focus {
-      border-color: ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      border-color: ${({ theme }) => theme.colors.focusShadowGray};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     }
   }
 `;
@@ -208,8 +208,8 @@ const TextareaStyled = styled(Textarea)`
   resize: none;
 
   &:focus {
-    border-color: ${({ theme }) => theme.colors.focusShadow};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    border-color: ${({ theme }) => theme.colors.focusShadowGray};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
   }
 `;
 
@@ -221,7 +221,7 @@ const Label = styled.label`
   ::before {
     content: '*';
     margin-right: 3px;
-    color: ${({ theme }) => theme.colors.tertiary};
+    color: ${({ theme }) => theme.colors.point};
   }
 `;
 
@@ -235,8 +235,8 @@ const Line = styled.div`
 const BottomStyled = styled.div`
   > button {
     &:focus {
-      border-color: ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      border-color: ${({ theme }) => theme.colors.focusShadowOrange};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowOrange};
     }
   }
 `;
@@ -251,8 +251,8 @@ const SelectStyled = styled.select`
   border-radius: 5px;
   &:focus,
   &:active {
-    border-color: ${({ theme }) => theme.colors.focusShadow};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    border-color: ${({ theme }) => theme.colors.focusShadowOrange};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowOrange};
     outline: none;
   }
 `;

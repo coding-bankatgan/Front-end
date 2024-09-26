@@ -72,16 +72,14 @@ const TabsStyled = styled(Tabs)`
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding: 20px;
+  background-color: ${({ theme }) => theme.colors.white};
+
   > button {
     height: 30px;
     margin-left: auto;
     margin-top: 10px;
     border: 1px solid ${({ theme }) => theme.colors.lightGray};
-
-    &:focus {
-      border-color: ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
-    }
   }
 `;
 
@@ -89,7 +87,7 @@ const TabsListStyled = styled(TabsList)`
   display: flex;
   justify-content: flex-start;
   width: 100%;
-  background-color: ${({ theme }) => theme.colors.lightGray};
+  background-color: ${({ theme }) => theme.colors.brightGray};
   border-radius: 20px;
 
   button {
@@ -106,22 +104,21 @@ const TabsContentStyled = styled(TabsContent)`
   width: 100%;
   min-height: 200px;
   height: auto;
-  margin-top: 20px;
+  margin-top: 10px;
 `;
 
 const SelectStyled = styled.select`
   width: 100px;
   height: 35px;
   margin-left: auto;
-  margin-top: 20px;
+  margin-top: 10px;
   font-size: ${({ theme }) => theme.fontSizes.small};
-  border: 1px solid ${({ theme }) => theme.colors.lightGray};
   border-radius: 5px;
 
-  &:focus,
-  &:active {
-    border-color: ${({ theme }) => theme.colors.focusShadow};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+  :focus,
+  :active {
+    border-color: ${({ theme }) => theme.colors.focusShadowGray};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     outline: none;
   }
 `;

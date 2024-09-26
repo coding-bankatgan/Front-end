@@ -2,25 +2,27 @@
 
 export const theme = {
   colors: {
-    primary: '#FFD18C',
+    primary: '#FFC876',
     secondary: '#FFB340',
     tertiary: '#FFE0B0',
+    point: '#FADB30',
 
-    black: '#000000',
+    black: '#24201A',
     white: '#FFFFFF',
 
-    gray: '#DDDDDD',
     clearGray: '#FAFAFA',
     brightGray: '#F3F4F8',
     lightGray: '#F1F1F1',
-    darkGray: '#464646',
+    gray: '#DDDDDD',
+    darkGray: '#4B463F',
 
     success: '#BEE09C',
     error: '#E97979',
 
     heart: '#FF3140',
 
-    focusShadow: 'rgba(255, 209, 140, 0.3)',
+    focusShadowOrange: 'rgba(255, 209, 140, 0.3)',
+    focusShadowGray: 'rgba(198, 200, 206, 0.3)',
   },
   fontSizes: {
     xxsmall: '10px', // 매우 작은 텍스트 (예: 캡션, 서브텍스트)

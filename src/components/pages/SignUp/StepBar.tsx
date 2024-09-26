@@ -27,15 +27,16 @@ const ChangePageContainer = styled.section`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  height: 5vh;
-  margin: 20px 0 0 0;
+  height: auto;
+  padding: 20px 40px 20px 20px;
+
   svg {
     color: ${({ theme }) => theme.colors.darkGray};
   }
+
   .arrow-container {
     width: 25px;
     height: 25px;
-    transform: translateX(20px);
   }
 `;
 
@@ -43,6 +44,7 @@ const ProgressStyled = styled(Progress)`
   width: 155px;
   height: 7px;
   margin: auto;
+
   div {
     background-color: ${({ theme }) => theme.colors.primary};
   }

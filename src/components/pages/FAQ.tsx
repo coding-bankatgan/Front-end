@@ -62,6 +62,8 @@ const TitleStyled = styled.h1`
 `;
 
 const AccordionStyled = styled(Accordion)`
+  color: ${({ theme }) => theme.colors.black};
+
   button {
     padding: 15px 10px;
   }

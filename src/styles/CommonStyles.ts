@@ -3,13 +3,14 @@ import styled from '@emotion/styled';
 export const PageLayout = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   min-width: 360px;
   width: 100%;
   max-width: auto;
   min-height: calc(100vh - 120px);
   height: auto;
   margin-top: 60px;
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 // 로그인, 회원가입
@@ -42,8 +43,8 @@ export const NoFooterLayout = styled.div`
 export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 320px;
   width: 100%;
-  min-height: calc(100vh - 180px);
+  min-width: 320px;
+  min-height: calc(100vh - 120px);
   margin: 20px;
 `;

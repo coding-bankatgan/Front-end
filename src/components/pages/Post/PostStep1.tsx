@@ -34,12 +34,18 @@ const PostStep1 = ({ nextStep, setCategory }: PostStep1Props) => {
 
 export const Title = styled.b`
   display: inline-block;
-  margin-bottom: 30px;
+  width: 100%;
+  padding: 0 20px 20px 20px;
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.black};
   font-size: ${({ theme }) => theme.fontSizes.medium};
 `;
 
 const ButtonWrapper = styled.div`
   width: 100%;
+  height: calc(100vh - 171px);
+  padding: 0 20px;
+  background-color: ${({ theme }) => theme.colors.white};
 
   button {
     width: 100%;

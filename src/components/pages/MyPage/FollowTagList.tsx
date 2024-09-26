@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { ContentWrapper } from '@/styles/CommonStyles';
 import { Button } from '@/components/ui/button';
 import { useMemberStore } from '@/store/useMemberStore';
 import styled from '@emotion/styled';
@@ -20,7 +19,7 @@ const FollowTagList = () => {
   console.log(myFollowTags);
 
   return (
-    <ContentWrapperStyled>
+    <>
       <ul>내가 팔로우한 태그 목록</ul>
       <Line />
       {myFollowTags.length === 0 ? (
@@ -37,13 +36,9 @@ const FollowTagList = () => {
           ))}
         </FollowTagListStyled>
       )}
-    </ContentWrapperStyled>
+    </>
   );
 };
-
-const ContentWrapperStyled = styled(ContentWrapper)`
-  margin: 0;
-`;
 
 const NoTagsMessage = styled.div`
   display: flex;
@@ -53,15 +48,17 @@ const NoTagsMessage = styled.div`
   height: 50px;
   background-color: ${({ theme }) => theme.colors.clearGray};
   color: ${({ theme }) => theme.colors.gray};
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-size: ${({ theme }) => theme.fontSizes.small};
   border-radius: 10px;
 `;
 
 const FollowTagListStyled = styled.div`
+  color: ${({ theme }) => theme.colors.black};
   list-style: none;
   font-weight: bold;
 
   ul {
+    color: ${({ theme }) => theme.colors.black};
     font-size: ${({ theme }) => theme.fontSizes.large};
   }
 
@@ -70,7 +67,8 @@ const FollowTagListStyled = styled.div`
     justify-content: space-between;
     margin: 15px 0;
     padding: 0 10px;
-    font-size: ${({ theme }) => theme.fontSizes.base};
+    color: ${({ theme }) => theme.colors.black};
+    font-size: ${({ theme }) => theme.fontSizes.small};
 
     button {
       height: 24px;
@@ -79,9 +77,9 @@ const FollowTagListStyled = styled.div`
       background-color: ${({ theme }) => theme.colors.white};
       :focus {
         background-color: ${({ theme }) => theme.colors.white};
-        border-color: ${({ theme }) => theme.colors.focusShadow};
+        border-color: ${({ theme }) => theme.colors.focusShadowOrange};
         border-radius: 50%;
-        box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+        box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowOrange};
       }
     }
 
@@ -97,7 +95,7 @@ const Line = styled.div`
   width: 100%;
   height: 1px;
   margin: 10px 0;
-  background-color: ${({ theme }) => theme.colors.gray};
+  background-color: ${({ theme }) => theme.colors.lightGray};
 `;
 
 export default FollowTagList;

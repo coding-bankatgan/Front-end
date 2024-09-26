@@ -5,21 +5,16 @@ import regions from './data/regions.json';
 import comments from './data/comments.json';
 import commentWrite from './data/commentWrite.json';
 import { Comment, CommentRequestBody } from '@/types/comment';
-
 import member from './data/member.json';
 import { MemberRequestBody } from '@/types/member';
-
 import tag from './data/tag.json';
 import { Tag, TagRequestBody } from '@/types/tag';
-
 import announcements from './data/announcement.json';
 import announcementWrite from './data/announcementWrite.json';
 import { Announcement, AnnouncementRequestBody } from '@/types/announcement';
-
 import declarations from './data/report.json';
 import declarationWrite from './data/reportWrite.json';
 import { Declaration, DeclarationRequestBody } from '@/types/declaration';
-
 import suggestedTags from './data/suggestedTags.json';
 import suggestedDrinks from './data/suggestedDrinks.json';
 import autoCompleteTag from './data/autoCompleteTag.json';
@@ -27,9 +22,7 @@ import autoCompleteDrink from './data/autoCompleteDrink.json';
 import searchByTag from './data/searchByTag.json';
 import searchByDrink from './data/searchByDrink.json';
 import notifications from './data/notification.json';
-
 import searchDrink from './data/searchDrink.json';
-
 import registrations from './data/registration.json';
 import registrationWrite from './data/registrationWrite.json';
 import { Registration, RegistrationRequestBody } from '@/types/registration';

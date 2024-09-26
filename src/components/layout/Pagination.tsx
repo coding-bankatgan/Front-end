@@ -40,7 +40,7 @@ const Pagination = ({ pagination, onPageChange }: PaginationProps) => {
   };
 
   return (
-    <PaginationLayout>
+    <PaginationLayoutStyled>
       <PaginationContent>
         <PaginationItem>
           <PaginationPreviousStyled
@@ -67,9 +67,13 @@ const Pagination = ({ pagination, onPageChange }: PaginationProps) => {
           />
         </PaginationItem>
       </PaginationContent>
-    </PaginationLayout>
+    </PaginationLayoutStyled>
   );
 };
+
+const PaginationLayoutStyled = styled(PaginationLayout)`
+  margin-top: 20px;
+`;
 
 const PaginationPreviousStyled = styled(PaginationPrevious)<{
   disabled: boolean;

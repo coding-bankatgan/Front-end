@@ -44,7 +44,7 @@ const SpecialtyDrinkBoard = () => {
               <div>
                 <span>{registration.drinkName}</span>
                 {registration.approved === null ? (
-                  <Badge variant="outline">New!</Badge>
+                  <Badge variant="outline">New</Badge>
                 ) : (
                   <p>
                     Re:{' '}
@@ -71,6 +71,7 @@ const SpecialtyDrinkBoard = () => {
 
 const NoFooterLayoutSub = styled(NoFooterLayout)`
   align-items: flex-start;
+  color: ${({ theme }) => theme.colors.black};
 `;
 
 const ListTitleStyled = styled.div`

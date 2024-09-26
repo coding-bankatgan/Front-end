@@ -61,6 +61,7 @@ const AnnouncementDetail = () => {
 
 const NoFooterLayoutSub = styled(NoFooterLayout)`
   align-items: flex-start;
+  color: ${({ theme }) => theme.colors.black};
 `;
 
 const OptionWrapper = styled.div`
@@ -117,21 +118,23 @@ const BottomStyled = styled.div`
 
   > button {
     &:focus {
-      border-color: ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      border-color: ${({ theme }) => theme.colors.focusShadowGray};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     }
   }
 `;
 
 const TextareaStyled = styled(Textarea)`
-  height: 150px;
-  margin-top: 5px;
+  min-height: 100px;
+  height: auto;
   margin-bottom: 10px;
   background-color: ${({ theme }) => theme.colors.white};
+  border-radius: 0;
   resize: none;
-  &:focus {
-    border-color: ${({ theme }) => theme.colors.white};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.white};
+
+  :focus {
+    border: 0;
+    box-shadow: none;
   }
 `;
 

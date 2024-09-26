@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import PlusIcon from '@/assets/icons/PlusIcon';
 import useRegistrationStore from '@/store/useRegistrationStore';
-//import { fetchImageUploadApi } from '@/api/postApi';
+// import { fetchImageUploadApi } from '@/api/postApi';
 
 interface SpecialtyDrinkFormProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -176,12 +176,13 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
 
 const NoFooterLayoutSub = styled(NoFooterLayout)`
   align-items: flex-start;
+  color: ${({ theme }) => theme.colors.black};
 `;
 
 const TitleStyled = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.medium};
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
 const FormHeaderStyled = styled.div`
@@ -192,14 +193,17 @@ const FormHeaderStyled = styled.div`
   margin-bottom: 8px;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.brightGray};
+  background-color: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.lightGray};
+  border-radius: 10px;
 
   input {
     display: none;
   }
 
   button {
-    background-color: ${({ theme }) => theme.colors.gray};
+    background-color: ${({ theme }) => theme.colors.tertiary};
+    color: ${({ theme }) => theme.colors.white};
     width: 50px;
     height: 50px;
     padding: 0;
@@ -213,15 +217,15 @@ const FormHeaderStyled = styled.div`
 
 const FormContentStyled = styled.div`
   input {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     background-color: ${({ theme }) => theme.colors.brightGray};
   }
 
   > input,
   textarea {
     &:focus {
-      border-color: ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      border-color: ${({ theme }) => theme.colors.focusShadowGray};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     }
   }
 `;
@@ -230,14 +234,15 @@ const Label = styled.label`
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
   ::before {
-    content: '* ';
-    color: ${({ theme }) => theme.colors.tertiary};
+    content: '*';
+    margin-right: 3px;
+    color: ${({ theme }) => theme.colors.point};
   }
 `;
 
 const SelectStyled = styled.select`
   display: flex;
-  width: 150px;
+  width: 130px;
   height: 35px;
   margin-bottom: 8px;
   font-size: ${({ theme }) => theme.fontSizes.small};
@@ -246,8 +251,8 @@ const SelectStyled = styled.select`
 
   &:focus,
   &:active {
-    border-color: ${({ theme }) => theme.colors.focusShadow};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    border-color: ${({ theme }) => theme.colors.focusShadowGray};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     outline: none;
   }
 `;
@@ -255,11 +260,11 @@ const SelectStyled = styled.select`
 const CustomSlider = styled(Slider)`
   span {
     span {
-      background-color: ${({ theme }) => theme.colors.tertiary};
+      background-color: ${({ theme }) => theme.colors.primary};
       &:focus,
       &:active {
-        border-color: ${({ theme }) => theme.colors.focusShadow};
-        box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+        border-color: ${({ theme }) => theme.colors.focusShadowOrange};
+        box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowOrange};
         outline: none;
       }
     }
@@ -291,11 +296,13 @@ const FormBottomStyled = styled.div`
   button {
     width: 48%;
     height: 45px;
+    color: ${({ theme }) => theme.colors.white};
     font-size: ${({ theme }) => theme.fontSizes.base};
     border-radius: 30px;
 
     :nth-of-type(1) {
-      background-color: ${({ theme }) => theme.colors.gray};
+      background-color: ${({ theme }) => theme.colors.lightGray};
+      color: ${({ theme }) => theme.colors.darkGray};
     }
 
     :nth-of-type(2) {

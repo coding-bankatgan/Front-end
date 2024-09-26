@@ -83,7 +83,6 @@ const ResultsWrapper = styled.div`
   width: 100%;
   min-height: 300px;
   height: auto;
-  padding: 0 5px;
 `;
 
 const ListItem = styled(Button)`
@@ -110,9 +109,10 @@ const ListItem = styled(Button)`
   img {
     width: 50px;
     height: 60px;
+    object-fit: contain;
     margin-right: 10px;
     border-radius: 10px;
-    background-color: ${({ theme }) => theme.colors.gray};
+    background-color: ${({ theme }) => theme.colors.white};
   }
 `;
 

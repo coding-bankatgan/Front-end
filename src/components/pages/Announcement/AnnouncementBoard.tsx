@@ -88,6 +88,8 @@ const TitleStyled = styled.h1`
 `;
 
 const ListContentStyled = styled.ul`
+  color: ${({ theme }) => theme.colors.black};
+
   li {
     display: flex;
     flex-direction: column;

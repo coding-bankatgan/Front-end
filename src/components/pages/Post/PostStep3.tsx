@@ -10,6 +10,8 @@ import { Drink } from './PostStep2';
 import { alcoholsData } from '@/data/alcoholsData';
 import useMemberStore from '@/store/useMemberStore';
 import useNotificationStore from '@/store/useNotificationStore';
+import CloseIcon from './../../../assets/icons/CloseIcon';
+import { Badge } from '@/components/ui/badge';
 
 interface PostStep3Props {
   category: string;
@@ -139,7 +141,9 @@ const PostStep3 = ({
           {imagePreview ? (
             <>
               <img src={imagePreview} alt="미리보기 이미지"></img>
-              <DeleteImageButton onClick={handleDeleteImage}>✖</DeleteImageButton>
+              <DeleteImageButton onClick={handleDeleteImage}>
+                <CloseIcon />
+              </DeleteImageButton>
             </>
           ) : (
             <>
@@ -179,88 +183,143 @@ const PostStep3 = ({
             </div>
           </SweetContainer>
         </div>
-        <div>
+        <RatingContainer>
           <Label htmlFor="rating">평점</Label>
           <div id="rating">
             <ReactStars
               count={5}
               value={rating}
               onChange={ratingChanged}
-              size={30}
+              size={25}
               half={true}
               color1={'white'}
             />
-            <span>( {rating} 점 )</span>
+            <span>{rating}점</span>
           </div>
-        </div>
-        <Textarea
+        </RatingContainer>
+        <TextareaStyled
           placeholder="포스팅 내용을 작성해주세요."
           value={postContent}
           onChange={handlePostContentChange}
         />
         <TagsContainer>
-          {tags.map((tag, index) => (
-            <Tag key={index}>
-              {tag}
-              <DeleteButton onClick={() => handleDeleteTag(tag)}>✖</DeleteButton>
-            </Tag>
-          ))}
+          <BadgeWrapper>
+            {tags.map((tag, index) => (
+              <BadgeStyled key={index}>
+                {tag}
+                <DeleteButton onClick={() => handleDeleteTag(tag)}>
+                  <CloseIcon />
+                </DeleteButton>
+              </BadgeStyled>
+            ))}
+          </BadgeWrapper>
           <Input
             value={tagValue}
             onChange={e => setTagValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={tags.length >= 3 ? '태그는 최대 3개까지 입니다!' : '태그 입력하기'}
+            placeholder={
+              tags.length >= 3 ? '태그는 최대 3개까지 작성할 수 있습니다.' : '태그 입력하기'
+            }
             disabled={tags.length >= 3}
           />
         </TagsContainer>
+        <ButtonStyled onClick={handlePostSubmit}>완료</ButtonStyled>
       </PostContent>
-      <ButtonStyled onClick={handlePostSubmit}>완료</ButtonStyled>
     </>
   );
 };
 
+const TextareaStyled = styled(Textarea)`
+  margin-bottom: 10px;
+`;
+
+const RatingContainer = styled.div`
+  font-size: ${({ theme }) => theme.fontSizes.small};
+`;
+
 const DeleteImageButton = styled.div`
-  text-align: center;
-  width: 33px;
-  height: 33px;
+  padding: 7px;
   position: absolute;
   top: 10px;
   right: 10px;
-  color: ${({ theme }) => theme.colors.error};
-  font-size: ${({ theme }) => theme.fontSizes.xlarge};
-  background: none;
   z-index: 10;
+
+  svg {
+    color: ${({ theme }) => theme.colors.error};
+    width: 20px;
+    height: 20px;
+  }
 `;
 
 const DeleteButton = styled.button`
   color: ${({ theme }) => theme.colors.white};
   margin-left: 5px;
-  font-size: 16px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
-const TagsContainer = styled.div`
+const BadgeWrapper = styled.div`
   display: flex;
-  flex-wrap: wrap;
   width: 100%;
-  margin-top: 5px;
+  height: auto;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  background-color: ${({ theme }) => theme.colors.white} !important;
 
-  input {
-    margin-top: 5px;
-    &::placeholder {
-      color: ${({ theme }) => theme.colors.darkGray};
+  ::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const BadgeStyled = styled(Badge)`
+  flex-shrink: 0;
+  width: auto;
+  height: 100%;
+  margin-right: 8px;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  background-color: ${({ theme }) => theme.colors.secondary} !important;
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-weight: normal;
+  border-radius: 20px !important;
+
+  :nth-last-of-type(1) {
+    margin-right: 0;
+  }
+
+  :hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;
+  }
+
+  span:nth-of-type(1) {
+    margin-right: 5px;
+    color: ${({ theme }) => theme.colors.white};
+    font-size: ${({ theme }) => theme.fontSizes.small};
+  }
+
+  span:nth-of-type(2) {
+    color: ${({ theme }) => theme.colors.white};
+    font-size: ${({ theme }) => theme.fontSizes.base};
+
+    svg {
+      width: 16px;
+      height: 16px;
     }
   }
 `;
 
-const Tag = styled.span`
-  background-color: ${({ theme }) => theme.colors.secondary};
-  color: ${({ theme }) => theme.colors.white};
-  border-radius: 50px;
-  padding: 4px 10px;
-  margin: 5px;
-  font-size: 14px;
-  letter-spacing: 1.5px;
-`;
 const SweetContainer = styled.div`
   width: 100%;
 `;
@@ -268,35 +327,40 @@ const SweetContainer = styled.div`
 interface CircleProps {
   isActive: boolean;
 }
+
 const Circle = styled.span<CircleProps>`
-  width: 28px;
-  height: 28px;
+  width: 25px;
+  height: 25px;
   border: 4px solid white;
   background-color: ${({ isActive, theme }) =>
-    isActive ? theme.colors.secondary : theme.colors.white};
+    isActive ? theme.colors.point : theme.colors.white};
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+
   span {
     font-size: ${({ theme }) => theme.fontSizes.small};
     min-width: 25px;
     transform: translateY(-32px);
   }
 `;
+
 const Line = styled.span`
   width: 30px;
   height: 4px;
   background-color: white;
 
-  transform: translateY(11.9px);
+  transform: translateY(11px);
 `;
 
 const PostTitle = styled.b`
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
+  padding: 0 20px 20px 20px;
   font-size: ${({ theme }) => theme.fontSizes.medium};
+  background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.black};
 
   span {
     display: inline-block;
@@ -318,10 +382,14 @@ const ImgSelect = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.brightGray};
+  background-color: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.brightGray};
+  border-radius: 10px;
   overflow: hidden;
+
   img {
     overflow: hidden;
+    object-fit: contain;
     z-index: 9;
   }
 
@@ -330,7 +398,8 @@ const ImgSelect = styled.div`
   }
 
   button {
-    background-color: ${({ theme }) => theme.colors.gray};
+    background-color: ${({ theme }) => theme.colors.tertiary};
+    color: ${({ theme }) => theme.colors.white};
     width: 50px;
     height: 50px;
     padding: 0;
@@ -343,6 +412,9 @@ const ImgSelect = styled.div`
 `;
 
 const PostContent = styled.section`
+  padding: 0 20px;
+  background-color: ${({ theme }) => theme.colors.white};
+
   img {
     min-width: 316px;
     width: auto;
@@ -364,6 +436,7 @@ const PostContent = styled.section`
   label {
     width: 30px;
     margin-right: 10px;
+    color: ${({ theme }) => theme.colors.black};
   }
 
   input {
@@ -373,7 +446,7 @@ const PostContent = styled.section`
     border: 1px solid ${({ theme }) => theme.colors.gray};
 
     &:focus {
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     }
 
     &::placeholder {
@@ -385,17 +458,21 @@ const PostContent = styled.section`
     min-height: 200px;
     height: auto;
     background-color: ${({ theme }) => theme.colors.brightGray};
+    color: ${({ theme }) => theme.colors.black};
     resize: none;
 
     &:focus {
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     }
   }
+
   #rating {
     display: flex;
     align-items: center;
     width: 100%;
     padding-left: 10px;
+    color: ${({ theme }) => theme.colors.black};
+
     > span {
       padding-left: 10px;
     }
@@ -406,13 +483,14 @@ const PostContent = styled.section`
     justify-content: center;
     width: 100%;
     padding: 40px 0 20px 0;
+    color: ${({ theme }) => theme.colors.black};
   }
 `;
 
 const ButtonStyled = styled(Button)`
   width: 100%;
   height: 45px;
-  margin-top: 30px;
+  margin: 10px 0 20px 0;
   background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.white};
   font-size: ${({ theme }) => theme.fontSizes.base};
@@ -421,6 +499,21 @@ const ButtonStyled = styled(Button)`
   &:active,
   &:hover {
     background-color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
+
+const TagsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  color: ${({ theme }) => theme.colors.black};
+
+  input {
+    border: 0 !important;
+
+    ::placeholder {
+      color: ${({ theme }) => theme.colors.darkGray};
+    }
   }
 `;
 

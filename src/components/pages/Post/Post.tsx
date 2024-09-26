@@ -1,4 +1,3 @@
-import { PageLayout } from '@/styles/CommonStyles';
 import styled from '@emotion/styled';
 import ExProfileImg from '@/assets/ExProfileImg';
 import ViewIcon from './../../../assets/icons/ViewIcon';
@@ -46,101 +45,96 @@ const Post = ({ showAlert }: PostProps) => {
   }
 
   return (
-    <PageLayoutStyled>
-      <PostWrapper>
-        <PostTitleSection>
-          <b>
-            <span>{typeMap[post?.type]}</span>
-            {post?.drink.name}
-          </b>
-        </PostTitleSection>
-        <UserPost>
-          <Nickname>
-            <ExProfileImg />
-            {post?.memberName}
+    <PostLayout>
+      <PostTitleSection>
+        <b>
+          <span>{typeMap[post?.type]}</span>
+          {post?.drink.name}
+        </b>
+      </PostTitleSection>
+      <UserPost>
+        <Nickname>
+          <ExProfileImg />
+          {post?.memberName}
+          <span>
+            <EllipsisHorizontalIcon />
+          </span>
+        </Nickname>
+        <Img>
+          <img src={post?.imageUrl} alt={post?.drink.name} />
+        </Img>
+        <Interactions>
+          <span>
+            <HeartIcon onClick={() => toggleLike(post.id)} liked={liked} />
+            {post?.likeCount.toLocaleString()}
+          </span>
+          <span>
+            <ChatIcon /> {post?.commentCount.toLocaleString()}
+          </span>
+        </Interactions>
+        <Desc>{post?.content}</Desc>
+        <EtcWrap>
+          <TagWrapper>
+            {post?.tags.map(tag => (
+              <AlertDialogTag key={tag.tagId} tagId={tag.tagId} showAlert={showAlert}>
+                {tag.tagName}
+              </AlertDialogTag>
+            ))}
+          </TagWrapper>
+          {post?.type === 'ADVERTISEMENT' ? (
+            <Info>
+              <li>
+                <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
+              </li>
+              <li>
+                <span>도수:</span> {post?.drink.degree}%
+              </li>
+              <li>
+                <span>당도:</span> {post?.drink.sweetness}
+              </li>
+            </Info>
+          ) : (
+            <Info>
+              <li>
+                <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
+              </li>
+              <li>
+                <span>도수:</span> {post?.drink.degree}%
+              </li>
+              <li>
+                <span>당도:</span> {post?.drink.sweetness}
+              </li>
+              <li>
+                <span>평점:</span> {post?.rating}
+              </li>
+              <li>
+                <span>평균 평점:</span> {post?.drink.averageRating || 0}
+              </li>
+            </Info>
+          )}
+          <MetaData>
+            <span>{dayjs(post?.createdAt).format('YYYY.MM.DD')}</span>
             <span>
-              <EllipsisHorizontalIcon />
+              <ViewIcon /> {post?.viewCount.toLocaleString()}
             </span>
-          </Nickname>
-          <Img>
-            <img src={post?.imageUrl} alt={post?.drink.name} />
-          </Img>
-          <Interactions>
-            <span>
-              <HeartIcon onClick={() => toggleLike(post.id)} liked={liked} />
-              {post?.likeCount.toLocaleString()}
-            </span>
-            <span>
-              <ChatIcon /> {post?.commentCount.toLocaleString()}
-            </span>
-          </Interactions>
-          <Desc>{post?.content}</Desc>
-          <EtcWrap>
-            <TagWrapper>
-              {post?.tags.map(tag => (
-                <AlertDialogTag key={tag.tagId} tagId={tag.tagId} showAlert={showAlert}>
-                  {tag.tagName}
-                </AlertDialogTag>
-              ))}
-            </TagWrapper>
-            {post?.type === 'ADVERTISEMENT' ? (
-              <Info>
-                <li>
-                  <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
-                </li>
-                <li>
-                  <span>도수:</span> {post?.drink.degree}%
-                </li>
-                <li>
-                  <span>당도:</span> {post?.drink.sweetness}
-                </li>
-              </Info>
-            ) : (
-              <Info>
-                <li>
-                  <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
-                </li>
-                <li>
-                  <span>도수:</span> {post?.drink.degree}%
-                </li>
-                <li>
-                  <span>당도:</span> {post?.drink.sweetness}
-                </li>
-                <li>
-                  <span>평점:</span> {post?.rating}
-                </li>
-                <li>
-                  <span>평균 평점:</span> {post?.drink.averageRating || 0}
-                </li>
-              </Info>
-            )}
-            <MetaData>
-              <span>{dayjs(post?.createdAt).format('YYYY.MM.DD')}</span>
-              <span>
-                <ViewIcon /> {post?.viewCount.toLocaleString()}
-              </span>
-            </MetaData>
-          </EtcWrap>
-        </UserPost>
-        <PostComments postId={postId} />
-      </PostWrapper>
-    </PageLayoutStyled>
+          </MetaData>
+        </EtcWrap>
+      </UserPost>
+      <PostComments postId={postId} />
+    </PostLayout>
   );
 };
 
-const PageLayoutStyled = styled(PageLayout)`
-  background-color: ${({ theme }) => theme.colors.brightGray};
-`;
-
-const PostWrapper = styled.div`
+const PostLayout = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: flex-start;
-  min-width: 320px;
   width: 100%;
-  min-height: calc(100vh - 180px);
   height: auto;
+  padding-top: 60px;
+  background-color: ${({ theme }) => theme.colors.brightGray};
+  color: ${({ theme }) => theme.colors.black};
 `;
 
 const PostTitleSection = styled.div`

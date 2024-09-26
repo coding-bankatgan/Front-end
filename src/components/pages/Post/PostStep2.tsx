@@ -3,7 +3,6 @@ import { Title } from './PostStep1';
 import { regions } from '@/data/regions';
 import { useEffect, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { Line } from '../Home/Home';
 import SearchIcon from '@/assets/icons/SearchIcon';
 import SearchResults from './SearchResults';
 import axios from 'axios';
@@ -162,7 +161,6 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
           </AutocompleteList>
         )}
       </SelectSearchGroup>
-      <Line />
       <ResultsContainer>
         {searchTerm !== '' && (
           <>
@@ -171,7 +169,7 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
               setDrinkData={setDrinkData}
               contents={searchResults}
             ></SearchResults>
-            <div ref={loadingRef} style={{ height: '20px', background: 'transparent' }} />
+            <div ref={loadingRef} style={{ height: '20px', background: 'transparent' }}></div>
           </>
         )}
         {/* {searchResults.map(result => (
@@ -187,37 +185,46 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
     </>
   );
 };
+
 const SelectStyled = styled.select`
-  width: 78px;
-  height: 40px;
-  font-size: ${({ theme }) => theme.fontSizes.small};
-  padding: 3px 4px 3px 16px;
-  border-radius: 50px 0 0 50px;
-  border: 1px solid ${({ theme }) => theme.colors.primary};
   position: absolute;
-  &:focus {
+  width: 80px;
+  height: 40px;
+  padding: 0 10px;
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  border: 1px solid ${({ theme }) => theme.colors.primary};
+  border-radius: 50px 0 0 50px;
+
+  :focus {
     outline: none;
   }
 `;
 
 const AutocompleteList = styled.ul`
   position: absolute;
-  top: 39.8px;
-  right: 0;
-  width: calc(100% - 78px);
-  background: white;
-  box-shadow:
-    -4px 4px 8px rgba(0, 0, 0, 0.2),
-    4px 4px 8px rgba(0, 0, 0, 0.2);
-  max-height: 200px;
+  top: 42px;
+  right: 20px;
+  width: calc(100vw - 120px);
+  min-height: 40px;
+  height: auto;
+  max-height: 350px;
+  background-color: ${({ theme }) => theme.colors.white};
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 10px;
+  border-radius: 10px;
   overflow-y: auto;
-  z-index: 1;
+  z-index: 3;
+
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
 `;
 
 const AutocompleteItem = styled.li`
   padding: 10px;
   cursor: pointer;
-  &:hover {
+
+  :hover {
     background-color: ${({ theme }) => theme.colors.lightGray};
   }
 `;
@@ -227,6 +234,9 @@ const SelectSearchGroup = styled.section`
   justify-content: space-between;
   align-items: center;
   position: relative;
+  margin-bottom: 10px;
+  padding: 0 20px 20px 20px;
+  background-color: ${({ theme }) => theme.colors.white};
 
   > button {
     position: absolute;
@@ -237,7 +247,7 @@ const SelectSearchGroup = styled.section`
     border-radius: 20px 0 0 20px;
     border-right: 1px solid ${({ theme }) => theme.colors.primary};
 
-    &:focus {
+    :focus {
       box-shadow: none;
     }
   }
@@ -249,20 +259,20 @@ const Search = styled.div`
   input {
     height: 40px;
     padding-right: 45px;
-    padding-left: 85px;
+    padding-left: 90px;
     border: 1px solid ${({ theme }) => theme.colors.primary};
     border-radius: 20px;
     overflow: hidden;
 
-    &:focus {
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    :focus {
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowOrange};
     }
   }
 
   svg {
     position: absolute;
     top: 10px;
-    right: 15px;
+    right: 35px;
     width: 20px;
     height: 20px;
     color: ${({ theme }) => theme.colors.primary};
@@ -272,9 +282,10 @@ const Search = styled.div`
 const ResultsContainer = styled.section`
   position: relative;
   width: 100%;
-  min-height: 300px;
-  height: auto;
-  margin: 25px 0;
+  min-height: calc(100vh - 241px);
+  height: calc(100% - 241px);
+  padding: 20px 20px 0 20px;
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 export default PostStep2;

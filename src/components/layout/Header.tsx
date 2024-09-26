@@ -8,6 +8,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Notification from './Notification';
 import BarsIcon from '@/assets/icons/BarsIcon';
+import logo from '../../../public/logo.png';
 
 interface HeaderProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -28,7 +29,9 @@ const Header = ({ showAlert, role }: HeaderProps) => {
 
   return (
     <HeaderLayout>
-      <Logo onClick={() => navigate('/')}>logo</Logo>
+      <Logo onClick={() => navigate('/')}>
+        <img src={logo} alt="오늘한잔" />
+      </Logo>
       <MenuWrapper>
         <Notification />
         <DropdownMenu>
@@ -71,7 +74,11 @@ const Logo = styled.h1`
   align-items: center;
   width: 100px;
   height: 30px;
-  background-color: ${({ theme }) => theme.colors.lightGray};
+  padding: 0px;
+
+  img {
+    width: 90px;
+  }
 `;
 
 const MenuWrapper = styled.div`

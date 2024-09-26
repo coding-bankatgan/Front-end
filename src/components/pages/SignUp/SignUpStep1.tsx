@@ -47,8 +47,8 @@ const SignUpStep1 = ({
   return (
     <Wrapper>
       <ScrollCont>
+        <Header>기본적인 정보를 입력해주세요.</Header>
         <Container>
-          <Header>기본적인 정보를 입력해주세요.</Header>
           <Label htmlFor="name">
             닉네임(이름)
             {
@@ -132,11 +132,11 @@ const SignUpStep1 = ({
           <AlertText>
             {password && confirmPassword && !isMatch && '패스워드가 일치하지 않습니다.'}
           </AlertText>
-          <AlarmText>
+          <AlarmTextStyled>
             *회원가입시 작성한 이메일로 주기마다
             <br />
             &nbsp; 특산주 추천 메일을 보내드립니다.
-          </AlarmText>
+          </AlarmTextStyled>
         </Container>
       </ScrollCont>
       <Button onClick={() => nextSlide()}>다음</Button>
@@ -147,26 +147,23 @@ const SignUpStep1 = ({
 export default SignUpStep1;
 
 const AlertText = styled.p`
-  height: 5px;
-  margin-bottom: 12px;
-
+  margin-top: -7px;
+  height: 11px;
+  line-height: 11px;
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
   color: ${({ theme }) => theme.colors.error};
 `;
 
 const Validation = styled.span`
-  margin-left: 4px;
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
   color: ${({ theme }) => theme.colors.error};
 `;
 
 const CheckEmail = styled.span`
-  margin-left: 4px;
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
   color: ${({ theme }) => theme.colors.darkGray};
 `;
 const ConFirmed = styled.span`
-  margin-left: 4px;
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
   color: ${({ theme }) => theme.colors.success};
 `;
@@ -194,17 +191,18 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
   padding: 0 20px 20px 20px;
-  min-width: 100vw;
-  height: calc(95vh;
-
-  background-color: white;
+  width: 100%;
+  height: calc(100vh - 65px);
 `;
+
 export const ScrollCont = styled.div`
-  height: calc(100vh - 120px);
   overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  width: 100%;
+  height: 100vh;
 
   &::-webkit-scrollbar {
     display: none;
@@ -212,8 +210,6 @@ export const ScrollCont = styled.div`
 `;
 export const Container = styled.div`
   overflow-y: scroll;
-  margin: 5px;
-  padding: 5px;
   scrollbar-width: none;
   -ms-overflow-style: none;
 
@@ -222,19 +218,26 @@ export const Container = styled.div`
   }
 
   input {
-    margin-bottom: 2px;
+    margin-bottom: 10px;
     background-color: ${({ theme }) => theme.colors.brightGray};
     font-size: ${({ theme }) => theme.fontSizes.small};
 
-    &:focus {
-      border: 1px solid ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+    :focus {
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
+    }
+  }
+
+  label {
+    margin: 5px 0 0 0;
+
+    span {
+      margin-left: 5px;
     }
   }
 `;
 
 export const Header = styled.h2`
-  margin: 20px 0;
+  margin-bottom: 20px;
   font-size: ${({ theme }) => theme.fontSizes.medium};
   font-weight: bold;
 
@@ -284,4 +287,9 @@ export const Gray2 = styled.div`
   background-color: ${({ theme }) => theme.colors.gray};
   width: 33.33%;
   height: 100%;
+`;
+
+const AlarmTextStyled = styled(AlarmText)`
+  margin-top: 20px;
+  line-height: 16px;
 `;

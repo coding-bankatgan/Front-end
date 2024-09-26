@@ -240,7 +240,7 @@ const SlideContainer = styled.div`
 export const Button = styled.button`
   width: 100%;
 
-  background-color: ${({ theme }) => theme.colors.tertiary};
+  background-color: ${({ theme }) => theme.colors.primary};
   border-radius: 50px;
   color: ${({ theme }) => theme.colors.white};
   padding: 10px;
@@ -253,8 +253,8 @@ export const Label = styled.label`
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
   margin: 2px 0 4px 0;
   &::before {
-    margin-right: 4px;
+    margin-right: 3px;
     content: '*';
-    color: ${({ theme }) => theme.colors.tertiary};
+    color: ${({ theme }) => theme.colors.point};
   }
 `;

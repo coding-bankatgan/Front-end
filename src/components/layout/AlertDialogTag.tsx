@@ -68,7 +68,7 @@ const AlertDialogTag = ({ children, tagId, showAlert }: AlertDialogTagProps) => 
       <AlertDialogTriggerStyled>#{children}</AlertDialogTriggerStyled>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>팔로우 태그</AlertDialogTitle>
+          <AlertDialogTitleStyled>팔로우 태그</AlertDialogTitleStyled>
           <AlertDialogDescription>'#{children}' 태그를 팔로우 하시겠습니까?</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -82,14 +82,23 @@ const AlertDialogTag = ({ children, tagId, showAlert }: AlertDialogTagProps) => 
   );
 };
 
+const AlertDialogTitleStyled = styled(AlertDialogTitle)`
+  color: ${({ theme }) => theme.colors.black};
+`;
+
 const AlertDialogTriggerStyled = styled(AlertDialogTrigger)`
   margin-right: 5px;
   padding: 3px 10px;
-  background-color: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.white};
   font-size: ${({ theme }) => theme.fontSizes.small};
   border: 1px solid ${({ theme }) => theme.colors.primary};
   border-radius: 20px;
+
+  :hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+    border: 1px solid ${({ theme }) => theme.colors.secondary};
+  }
 
   &:nth-last-of-type(1) {
     margin-right: 0;
@@ -106,6 +115,7 @@ const AlertDialogActionStyled = styled(AlertDialogAction)`
 
 const AlertDialogCancelStyled = styled(AlertDialogCancel)`
   background-color: ${({ theme }) => theme.colors.brightGray};
+  color: ${({ theme }) => theme.colors.darkGray};
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.gray};

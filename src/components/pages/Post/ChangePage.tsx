@@ -22,8 +22,8 @@ const ChangePageContainer = styled.section`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-bottom: 30px;
-  padding-right: 20px;
+  padding: 20px 40px 20px 20px;
+  background-color: ${({ theme }) => theme.colors.white};
 
   svg {
     margin-left: -5px;

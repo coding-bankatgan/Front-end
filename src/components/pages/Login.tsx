@@ -1,19 +1,52 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
-import { keyframes } from '@emotion/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '@/auth';
 import { Input } from '@/components/ui/input';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import symbol from '../../../public/symbol.png';
 import GoogleIcon from '@/assets/icons/GoogleIcon';
+import { motion, useAnimation, AnimatePresence } from 'framer-motion';
+
+// 첫 번째 애니메이션
+const fadeIn = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1, ease: 'easeInOut' },
+  },
+  exit: {
+    opacity: 0,
+    y: -50,
+    transition: { duration: 1, ease: 'easeInOut' },
+  },
+};
+
+// 두 번째 애니메이션
+const slideUpWithFade = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1, ease: 'easeInOut' } },
+};
 
 const Login = () => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [_, setIsVisible] = useState(true);
   const [showLoginError, setShowLoginError] = useState(false);
   const [showSignupComplete, setShowSignupComplete] = useState(false);
   const navigate = useNavigate();
+
+  const [isLoading, setIsLoading] = useState(true);
+  const controls = useAnimation();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, [controls]);
 
   /** signup -> login 진입시 */
   useEffect(() => {
@@ -93,27 +126,43 @@ const Login = () => {
     <AuthLayout>
       {showSignupComplete && <Complete>회원가입이 완료되었습니다.</Complete>}
       {showLoginError && <Error>이메일 또는 패스워드를 확인해주세요.</Error>}
-      <Container isVisible={isVisible}>
-        <FirstLogo isVisible={isVisible}>
-          <LogoImage src="https://picsum.photos/200/300" alt="오늘한잔" />
-          <Spinner />
-        </FirstLogo>
-      </Container>
-      <FormContainer onSubmit={handleSubmit}>
-        <LogoImage src="https://picsum.photos/200/300" alt="오늘한잔" />
-        <Heading>모두를 위한 특산주</Heading>
-        <Label htmlFor="email">아이디(이메일)</Label>
-        <Input type="email" name="email" id="email" />
-        <Label htmlFor="password">패스워드</Label>
-        <Input type="password" name="password" id="password" />
-        <LoginBtn type="submit">로그인</LoginBtn>
-        <Link to={'/signup'}>
-          <SignupBtn>회원가입</SignupBtn>
-        </Link>
-        <GoogleBtn onClick={googleLogin}>
-          <GoogleIcon /> Google로 로그인
-        </GoogleBtn>
-      </FormContainer>
+      <AnimatePresence>
+        {isLoading ? (
+          <Container>
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeIn}
+              key="loading"
+            >
+              <LogoImage src={symbol} alt="오늘한잔" />
+            </motion.div>
+          </Container>
+        ) : (
+          <LoadFinish>
+            {/* <motion.div initial="hidden" animate="visible" variants={fadeIn}> */}
+            {/* </motion.div> */}
+            <FormContainer onSubmit={handleSubmit}>
+              <motion.div initial="hidden" animate="visible" variants={slideUpWithFade} key="form">
+                <LogoImage src={symbol} alt="오늘한잔" />
+                <Heading>지역 특산주를 위한 플랫폼</Heading>
+                <Label htmlFor="email">아이디(이메일)</Label>
+                <Input type="email" name="email" id="email" />
+                <Label htmlFor="password">패스워드</Label>
+                <Input type="password" name="password" id="password" />
+                <LoginBtn type="submit">로그인</LoginBtn>
+                <Link to={'/signup'}>
+                  <SignupBtn>회원가입</SignupBtn>
+                </Link>
+                <GoogleBtn onClick={googleLogin}>
+                  <GoogleIcon /> Google로 로그인
+                </GoogleBtn>
+              </motion.div>
+            </FormContainer>
+          </LoadFinish>
+        )}
+      </AnimatePresence>
     </AuthLayout>
   );
 };
@@ -127,27 +176,19 @@ const AuthLayout = styled.div`
   width: 100%;
   height: 100vh;
   background-color: ${({ theme }) => theme.colors.white};
-
   @media (orientation: landscape) {
     height: auto;
     min-height: 100vh;
   }
 `;
 
-const FirstLogo = styled.div<{ isVisible: boolean }>`
+const LoadFinish = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: fixed;
   width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: ${props => props.theme.colors.white};
-
-  transition: transform 1s ease-in-out;
-  transform: ${({ isVisible }) => (isVisible ? 'translateY(0)' : 'translateY(-100%)')};
+  padding: 20px;
 `;
 
 const LogoImage = styled.img`
@@ -156,46 +197,39 @@ const LogoImage = styled.img`
   margin: 0 auto 0 auto;
 `;
 
-const spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% { 
-    transform: rotate(360deg);
-  }
-`;
+// const spin = keyframes`
+//   0% {
+//     transform: rotate(0deg);
+//   }
+//   100% {
+//     transform: rotate(360deg);
+//   }
+// `;
 
-const Spinner = styled.div`
-  width: 80px;
-  height: 80px;
-  border: 12px solid ${props => props.theme.colors.gray};
-  border-top-color: ${props => props.theme.colors.tertiary};
-  margin-top: 20px;
-  border-radius: 50%;
-  animation: ${spin} 1s linear infinite;
-`;
+// const Spinner = styled.div`
+//   width: 80px;
+//   height: 80px;
+//   border: 12px solid ${props => props.theme.colors.gray};
+//   border-top-color: ${props => props.theme.colors.tertiary};
+//   margin-top: 20px;
+//   border-radius: 50%;
+//   animation: ${spin} 1s linear infinite;
+// `;
 
-const Container = styled.div<{ isVisible: boolean }>`
-  display: ${({ isVisible }) => (isVisible ? 'block' : 'hidden')};
-  width: 100vw;
+const Container = styled.div`
+  idth: 100vw;
   height: 100vh;
-
-  position: absolute;
-
-  transition: transform 1s ease-in-out;
-  transform: ${({ isVisible }) => (isVisible ? 'translateY(0)' : 'translateY(-100%)')};
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const FormContainer = styled.form`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  min-width: 330px;
   width: 100%;
   height: 100%;
-  margin: 30px;
+  margin: 0 auto;
   background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.black};
 
   input {
     margin-bottom: 16px;
@@ -204,8 +238,8 @@ const FormContainer = styled.form`
     font-size: ${({ theme }) => theme.fontSizes.small};
 
     &:focus {
-      border: 1px solid ${({ theme }) => theme.colors.focusShadow};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadow};
+      border: 1px solid ${({ theme }) => theme.colors.focusShadowOrange};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowOrange};
     }
   }
 
@@ -225,9 +259,9 @@ const Label = styled.label`
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
   &::before {
-    margin-right: 4px;
+    margin-right: 3px;
     content: '*';
-    color: ${({ theme }) => theme.colors.tertiary};
+    color: ${({ theme }) => theme.colors.point};
   }
 `;
 
@@ -253,20 +287,38 @@ const SignupBtn = styled.button`
 `;
 
 const GoogleBtn = styled.button`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 45px;
   margin-top: 12px;
-  padding: 10px;
   background-color: ${({ theme }) => theme.colors.white};
-  border: 1px solid ${({ theme }) => theme.colors.tertiary};
-  border-radius: 30px;
   text-align: center;
+  border-radius: 30px;
+
   svg {
-    width: 30px;
-    height: 100%;
+    width: 22px;
+    margin-right: 3px;
+  }
+
+  ::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 30px;
+    padding: 1px;
+    background: radial-gradient(circle at top left, #ea4335, #fbbc05, #34a853, #4285f4);
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
   }
 `;
 
