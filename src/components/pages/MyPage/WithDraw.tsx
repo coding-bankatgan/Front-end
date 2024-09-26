@@ -34,7 +34,7 @@ const WithDraw = ({ showAlert }: WithDrawProps) => {
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitleBold>회원 탈퇴 시 주의사항 안내</AlertDialogTitleBold>
+            <AlertDialogTitle>회원 탈퇴 시 주의사항 안내</AlertDialogTitle>
             <AlertDialogDescription>
               <p>
                 회원 탈퇴 시 작성하신 게시글의 경우 삭제되지 않으니
@@ -64,19 +64,15 @@ const WithdrawWrapper = styled.div`
 
   p {
     font-size: ${({ theme }) => theme.fontSizes.small};
-    color: ${({ theme }) => theme.colors.error};
+    color: ${({ theme }) => theme.colors.gray};
   }
 `;
 
-const AlertDialogTitleBold = styled(AlertDialogTitle)`
-  color: ${({ theme }) => theme.colors.black};
-`;
-
 const AlertDialogActionStyled = styled(AlertDialogAction)`
-  background-color: ${({ theme }) => theme.colors.error};
+  background-color: ${({ theme }) => theme.colors.primary};
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.heart};
+    background-color: ${({ theme }) => theme.colors.secondary};
   }
 `;
 

@@ -31,7 +31,7 @@ const sweetnessDescriptions: { [key: string]: string } = {
 
 const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
   //** registration 등록 */
-  const [_, setImg] = useState<File | null>(null);
+  const [img, setImg] = useState<File | null>(null);
   const [name, setName] = useState<string>('');
   const [region, setRegion] = useState<string>('');
   const [content, setContent] = useState<string>('');
@@ -39,6 +39,7 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
   const [degree, setDegree] = useState<number | undefined>(undefined);
   const [sweetness, setSweetness] = useState<number>(1);
   const [cost, setCost] = useState<number | undefined>(undefined);
+  console.log(img);
 
   const addRegistration = useRegistrationStore(state => state.addRegistration);
   const navigate = useNavigate();

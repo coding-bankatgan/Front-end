@@ -14,6 +14,8 @@ interface ReportListProps {
 }
 
 const ReportBoard = ({ showAlert }: ReportListProps) => {
+  console.log(showAlert);
+
   const navigate = useNavigate();
   const { declarations, pagination, fetchDeclarations } = useDeclarationStore(state => ({
     declarations: state.declarations,
@@ -30,7 +32,6 @@ const ReportBoard = ({ showAlert }: ReportListProps) => {
   };
 
   // const role = getRoleFromToken();
-  console.log(showAlert);
 
   const handleItemClick = (id: number) => {
     // if (role !== 'MANAGER') {

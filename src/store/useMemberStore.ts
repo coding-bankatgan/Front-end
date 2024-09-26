@@ -63,7 +63,6 @@ export const useMemberStore = create<MemberState>((set, get) => ({
       console.log('Error', err);
     }
   },
-
   fetchFollowTags: async () => {
     const state = get();
     const currentUser = state.currentUser;

@@ -21,8 +21,8 @@ import { mapDrinkType } from '@/data/drinkTypes';
 import ExProfileImg from '@/assets/ExProfileImg';
 import styled from '@emotion/styled';
 import CustomAlert from '@/components/layout/CustomAlert';
-import { fetchMemberWriteApi } from '@/api/postApi';
 import WithDraw from './WithDraw';
+import { fetchMemberWriteApi } from '@/api/postApi';
 
 interface EditMyPageProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -454,9 +454,9 @@ const EditBottom = styled.div`
   }
 
   label::before {
-    content: '*';
+    content: '* ';
     margin-right: 3px;
-    color: ${({ theme }) => theme.colors.point};
+    color: ${({ theme }) => theme.colors.tertiary};
   }
 `;
 
