@@ -1,10 +1,10 @@
-import axios from 'axios';
 import Cookies from 'js-cookie';
+import api from './api/axios';
 
 /** 로그인  */
 export const login = async (email: string, password: string) => {
   try {
-    const response = await axios.post('/login', { email, password });
+    const response = await api.post('/members/signin', { email, password });
     console.log(response.data.accessToken);
 
     const accessToken = response.data.accessToken;

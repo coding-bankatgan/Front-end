@@ -7,6 +7,7 @@ import axios, { CancelTokenSource } from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import StepBar from './StepBar';
 import { useNavigate } from 'react-router-dom';
+import api from '@/api/axios';
 
 const SignUp = () => {
   const [isNext, setIsNext] = useState(true);
@@ -39,7 +40,7 @@ const SignUp = () => {
     setCancelTokenSource(source);
 
     try {
-      await axios.post('/api/email', { email }, { cancelToken: source.token });
+      await axios.get(`/api/members/email/${email}/validation`, { cancelToken: source.token });
       setValidatedLoading(false);
       setValidatedText('');
       setValidatedEmail(true);
@@ -148,7 +149,7 @@ const SignUp = () => {
     console.log(userData);
 
     try {
-      await axios.post(`/api/members/signup`, userData);
+      await api.post(`/members/signup`, userData);
       navigate('/login?signup=true');
     } catch (error) {
       console.error('회원가입 오류:', error);

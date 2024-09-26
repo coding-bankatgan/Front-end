@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5173/', // API 주소 설정 필요
+  baseURL: '/api', // API 주소 설정 필요
 });
 
 /**요청 인터셉터: 모든 요청에 Access Token 자동 추가*/

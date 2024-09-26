@@ -74,6 +74,7 @@ const Login = () => {
 
     try {
       await login(email, password);
+      navigate('/');
     } catch (error) {
       console.error('에러 테스트');
       setShowLoginError(true);
