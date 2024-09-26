@@ -10,13 +10,8 @@ const FollowTagList = () => {
 
   useEffect(() => {
     fetchMembers();
-  }, [fetchMembers]);
-
-  useEffect(() => {
     fetchFollowTags();
-  }, [fetchFollowTags]);
-
-  console.log(currentUser);
+  }, [fetchMembers, fetchFollowTags]);
 
   const myFollowTags = Array.isArray(followTags)
     ? followTags.filter(followTags => followTags.memberId === currentUser?.id)

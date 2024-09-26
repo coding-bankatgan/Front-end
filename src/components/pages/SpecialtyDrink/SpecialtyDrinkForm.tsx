@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import PlusIcon from '@/assets/icons/PlusIcon';
 import useRegistrationStore from '@/store/useRegistrationStore';
-import { fetchImageUploadApi } from '@/api/postApi';
+// import { fetchImageUploadApi } from '@/api/postApi';
 
 interface SpecialtyDrinkFormProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -31,7 +31,7 @@ const sweetnessDescriptions: { [key: string]: string } = {
 
 const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
   //** registration 등록 */
-  const [img, setImg] = useState<File | null>(null);
+  const [_, setImg] = useState<File | null>(null);
   const [name, setName] = useState<string>('');
   const [region, setRegion] = useState<string>('');
   const [content, setContent] = useState<string>('');

@@ -18,7 +18,11 @@ const typeMap = {
   REVIEW: '리뷰',
 };
 
-const Post = () => {
+interface PostProps {
+  showAlert: (type: 'success' | 'error', message: string) => void;
+}
+
+const Post = ({ showAlert }: PostProps) => {
   const { postsDetail, fetchPostsDetail } = usePostsDetailStore();
   const { id } = useParams();
   const postId = Number(id);
@@ -72,7 +76,7 @@ const Post = () => {
         <EtcWrap>
           <TagWrapper>
             {post?.tags.map(tag => (
-              <AlertDialogTag key={tag.tagId} tagId={tag.tagId}>
+              <AlertDialogTag key={tag.tagId} tagId={tag.tagId} showAlert={showAlert}>
                 {tag.tagName}
               </AlertDialogTag>
             ))}

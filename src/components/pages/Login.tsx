@@ -32,7 +32,7 @@ const slideUpWithFade = {
 };
 
 const Login = () => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [_, setIsVisible] = useState(true);
   const [showLoginError, setShowLoginError] = useState(false);
   const [showSignupComplete, setShowSignupComplete] = useState(false);
   const navigate = useNavigate();

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import styled from '@emotion/styled';
