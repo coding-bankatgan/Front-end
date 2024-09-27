@@ -70,16 +70,8 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      try {
-        const previewUrl = URL.createObjectURL(file);
-        setImageUrl(previewUrl);
-
-        const imageResponse = await fetchImageUploadApi(file);
-        // console.log(imageResponse);
-        setImageUrl(imageResponse);
-      } catch (error) {
-        console.error('이미지 업로드 실패:', error);
-      }
+      const previewUrl = URL.createObjectURL(file);
+      setImageUrl(previewUrl);
     }
   };
 
@@ -105,41 +97,51 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
     ) {
       showAlert('error', '모든 정보를 입력해주세요.');
       return;
-    }
+    } else if (description.length < 10) {
+      showAlert('error', '특산주 설명을 10~500자 사이로 입력해주세요.');
+      return;
+    } else {
+      try {
+        // let imageUrl = 'https://thesool.com/common/imageView.do?targetId=PR00000697&targetNm=PRODUCT';
+        const mappedType = mapDrinkTypeToEnglish(type);
+        console.log(mappedType);
 
-    try {
-      // let imageUrl = 'https://thesool.com/common/imageView.do?targetId=PR00000697&targetNm=PRODUCT';
-      const mappedType = mapDrinkTypeToEnglish(type);
-      console.log(mappedType);
+        const degreeAsNumber = typeof degree === 'number' ? degree : 0;
 
-      const degreeAsNumber = typeof degree === 'number' ? degree : 0;
+        const file = fileInputRef.current?.files?.[0];
+        let uploadedImageUrl = '';
+        if (file) {
+          const imageResponse = await fetchImageUploadApi(file);
+          uploadedImageUrl = imageResponse;
+        }
 
-      const response = await fetchRegistrationWriteApi(
-        regionId,
-        drinkName,
-        mappedType,
-        degreeAsNumber,
-        sweetness,
-        cost,
-        description,
-        imageUrl,
-      );
+        const response = await fetchRegistrationWriteApi(
+          regionId,
+          drinkName,
+          mappedType,
+          degreeAsNumber,
+          sweetness,
+          cost,
+          description,
+          uploadedImageUrl,
+        );
 
-      if (response && response.data) {
-        console.log(response.data);
-        const newRegistration = {
-          ...response.data,
-          memberId: 1,
-          memberName: 'test',
-          createdAt: new Date().toISOString(),
-          approved: null,
-        };
+        if (response && response.data) {
+          console.log(response.data);
+          const newRegistration = {
+            ...response.data,
+            memberId: 1,
+            memberName: 'test',
+            createdAt: new Date().toISOString(),
+            approved: null,
+          };
 
-        const registId = addRegistration(newRegistration);
-        navigate(`/specialty-drink/${registId}`, { state: newRegistration });
+          const registId = addRegistration(newRegistration);
+          navigate(`/specialty-drink/${registId}`, { state: newRegistration });
+        }
+      } catch (error) {
+        console.error('등록 중 오류 발생:', error);
       }
-    } catch (error) {
-      console.error('등록 중 오류 발생:', error);
     }
   };
 
