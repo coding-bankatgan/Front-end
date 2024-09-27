@@ -134,7 +134,7 @@ const PostStep3 = ({
         {drinkData.name}
       </PostTitle>
       <PostContent>
-        <ImgSelect ref={fileInputRef}>
+        <ImgSelect>
           {/* <input type="file" accept="image/*" ref={fileInputRef} />
           <Button onClick={handleBtnClick}>
             <PlusIcon />
