@@ -1,14 +1,13 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { login } from '@/auth';
 import { Input } from '@/components/ui/input';
-import { useGoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 import symbol from '../../../public/symbol.png';
 import GoogleIcon from '@/assets/icons/GoogleIcon';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
+import api from '@/api/axios';
 
 // 첫 번째 애니메이션
 const fadeIn = {
@@ -48,6 +47,15 @@ const Login = () => {
     return () => clearTimeout(timer);
   }, [controls]);
 
+  // useEffect(() => {
+  //   const dd = async () => {
+  //     const gg = await api.get('/google/login-uri');
+  //     console.log(gg);
+  //   };
+
+  //   dd;
+  // }, [showLoginError]);
+
   /** signup -> login 진입시 */
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
@@ -84,44 +92,83 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchGoogleLoginUri = async () => {
+      try {
+        const response = await api.get('/google/login-uri');
+        console.log(response.data);
+      } catch (error) {
+        console.error('구글 로그인 URI를 가져오는 데 실패했습니다:', error);
+      }
+    };
+
+    fetchGoogleLoginUri();
+  }, []);
+
   /** google 로그인 인증 */
-  const sendAuthCode = async (authCode: string) => {
+  // const sendAuthCode = async (authCode: string) => {
+  //   try {
+  //     const response = await api.post('/google/join', {
+  //       code: authCode,
+  //     });
+  //     console.log(response);
+
+  //     const { access_token, refresh_token } = response.data;
+
+  //     Cookies.set('access_token', access_token);
+  //     Cookies.set('refresh_token', refresh_token);
+
+  //     return { access_token, refresh_token };
+  //   } catch (error) {
+  //     console.error('Failed to send Auth Code:', error);
+  //     throw error;
+  //   }
+  // };
+
+  const getGoogleLoginUri = async () => {
     try {
-      const response = await axios.post('/api/auth/google', {
-        code: authCode,
-      });
-      console.log(response);
-
-      const { access_token, refresh_token } = response.data.mockTokens;
-
-      Cookies.set('access_token', access_token, { expires: 7 });
-      Cookies.set('refresh_token', refresh_token, { expires: 7 });
-
-      return { access_token, refresh_token };
+      const response = await api.get('/google/login-uri');
+      return response.data; // 백엔드에서 반환한 URI를 가져옵니다.
     } catch (error) {
-      console.error('Failed to send Auth Code:', error);
-      throw error;
+      console.error('Error fetching Google login URI:', error);
+      return null;
     }
   };
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: async response => {
-      const authCode = response.code;
+  const handleLogin = async () => {
+    const googleLoginUri = await getGoogleLoginUri();
+    if (googleLoginUri) {
+      window.location.href = googleLoginUri; // 구글 로그인 페이지로 리디렉션
+    }
+  };
 
-      try {
-        // Auth Code를 보내고 토큰을 받음
-        const tokens = await sendAuthCode(authCode);
-        console.log('Tokens stored:', tokens);
-        navigate('/');
-      } catch (error) {
-        console.error('Login Failed:', error);
+  /** 후에 구글 리디렉션 주소에 옮기기 */
+  const location = useLocation();
+  useEffect(() => {
+    const fetchToken = async () => {
+      const params = new URLSearchParams(location.search);
+      console.log(params);
+
+      const authCode = params.get('code'); // URL에서 인증 코드 추출
+      console.log(authCode);
+
+      if (authCode) {
+        try {
+          const response = await api.post('/google/join', { code: authCode });
+          console.log('Login successful:', response.data); // 로그인 성공 처리
+
+          const { access_token, refresh_token } = response.data;
+
+          Cookies.set('access_token', access_token);
+          Cookies.set('refresh_token', refresh_token);
+        } catch (error) {
+          console.error('Error during Google login:', error);
+        }
       }
-    },
-    onError: error => {
-      console.error('Login Failed:', error);
-    },
-    flow: 'auth-code',
-  });
+    };
+
+    fetchToken();
+  }, [location]);
 
   return (
     <AuthLayout>
@@ -156,7 +203,7 @@ const Login = () => {
                 <Link to={'/signup'}>
                   <SignupBtn>회원가입</SignupBtn>
                 </Link>
-                <GoogleBtn onClick={googleLogin}>
+                <GoogleBtn onClick={handleLogin}>
                   <GoogleIcon /> Google로 로그인
                 </GoogleBtn>
               </motion.div>
