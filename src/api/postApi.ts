@@ -157,8 +157,19 @@ export const fetchRegistrationWriteApi = async (
   imageUrl: string,
 ) => {
   try {
-    const response = await axios.post(
-      '/api/drinks/registrations',
+    console.log('API 함수가 호출되었습니다.');
+    console.log('전송할 데이터:', {
+      regionId,
+      drinkName,
+      type,
+      degree,
+      sweetness,
+      cost,
+      description,
+      imageUrl,
+    });
+    const response = await api.post(
+      '/drinks/registrations',
       {
         regionId: regionId,
         drinkName: drinkName,
@@ -175,7 +186,8 @@ export const fetchRegistrationWriteApi = async (
         },
       },
     );
-    return response.data;
+    console.log(response);
+    return response;
   } catch (error) {
     console.error('Error fetching registrationWrite: ', error);
   }
@@ -184,7 +196,8 @@ export const fetchRegistrationWriteApi = async (
 //** 특산주 신청 목록 조회 API */
 export const fetchRegistrationsApi = async (page: number, size: number) => {
   try {
-    const response = await axios.get(`/api/drinks/registrations?page=${page}&size=${size}`);
+    const response = await api.get(`/drinks/registrations?page=${page}&size=${size}`);
+    console.log(response);
     return response.data;
   } catch (err) {
     console.error('Error fetching specialtyDrink: ', err);
@@ -194,8 +207,8 @@ export const fetchRegistrationsApi = async (page: number, size: number) => {
 //** 특산주 신청 글 조회 API */
 export const fetchRegistrationsDetailApi = async (id: number) => {
   try {
-    const response = await axios.get(`/api/drinks/registrations/${id}`);
-    console.log('api', response.data);
+    const response = await api.get(`/drinks/registrations/${id}`);
+    console.log(response);
     return response.data;
   } catch (err) {
     console.error('Error fetching specialtyDrink: ', err);
@@ -205,7 +218,7 @@ export const fetchRegistrationsDetailApi = async (id: number) => {
 /** 공지사항 조회 API */
 export const fetchAnnouncementApi = async (page: number, size: number) => {
   try {
-    const response = await axios.get(`/api/announcements?page=${page}&size=${size}`);
+    const response = await api.get(`/announcements?page=${page}&size=${size}`);
     return response.data;
   } catch (err) {
     console.error('Error fetching announcements: ', err);
@@ -213,7 +226,7 @@ export const fetchAnnouncementApi = async (page: number, size: number) => {
 };
 export const fetchAnnouncementDetailApi = async (id: number) => {
   try {
-    const response = await axios.get(`/api/announcements/${id}`);
+    const response = await api.get(`/announcements/${id}`);
     return response.data;
   } catch (err) {
     console.error('Error fetching announcements: ', err);
@@ -223,8 +236,8 @@ export const fetchAnnouncementDetailApi = async (id: number) => {
 /** 공지사항 등록 API */
 export const fetchAnnouncementWriteApi = async (title: string, content: string) => {
   try {
-    const response = await axios.post(
-      '/api/announcements',
+    const response = await api.post(
+      '/announcements',
       {
         title: title,
         content: content,

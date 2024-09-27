@@ -261,7 +261,7 @@ export const handlers = [
   /** 태그 팔로우 삭제 API */
 
   /** 특산주 등록 신청 API */
-  http.post('/api/drinks/registrations', async ({ request }) => {
+  http.post('/drinks/registrations', async ({ request }) => {
     const requestBody = (await request.json()) as RegistrationRequestBody;
 
     const { regionId, drinkName, type, degree, sweetness, cost, description, imageUrl } =
@@ -292,7 +292,7 @@ export const handlers = [
   }),
 
   /** 특산주 신청 목록 조회 API */
-  http.get('/api/drinks/registrations', async ({ request }) => {
+  http.get('/drinks/registrations', async ({ request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('number')) || 0;
     const size = Number(url.searchParams.get('size')) || 10;
@@ -316,7 +316,7 @@ export const handlers = [
   }),
 
   /** 특산주 신청 글 조회 API */
-  http.get('/api/drinks/registrations/:id', async ({ params }) => {
+  http.get('/drinks/registrations/:id', async ({ params }) => {
     Number(params.id);
     return HttpResponse.json(registrations);
   }),
@@ -336,7 +336,7 @@ export const handlers = [
   }),
 
   /** 공지사항 등록 API */
-  http.post('/api/announcements', async ({ request }) => {
+  http.post('/announcements', async ({ request }) => {
     const requestBody = (await request.json()) as AnnouncementRequestBody;
 
     const { title, content } = requestBody;
@@ -361,7 +361,7 @@ export const handlers = [
   /** 공지사항 삭제 API */
 
   /** 공지사항 조회 API */
-  http.get('/api/announcements', async ({ request }) => {
+  http.get('/announcements', async ({ request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('number')) || 0;
     const size = Number(url.searchParams.get('size')) || 10;
@@ -383,7 +383,7 @@ export const handlers = [
       content: paginatedAnnouncements,
     });
   }),
-  http.get('/api/announcements/:id', async ({ params }) => {
+  http.get('/announcements/:id', async ({ params }) => {
     Number(params.id);
     return HttpResponse.json(announcements);
   }),
@@ -481,7 +481,7 @@ export const handlers = [
     });
   }),
   /** 데일리 추천 api */
-  http.get(`/api/suggest/drink`, ({ request }) => {
+  http.get(`/suggest/drink`, ({ request }) => {
     console.log(request);
 
     const requestUrl = new URL(request.url);

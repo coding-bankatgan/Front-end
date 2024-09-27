@@ -10,6 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import PlusIcon from '@/assets/icons/PlusIcon';
 import useRegistrationStore from '@/store/useRegistrationStore';
+import { fetchRegistrationWriteApi } from '@/api/postApi';
+import { mapDrinkTypeToEnglish } from '@/data/drinkTypes';
+import api from '@/api/axios';
 // import { fetchImageUploadApi } from '@/api/postApi';
 
 interface SpecialtyDrinkFormProps {
@@ -32,25 +35,37 @@ const sweetnessDescriptions: { [key: string]: string } = {
 const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
   //** registration 등록 */
   const [img, setImg] = useState<File | null>(null);
-  const [name, setName] = useState<string>('');
+  const [drinkName, setDrinkName] = useState<string>('');
   const [region, setRegion] = useState<string>('');
-  const [content, setContent] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [type, setType] = useState<string>('');
   const [degree, setDegree] = useState<number | undefined>(undefined);
   const [sweetness, setSweetness] = useState<number>(1);
   const [cost, setCost] = useState<number | undefined>(undefined);
-  console.log(img);
+  // console.log(img);
 
   const addRegistration = useRegistrationStore(state => state.addRegistration);
   const navigate = useNavigate();
 
+  //** 지역 목데이터 import 및 지역 변경 적용 */
+  const { regions, fetchRegions } = useRegionStore();
+  useEffect(() => {
+    fetchRegions();
+  }, [fetchRegions]);
+
+  const getRegionId = () => {
+    const selectedRegion = regions.find(regionItem => regionItem.placeName === region);
+    return selectedRegion ? selectedRegion.id : null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const regionId = getRegionId();
 
     if (
-      !name ||
-      !region ||
-      !content ||
+      !drinkName ||
+      regionId === null ||
+      !description ||
       !type ||
       degree === undefined ||
       sweetness === undefined ||
@@ -69,20 +84,34 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
       // }
       // console.log(imageUrl);
 
-      const newRegistration = {
-        imageUrl: 'https://thesool.com/common/imageView.do?targetId=PR00000697&targetNm=PRODUCT',
-        placeName: region,
-        drinkName: name,
-        description: content,
-        type,
+      let imageUrl = 'https://thesool.com/common/imageView.do?targetId=PR00000697&targetNm=PRODUCT';
+      const mappedType = mapDrinkTypeToEnglish(type);
+      console.log(mappedType);
+
+      const response = await fetchRegistrationWriteApi(
+        regionId,
+        drinkName,
+        mappedType,
         degree,
         sweetness,
         cost,
-        approved: null,
-      };
+        description,
+        imageUrl,
+      );
 
-      const registId = addRegistration(newRegistration);
-      navigate(`/specialty-drink/${registId}`, { state: newRegistration });
+      if (response && response.data) {
+        console.log(response.data);
+        const newRegistration = {
+          ...response.data,
+          memberId: 1,
+          memberName: 'test',
+          createdAt: new Date().toISOString(),
+          approved: null,
+        };
+
+        const registId = addRegistration(newRegistration);
+        navigate(`/specialty-drink/${registId}`, { state: newRegistration });
+      }
     } catch (error) {
       console.error('등록 중 오류 발생:', error);
     }
@@ -95,12 +124,6 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
       fileInputRef.current.click();
     }
   };
-
-  //** 지역 목데이터 import 및 지역 변경 적용 */
-  const { regions, fetchRegions } = useRegionStore();
-  useEffect(() => {
-    fetchRegions();
-  }, [fetchRegions]);
 
   return (
     <NoFooterLayoutSub>
@@ -121,7 +144,7 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
         </FormHeaderStyled>
         <FormContentStyled>
           <Label htmlFor="text">특산주 이름</Label>
-          <Input type="text" value={name} onChange={e => setName(e.target.value)} />
+          <Input type="text" value={drinkName} onChange={e => setDrinkName(e.target.value)} />
           <Label htmlFor="text">지역</Label>
           <SelectStyled value={region} onChange={e => setRegion(e.target.value)}>
             <option value="">지역 선택</option>
@@ -161,13 +184,13 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
           <Label htmlFor="text">특산주 정보</Label>
           <TextareaStyled
             placeholder="특산주에 대해 설명해주세요"
-            value={content}
-            onChange={e => setContent(e.target.value)}
+            value={description}
+            onChange={e => setDescription(e.target.value)}
           />
         </FormContentStyled>
         <FormBottomStyled>
           <Button onClick={() => navigate('/specialty-drink')}>취소</Button>
-          <Button type="submit">등록</Button>
+          <Button onClick={handleSubmit}>등록</Button>
         </FormBottomStyled>
       </ContentWrapper>
     </NoFooterLayoutSub>
