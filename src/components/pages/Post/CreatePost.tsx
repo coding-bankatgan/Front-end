@@ -38,9 +38,14 @@ const CreatePost = () => {
     const tagsWithoutHash = tags.map(tag => tag.replace('#', ''));
     try {
       if (imageName !== '') {
-        const imageUrl = await api.post('/image', formData);
+        const imageUrl = await api.post('/image', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log(imageUrl);
 
-        await api.post('/post', {
+        await api.post('/posts', {
           drinkId: drinkData.id,
           type: category,
           content: formattedContent,
@@ -58,7 +63,7 @@ const CreatePost = () => {
           imageUrl: imageUrl.data,
         });
       } else {
-        await api.post('/post', {
+        await api.post('/posts', {
           drinkId: drinkData.id,
           type: category,
           content: formattedContent,
@@ -67,6 +72,7 @@ const CreatePost = () => {
           imageUrl: drinkData.imageUrl,
         });
       }
+      navigate('/');
     } catch {
       console.error('post error');
     }
@@ -92,7 +98,7 @@ const CreatePost = () => {
     createdAt: '',
     degree: 0,
     description: '',
-    drinkType: '',
+    type: '',
     id: 0,
     imageUrl: '',
     name: '',
