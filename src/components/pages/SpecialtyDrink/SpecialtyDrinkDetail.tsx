@@ -82,7 +82,7 @@ const SpecialtyDrinkDetail = () => {
         <DrinkInfo>
           <div>
             <Label htmlFor="text">가격</Label>
-            <span>{registration?.cost}원</span>
+            <span>{registration?.cost.toLocaleString()}원</span>
           </div>
           <div>
             <Label htmlFor="text">당도</Label>
