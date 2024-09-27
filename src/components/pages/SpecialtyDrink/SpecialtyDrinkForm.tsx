@@ -39,7 +39,7 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
   const [region, setRegion] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [type, setType] = useState<string>('');
-  const [degree, setDegree] = useState<number | undefined>(undefined);
+  const [degree, setDegree] = useState<number | ''>('');
   const [sweetness, setSweetness] = useState<number>(1);
   const [cost, setCost] = useState<number | undefined>(undefined);
   // console.log(img);
@@ -98,7 +98,7 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
       regionId === null ||
       !description ||
       !type ||
-      degree === undefined ||
+      degree === '' ||
       sweetness === undefined ||
       cost === undefined ||
       !imageUrl
@@ -112,11 +112,13 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
       const mappedType = mapDrinkTypeToEnglish(type);
       console.log(mappedType);
 
+      const degreeAsNumber = typeof degree === 'number' ? degree : 0;
+
       const response = await fetchRegistrationWriteApi(
         regionId,
         drinkName,
         mappedType,
-        degree,
+        degreeAsNumber,
         sweetness,
         cost,
         description,
@@ -138,6 +140,21 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
       }
     } catch (error) {
       console.error('등록 중 오류 발생:', error);
+    }
+  };
+
+  /** 도수 변경 */
+  const handleDegreeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    if (value === '') {
+      setDegree('');
+    } else {
+      const numValue = Number(value);
+
+      if (!isNaN(numValue)) {
+        setDegree(numValue);
+      }
     }
   };
 
@@ -186,7 +203,7 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
           <Label>종류</Label>
           <Input type="text" value={type} onChange={e => setType(e.target.value)} />
           <Label>도수</Label>
-          <Input type="number" value={degree} onChange={e => setDegree(Number(e.target.value))} />
+          <Input type="number" value={degree} onChange={handleDegreeChange} />
           <Label>
             당도
             <TooltipProvider>
