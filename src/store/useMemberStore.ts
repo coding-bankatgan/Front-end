@@ -55,10 +55,12 @@ export const useMemberStore = create<MemberState>((set, get) => ({
   fetchMembers: async () => {
     try {
       const response = await fetchMemberApi();
-      set({ members: response });
+      console.log([response]);
 
-      const currentUser = response.find((member: Member) => member.id === 1) || null;
-      set({ currentUser }); // currentUser Manager
+      set({ members: [response] });
+
+      // const currentUser = response.find((member: Member) => member.id === 1) || null;
+      // set({ currentUser }); // currentUser Manager
     } catch (err) {
       console.log('Error', err);
     }
