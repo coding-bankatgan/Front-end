@@ -98,11 +98,13 @@ const Daily = () => {
           <>
             <Img>
               {imageLoading && <Skeleton />}
-              <img
-                src={dailyData?.imageUrl}
-                alt={dailyData?.name}
-                onLoad={() => setImageLoading(false)}
-              />
+              {dailyData?.name !== '브라우저 권한을 확인해주세요!' && (
+                <img
+                  src={dailyData?.imageUrl}
+                  alt={dailyData?.name}
+                  onLoad={() => setImageLoading(false)}
+                />
+              )}
             </Img>
             <ImgDesc>
               <b>{dailyData?.name}</b>
