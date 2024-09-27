@@ -77,6 +77,7 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = () => {
         const response = await writeAnnouncement(newTitle, newContent);
         const file = fileInputRef.current?.files?.[0];
         let uploadedImageUrl = '';
+        console.log(uploadedImageUrl);
         if (file) {
           const imageResponse = await fetchImageUploadApi(file);
           uploadedImageUrl = imageResponse;
