@@ -1,7 +1,6 @@
 import { ContentWrapper, PageLayout } from '@/styles/CommonStyles';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 import styled from '@emotion/styled';
 import MyPageTab from './MyPageTab';
 import ExProfileImg from '@/assets/ExProfileImg';
@@ -12,11 +11,7 @@ import handleImg from '../../../assets/img/handimg.png';
 
 const MyPage = () => {
   /** 유저 정보 */
-  const { currentUser, fetchMembers } = useMemberStore();
-  useEffect(() => {
-    fetchMembers();
-  }, [fetchMembers]);
-
+  const { currentUser } = useMemberStore();
   const navigate = useNavigate();
 
   return (

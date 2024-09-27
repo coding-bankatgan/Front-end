@@ -37,7 +37,7 @@ const useAnnouncementStore = create<AnnouncementState>(set => ({
     number: 0,
   },
   setPagination: pagination => set({ pagination }),
-  setAnnouncements: announcements => set({ announcements }),
+  setAnnouncements: (announcements: Announcement[]) => set({ announcements }),
   fetchAnnouncements: async (page: number, size: number) => {
     try {
       const data = await fetchAnnouncementApi(page, size);

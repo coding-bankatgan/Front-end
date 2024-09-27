@@ -356,10 +356,6 @@ export const handlers = [
     return HttpResponse.json(newAnnouncement);
   }),
 
-  /** 공지사항 수정 API */
-
-  /** 공지사항 삭제 API */
-
   /** 공지사항 조회 API */
   http.get('/announcements', async ({ request }) => {
     const url = new URL(request.url);

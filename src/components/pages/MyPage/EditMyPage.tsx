@@ -30,11 +30,7 @@ interface EditMyPageProps {
 
 const EditMyPage = ({ showAlert }: EditMyPageProps) => {
   /** 유저 정보 */
-  const { currentUser, fetchMembers } = useMemberStore();
-
-  useEffect(() => {
-    fetchMembers();
-  }, [fetchMembers]);
+  const { currentUser } = useMemberStore();
 
   /** 상태값 관리 */
   const [id] = useState(currentUser?.id || null);

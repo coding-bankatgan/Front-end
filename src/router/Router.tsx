@@ -60,7 +60,7 @@ const Router = ({ showAlert }: RouterProps) => {
         <Route path="/faq" element={<FAQ />} />
 
         <Route path="/announcement" element={<AnnouncementBoard />} />
-        <Route path="/announcement/:id" element={<AnnouncementDetail />} />
+        <Route path="/announcement/:id" element={<AnnouncementDetail showAlert={showAlert} />} />
         <Route path="/announcement/form" element={<AnnouncementForm />} />
 
         <Route path="/mypage" element={<MyPage />} />

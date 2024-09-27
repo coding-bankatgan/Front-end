@@ -69,10 +69,10 @@ const WithdrawWrapper = styled.div`
 `;
 
 const AlertDialogActionStyled = styled(AlertDialogAction)`
-  background-color: ${({ theme }) => theme.colors.primary};
+  background-color: ${({ theme }) => theme.colors.error};
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.secondary};
+    background-color: ${({ theme }) => theme.colors.error};
   }
 `;
 

@@ -220,24 +220,6 @@ export const fetchRegistrationsDetailApi = async (id: number) => {
   }
 };
 
-/** 공지사항 조회 API */
-export const fetchAnnouncementApi = async (page: number, size: number) => {
-  try {
-    const response = await api.get(`/announcements?page=${page}&size=${size}`);
-    return response.data;
-  } catch (err) {
-    console.error('Error fetching announcements: ', err);
-  }
-};
-export const fetchAnnouncementDetailApi = async (id: number) => {
-  try {
-    const response = await api.get(`/announcements/${id}`);
-    return response.data;
-  } catch (err) {
-    console.error('Error fetching announcements: ', err);
-  }
-};
-
 /** 공지사항 등록 API */
 export const fetchAnnouncementWriteApi = async (title: string, content: string) => {
   try {
@@ -256,6 +238,49 @@ export const fetchAnnouncementWriteApi = async (title: string, content: string) 
     return response.data;
   } catch (error) {
     console.error('Error fetching declarationWrite: ', error);
+  }
+};
+
+/** 공지사항 수정 API */
+export const fetchAnnouncementModify = async (id: number, title: string, content: string) => {
+  try {
+    const response = await api.put(`/announcements/${id}`, {
+      title,
+      content,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error modifying announcement: ', error);
+  }
+};
+
+/** 공지사항 삭제 API */
+export const fetchAnnouncementDelete = async (id: number) => {
+  try {
+    const response = await api.delete(`/announcements/${id}`);
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting announcement: ', error);
+  }
+};
+
+/** 공지사항 조회 API */
+export const fetchAnnouncementApi = async (page: number, size: number) => {
+  try {
+    const response = await api.get(`/announcements?page=${page}&size=${size}`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching announcements: ', err);
+  }
+};
+export const fetchAnnouncementDetailApi = async (id: number) => {
+  try {
+    const response = await api.get(`/announcements/${id}`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching announcements: ', err);
   }
 };
 
