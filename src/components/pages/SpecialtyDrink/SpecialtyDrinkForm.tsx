@@ -153,8 +153,19 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
             onChange={handleFileChange}
             style={{ display: 'none' }}
           />
-          {imageUrl && <img src={imageUrl} alt="이미지 미리보기" style={{ objectFit: 'cover' }} />}
-          {!imageUrl && (
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt="이미지 미리보기"
+              onClick={handleBtnClick}
+              style={{
+                minWidth: '316px',
+                height: '316px',
+                objectFit: 'contain',
+                cursor: 'pointer',
+              }}
+            />
+          ) : (
             <Button onClick={handleBtnClick}>
               <PlusIcon />
             </Button>
