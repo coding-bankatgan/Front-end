@@ -9,12 +9,12 @@ import { usePostsDetailStore } from '@/store/usePostsDetailStore';
 import PostComments from './PostComments';
 import EllipsisHorizontalIcon from '@/assets/icons/EllipsisHorizontalIcon';
 import ChatIcon from '@/assets/icons/ChatIcon';
-import HeartIcon from '@/assets/icons/HeartIcon';
+// import HeartIcon from '@/assets/icons/HeartIcon';
 import { mapDrinkType } from '@/data/drinkTypes';
-import { useLikeStore } from '@/store/useLikeStore';
+// import { useLikeStore } from '@/store/useLikeStore';
 
 const typeMap = {
-  ADVERTISEMENT: '광고',
+  AD: '광고',
   REVIEW: '리뷰',
 };
 
@@ -27,18 +27,18 @@ const Post = ({ showAlert }: PostProps) => {
   const { id } = useParams();
   const postId = Number(id);
 
-  const { toggleLike } = useLikeStore();
-  const liked = useLikeStore(state => state.likedPosts.includes(postId));
+  // const { toggleLike } = useLikeStore();
+  // const liked = useLikeStore(state => state.likedPosts.includes(postId));
 
   useEffect(() => {
     fetchPostsDetail(postId);
   }, [fetchPostsDetail, postId]);
 
-  if (postsDetail.length === 0) {
+  if (!postsDetail) {
     return <p>로딩 중...</p>;
   }
 
-  const post = postsDetail.find(post => post.id === postId);
+  const post = postsDetail;
 
   if (!post) {
     return <p>게시글을 찾을 수 없습니다.</p>;
@@ -48,67 +48,67 @@ const Post = ({ showAlert }: PostProps) => {
     <PostLayout>
       <PostTitleSection>
         <b>
-          <span>{typeMap[post?.type]}</span>
-          {post?.drink.name}
+          <span>{typeMap[post.type]}</span>
+          {post.drink.name}
         </b>
       </PostTitleSection>
       <UserPost>
         <Nickname>
           <ExProfileImg />
-          {post?.memberName}
+          {post.memberName}
           <span>
             <EllipsisHorizontalIcon />
           </span>
         </Nickname>
         <Img>
-          <img src={post?.imageUrl} alt={post?.drink.name} />
+          <img src={post.imageUrl} alt={post.drink.name} />
         </Img>
         <Interactions>
           <span>
-            <HeartIcon onClick={() => toggleLike(post.id)} liked={liked} />
-            {post?.likeCount.toLocaleString()}
+            {/* <HeartIcon onClick={() => toggleLike(post.id)} liked={liked} /> */}
+            {post.likeCount.toLocaleString()}
           </span>
           <span>
-            <ChatIcon /> {post?.commentCount.toLocaleString()}
+            <ChatIcon /> 12
           </span>
         </Interactions>
-        <Desc>{post?.content}</Desc>
+        <Desc>{post.content}</Desc>
         <EtcWrap>
           <TagWrapper>
-            {post?.tags.map(tag => (
+            {post.tags.map(tag => (
               <AlertDialogTag key={tag.tagId} tagId={tag.tagId} showAlert={showAlert}>
                 {tag.tagName}
               </AlertDialogTag>
             ))}
           </TagWrapper>
-          {post?.type === 'ADVERTISEMENT' ? (
+          {post.type === 'AD' ? (
             <Info>
               <li>
-                <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
+                <span>주종:</span> {mapDrinkType(post.drink.type)}
               </li>
               <li>
-                <span>도수:</span> {post?.drink.degree}%
+                <span>도수:</span> {post.drink.degree}%
               </li>
               <li>
-                <span>당도:</span> {post?.drink.sweetness}
+                <span>당도:</span> {post.drink.sweetness}
               </li>
             </Info>
           ) : (
             <Info>
               <li>
-                <span>주종:</span> {mapDrinkType(post?.drink.drinkType)}
+                <span>주종:</span> {mapDrinkType(post.drink.type)}
               </li>
               <li>
-                <span>도수:</span> {post?.drink.degree}%
+                <span>도수:</span> {post.drink.degree}%
               </li>
               <li>
-                <span>당도:</span> {post?.drink.sweetness}
+                <span>당도:</span> {post.drink.sweetness}
               </li>
               <li>
-                <span>평점:</span> {post?.rating}
+                <span>평점:</span> {post.rating}
               </li>
               <li>
-                <span>평균 평점:</span> {post?.drink.averageRating || 0}
+                <span>평균 평점:</span> {post.drink.averageRating || 0}
               </li>
             </Info>
           )}
@@ -182,6 +182,10 @@ const Img = styled.div`
   height: 100%;
   border-top: 1px solid ${({ theme }) => theme.colors.brightGray};
   border-bottom: 1px solid ${({ theme }) => theme.colors.brightGray};
+
+  img {
+    object-fit: cover;
+  }
 `;
 
 const Nickname = styled.div`
