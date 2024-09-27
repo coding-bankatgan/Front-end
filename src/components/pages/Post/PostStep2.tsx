@@ -48,9 +48,9 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
         },
       });
 
-      console.log(response);
+      console.log(response.data);
 
-      setSuggestions(response.data.suggestions || []);
+      setSuggestions(response.data || []);
     } catch (error) {
       console.error('Error fetching autocomplete suggestions:', error);
     }
@@ -59,14 +59,14 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
       fetchAutocomplete();
-    }, 200);
+    }, 500);
 
-    return () => clearTimeout(debounceTimeout); // Cleanup on unmount
+    return () => clearTimeout(debounceTimeout);
   }, [searchTerm]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    setViewAutocomplete(true); // 입력이 발생하면 자동완성 보이기
+    e.target.value === '' ? setViewAutocomplete(false) : setViewAutocomplete(true);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
@@ -86,14 +86,14 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
   useEffect(() => {
     const handler = setTimeout(() => {
       if (searchTerm) {
-        setPage(0); // 페이지 초기화
-        setSearchResults([]); // 검색 결과 초기화
-        fetchSearchResults(); // 결과를 다시 불러오기
+        setPage(0);
+        setSearchResults([]);
+        fetchSearchResults();
       }
-    }, 800); // 1초 후에 실행
+    }, 800);
 
     return () => {
-      clearTimeout(handler); // 컴포넌트 언마운트 시 타이머 취소
+      clearTimeout(handler);
     };
   }, [searchTerm]);
 
@@ -105,7 +105,7 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
   const loadingRef = useRef<HTMLDivElement | null>(null);
 
   const fetchSearchResults = async () => {
-    if (loading || !hasMore) return;
+    if (!hasMore) return;
 
     setLoading(true);
 
@@ -122,7 +122,17 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
       const data = [response.data];
       console.log('data : ', data);
       console.log(data[0].content);
-      setSearchResults(prevResults => [...prevResults, ...data[0].content]);
+      setSearchResults(prevResults => {
+        const isDuplicate = data[0].content.some((newItem: Drink) =>
+          prevResults.some(prevItem => prevItem.id === newItem.id),
+        );
+        if (isDuplicate) {
+          console.log('ok');
+          return prevResults;
+        } else {
+          return [...prevResults, ...data[0].content];
+        }
+      });
       setHasMore(data[0].content.length > 0);
     } catch (error) {
       console.error('Error fetching search results:', error);
@@ -146,12 +156,12 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting && hasMore && !loading) {
-        setPage(prevPage => prevPage + 1); // `page`를 증가시키고
+        setPage(prevPage => prevPage + 1);
       }
     });
 
     if (loadingRef.current) {
-      observer.observe(loadingRef.current); // `loadingRef`를 관찰합니다.
+      observer.observe(loadingRef.current);
     }
 
     return () => {
@@ -164,6 +174,13 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
   useEffect(() => {
     console.log(searchResults);
   }, [searchResults]);
+
+  const handleFocus = () => {
+    setViewAutocomplete(true);
+  };
+  const handleBlur = () => {
+    setTimeout(() => setViewAutocomplete(false), 100);
+  };
 
   return (
     <>
@@ -183,6 +200,8 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
           <Input
             value={searchTerm}
             onChange={handleInputChange}
+            onBlur={handleBlur}
+            onFocus={handleFocus}
             placeholder="특산주 이름을 입력하세요."
           />
           <SearchIcon />
