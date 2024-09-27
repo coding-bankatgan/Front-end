@@ -1,37 +1,6 @@
 import { create } from 'zustand';
 import { fetchPostsApi } from '../api/postApi';
 
-// interface Tag {
-//   tagId: number;
-//   tagName: string;
-// }
-
-// export interface Post {
-//   id: number;
-//   memberId: number;
-//   memberName: string;
-//   drink: {
-//     id: number;
-//     name: string;
-//     drinkType: string;
-//     degree: number;
-//     sweetness: number;
-//     cost: number;
-//     averageRating: number;
-//     description: string;
-//     imageUrl: string;
-//     createdAt: string;
-//   };
-//   type: 'REVIEW' | 'AD';
-//   content: string;
-//   rating: number;
-//   tags: Tag[];
-//   imageUrl: string;
-//   viewCount: number;
-//   createdAt: string;
-//   updatedAt: string;
-// }
-
 interface Tag {
   tagId: number;
   tagName: string;
