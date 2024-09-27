@@ -32,3 +32,8 @@ export const mapDrinkType = (value: string): string => {
   const drink = type.find(drink => drink.value === value);
   return drink ? drink.name : value; // 매칭이 없으면 원래 값을 반환
 };
+
+export const mapDrinkTypeToEnglish = (name: string): string => {
+  const drink = type.find(drink => drink.name === name);
+  return drink ? drink.value : name; // 매칭이 없으면 원래 값을 반환
+};
