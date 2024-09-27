@@ -5,13 +5,11 @@ import styled from '@emotion/styled';
 import MinusIcon from '@/assets/icons/MinusIcon';
 
 const FollowTagList = () => {
-  const { followTags, currentUser, removeFollowTag, fetchMembers, fetchFollowTags } =
-    useMemberStore();
+  const { followTags, currentUser, removeFollowTag, fetchFollowTags } = useMemberStore();
 
   useEffect(() => {
-    fetchMembers();
     fetchFollowTags();
-  }, [fetchMembers, fetchFollowTags]);
+  }, [fetchFollowTags]);
 
   const myFollowTags = Array.isArray(followTags)
     ? followTags.filter(followTags => followTags.memberId === currentUser?.id)
