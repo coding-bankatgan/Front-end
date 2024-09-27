@@ -148,20 +148,23 @@ const Login = () => {
   useEffect(() => {
     const fetchToken = async () => {
       const params = new URLSearchParams(location.search);
-      console.log(params);
 
       const authCode = params.get('code'); // URL에서 인증 코드 추출
-      console.log(authCode);
 
       if (authCode) {
         try {
-          const response = await api.post('/google/join', { code: authCode });
-          console.log('Login successful:', response.data); // 로그인 성공 처리
+          const response = await api.post('/google/join', null, {
+            params: {
+              code: authCode,
+            },
+          });
 
           const { accessToken, refreshToken } = response.data;
 
           Cookies.set('access_token', accessToken);
           Cookies.set('refresh_token', refreshToken);
+
+          navigate('/');
         } catch (error) {
           console.error('Error during Google login:', error);
         }
