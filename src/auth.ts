@@ -33,7 +33,7 @@ export const decodeJWT = (token: string) => {
     const payload = token.split('.')[1];
     return JSON.parse(atob(payload));
   } catch (error) {
-    console.error('JWT 디코딩 중 오류 발생:', error);
+    // console.error('JWT 디코딩 중 오류 발생:', error);
     return null;
   }
 };
@@ -43,7 +43,7 @@ export const getRoleFromToken = (): 'USER' | 'MANAGER' | null => {
   const token = Cookies.get('jwt');
 
   if (!token) {
-    console.error('JWT 토큰이 없습니다.');
+    //console.error('JWT 토큰이 없습니다.');
     return null;
   }
 
@@ -56,7 +56,7 @@ export const getSubFromToken = () => {
   const token = Cookies.get('jwt');
 
   if (!token) {
-    console.error('JWT 토큰이 없습니다.');
+    //console.error('JWT 토큰이 없습니다.');
     return null;
   }
 
@@ -68,8 +68,8 @@ export const getSubFromToken = () => {
 export const displaySub = () => {
   const sub = getSubFromToken();
   if (sub) {
-    console.log('JWT의 sub 값:', sub);
+    //console.log('JWT의 sub 값:', sub);
   } else {
-    console.log('sub 값을 가져올 수 없습니다.');
+    //console.log('sub 값을 가져올 수 없습니다.');
   }
 };

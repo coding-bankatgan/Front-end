@@ -16,7 +16,7 @@ export interface Drink {
   id: number;
   placeName: string;
   name: string;
-  drinkType: string;
+  type: string;
   degree: number;
   sweetness: number;
   cost: number;
@@ -36,7 +36,7 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const fetchAutocomplete = async () => {
-    if (!searchTerm) return; // If search term is empty, do not fetch
+    if (!searchTerm) return;
 
     try {
       const url = selectedRegionId ? `/auto-complete/region-drink` : `/auto-complete/drink`;
@@ -50,7 +50,7 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
 
       console.log(response);
 
-      setSuggestions(response.data.suggestions || []); // Assuming API response contains `suggestions` array
+      setSuggestions(response.data.suggestions || []);
     } catch (error) {
       console.error('Error fetching autocomplete suggestions:', error);
     }
@@ -119,11 +119,11 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
         },
       });
 
-      const data = response.data;
+      const data = [response.data];
       console.log('data : ', data);
-      console.log(data.data[0].content);
-      setSearchResults(prevResults => [...prevResults, ...data.data[0].content]);
-      setHasMore(data.data[0].content.length > 0);
+      console.log(data[0].content);
+      setSearchResults(prevResults => [...prevResults, ...data[0].content]);
+      setHasMore(data[0].content.length > 0);
     } catch (error) {
       console.error('Error fetching search results:', error);
       setHasMore(false);
@@ -160,6 +160,10 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
       }
     };
   }, [loadingRef, hasMore, loading]);
+
+  useEffect(() => {
+    console.log(searchResults);
+  }, [searchResults]);
 
   return (
     <>

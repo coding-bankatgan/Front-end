@@ -74,14 +74,17 @@ const PostStep3 = ({
   };
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+
+  const handleFileChange = () => {
+    const file = fileInputRef.current?.files?.[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setImagePreview(imageUrl);
 
       const newFormData = new FormData();
-      newFormData.append('image', file);
+      newFormData.append('multipartFile', file);
+      console.log(newFormData);
+
       setFormData(newFormData);
     }
   };
@@ -131,7 +134,7 @@ const PostStep3 = ({
         {drinkData.name}
       </PostTitle>
       <PostContent>
-        <ImgSelect>
+        <ImgSelect ref={fileInputRef}>
           {/* <input type="file" accept="image/*" ref={fileInputRef} />
           <Button onClick={handleBtnClick}>
             <PlusIcon />
@@ -154,12 +157,7 @@ const PostStep3 = ({
         </ImgSelect>
         <div>
           <Label htmlFor="alcoholType">주종</Label>
-          <Input
-            type="text"
-            id="alcoholType"
-            placeholder={alcohols[drinkData.drinkType]}
-            disabled
-          />
+          <Input type="text" id="alcoholType" placeholder={alcohols[drinkData.type]} disabled />
         </div>
         <div>
           <Label htmlFor="degree">도수</Label>
