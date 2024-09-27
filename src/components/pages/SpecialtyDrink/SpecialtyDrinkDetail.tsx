@@ -9,14 +9,11 @@ import { mapDrinkType } from '@/data/drinkTypes';
 
 const SpecialtyDrinkDetail = () => {
   const { registrations, fetchRegistrationsDetail, updateApprovalStatus } = useRegistrationStore();
-  const { currentUser, fetchMembers } = useMemberStore();
+  const { members } = useMemberStore();
   const { id } = useParams();
   const registId = Number(id);
-  const isManager = currentUser?.role === 'MANAGER';
-
-  useEffect(() => {
-    fetchMembers();
-  }, [fetchMembers]);
+  const isManager = members[0].role === 'MANAGER';
+  // console.log(members.find(member => member.role));
 
   const navigate = useNavigate();
 

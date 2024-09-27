@@ -1,8 +1,16 @@
 import styled from '@emotion/styled';
 import Daily from './Daily';
 import Tab from './Tab';
+import useMemberStore from '@/store/useMemberStore';
+import { useEffect } from 'react';
 
 const Home = () => {
+  const { fetchMembers } = useMemberStore();
+
+  useEffect(() => {
+    fetchMembers();
+  }, []);
+
   return (
     <HomeLayout>
       <Daily />

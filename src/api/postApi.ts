@@ -341,7 +341,8 @@ export const fetchRegionApi = async () => {
 /** 회원정보 조회 API */
 export const fetchMemberApi = async () => {
   try {
-    const response = await axios.get(`/api/members`);
+    const response = await api.get(`/members`);
+
     return response.data;
   } catch (err) {
     console.error('Error fetching members: ', err);
