@@ -16,6 +16,11 @@ const Footer = () => {
     let lastScrollY = window.scrollY;
 
     const handleScroll = () => {
+      if (window.scrollY === 0) {
+        setIsFooterVisible(true);
+        return;
+      }
+
       if (window.scrollY < lastScrollY) {
         setIsFooterVisible(true);
       } else {
