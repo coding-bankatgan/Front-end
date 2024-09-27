@@ -47,7 +47,7 @@ const SearchResults = ({ nextStep, setDrinkData, contents }: SearchResultsProps)
               <img src={item.imageUrl} alt={item.name} />
               <ImgDesc>
                 <b>{item.name}</b>
-                <span>{`주종 : ${alcoholsData[item.drinkType]}`}</span>
+                <span>{`주종 : ${alcoholsData[item.type]}`}</span>
                 <span>{`도수 : ${item.degree}%`}</span>
               </ImgDesc>
             </ListItem>
