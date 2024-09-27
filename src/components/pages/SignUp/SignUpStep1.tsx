@@ -218,7 +218,8 @@ export const Container = styled.div`
   }
 
   input {
-    margin-bottom: 10px;
+    width: 98%;
+    margin: 0 auto 10px auto;
     background-color: ${({ theme }) => theme.colors.brightGray};
     font-size: ${({ theme }) => theme.fontSizes.small};
 
