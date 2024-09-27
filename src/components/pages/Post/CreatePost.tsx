@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChangePage from './ChangePage';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '@/api/axios';
 
 const CreatePost = () => {
   const [step, setStep] = useState(1);
@@ -38,9 +38,9 @@ const CreatePost = () => {
     const tagsWithoutHash = tags.map(tag => tag.replace('#', ''));
     try {
       if (imageName !== '') {
-        const imageUrl = await axios.post('/api/image', formData);
+        const imageUrl = await api.post('/image', formData);
 
-        await axios.post('/api/post', {
+        await api.post('/post', {
           drinkId: drinkData.id,
           type: category,
           content: formattedContent,
@@ -58,7 +58,7 @@ const CreatePost = () => {
           imageUrl: imageUrl.data,
         });
       } else {
-        await axios.post('/api/post', {
+        await api.post('/post', {
           drinkId: drinkData.id,
           type: category,
           content: formattedContent,

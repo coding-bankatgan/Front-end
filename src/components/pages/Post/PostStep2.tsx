@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import SearchIcon from '@/assets/icons/SearchIcon';
 import SearchResults from './SearchResults';
-import axios from 'axios';
+import api from '@/api/axios';
 
 interface PostStep2Props {
   nextStep: () => void;
@@ -31,7 +31,38 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
   const [selectedRegion, setSelectedRegion] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [viewAutocomplete, setViewAutocomplete] = useState(false);
-  const fixedSuggestions = ['111', '222', '333', '111', '222', '333', '111', '222', '333'];
+
+  /** */
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+
+  const fetchAutocomplete = async () => {
+    if (!searchTerm) return; // If search term is empty, do not fetch
+
+    try {
+      const url = selectedRegionId ? `/auto-complete/region-drink` : `/auto-complete/drink`;
+
+      const response = await api.get(url, {
+        params: {
+          ...(selectedRegionId && { regionId: selectedRegionId }),
+          name: searchTerm,
+        },
+      });
+
+      console.log(response);
+
+      setSuggestions(response.data.suggestions || []); // Assuming API response contains `suggestions` array
+    } catch (error) {
+      console.error('Error fetching autocomplete suggestions:', error);
+    }
+  };
+
+  useEffect(() => {
+    const debounceTimeout = setTimeout(() => {
+      fetchAutocomplete();
+    }, 200);
+
+    return () => clearTimeout(debounceTimeout); // Cleanup on unmount
+  }, [searchTerm]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -79,9 +110,9 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
     setLoading(true);
 
     try {
-      const response = await axios.get(`/api/search/drinks`, {
+      const response = await api.get(`/search/drinks`, {
         params: {
-          regionId: selectedRegionId,
+          regionId: selectedRegionId ? selectedRegionId : 0,
           drinkName: searchTerm,
           size: 10,
           page: page,
@@ -89,6 +120,7 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
       });
 
       const data = response.data;
+      console.log('data : ', data);
       console.log(data.data[0].content);
       setSearchResults(prevResults => [...prevResults, ...data.data[0].content]);
       setHasMore(data.data[0].content.length > 0);
@@ -151,9 +183,9 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
           />
           <SearchIcon />
         </Search>
-        {searchTerm !== '' && viewAutocomplete && (
+        {viewAutocomplete && suggestions.length > 0 && (
           <AutocompleteList>
-            {fixedSuggestions.map((suggestion, idx) => (
+            {suggestions.map((suggestion, idx) => (
               <AutocompleteItem key={idx} onClick={() => handleSuggestionClick(suggestion)}>
                 {suggestion}
               </AutocompleteItem>
