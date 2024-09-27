@@ -12,8 +12,8 @@ import PlusIcon from '@/assets/icons/PlusIcon';
 import useRegistrationStore from '@/store/useRegistrationStore';
 import { fetchRegistrationWriteApi } from '@/api/postApi';
 import { mapDrinkTypeToEnglish } from '@/data/drinkTypes';
-import api from '@/api/axios';
-// import { fetchImageUploadApi } from '@/api/postApi';
+// import api from '@/api/axios';
+import { fetchImageUploadApi } from '@/api/postApi';
 
 interface SpecialtyDrinkFormProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -34,7 +34,7 @@ const sweetnessDescriptions: { [key: string]: string } = {
 
 const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
   //** registration 등록 */
-  const [img, setImg] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>('');
   const [drinkName, setDrinkName] = useState<string>('');
   const [region, setRegion] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -58,6 +58,37 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
     return selectedRegion ? selectedRegion.id : null;
   };
 
+  //** 이미지 업로드 */
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleBtnClick = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const previewUrl = URL.createObjectURL(file);
+        setImageUrl(previewUrl);
+
+        const imageResponse = await fetchImageUploadApi(file);
+        // console.log(imageResponse);
+        setImageUrl(imageResponse);
+      } catch (error) {
+        console.error('이미지 업로드 실패:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (imageUrl) {
+      console.log('현재 저장된 이미지 URL:', imageUrl);
+    }
+  }, [imageUrl]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const regionId = getRegionId();
@@ -69,22 +100,15 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
       !type ||
       degree === undefined ||
       sweetness === undefined ||
-      cost === undefined
+      cost === undefined ||
+      !imageUrl
     ) {
       showAlert('error', '모든 정보를 입력해주세요.');
       return;
     }
 
     try {
-      // let imageUrl = '';
-      // if (img) {
-      //   // 이미지 업로드
-      //   const imageResponse = await fetchImageUploadApi(img);
-      //   imageUrl = imageResponse.imageUrl; // 이미지 업로드 후 반환된 URL 사용
-      // }
-      // console.log(imageUrl);
-
-      let imageUrl = 'https://thesool.com/common/imageView.do?targetId=PR00000697&targetNm=PRODUCT';
+      // let imageUrl = 'https://thesool.com/common/imageView.do?targetId=PR00000697&targetNm=PRODUCT';
       const mappedType = mapDrinkTypeToEnglish(type);
       console.log(mappedType);
 
@@ -117,14 +141,6 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
     }
   };
 
-  //** 이미지 업로드 */
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const handleBtnClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
   return (
     <NoFooterLayoutSub>
       <ContentWrapper as="form" onSubmit={handleSubmit}>
@@ -134,13 +150,15 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
             type="file"
             accept="image/*"
             ref={fileInputRef}
-            onChange={e => setImg(e.target.files?.[0] || null)}
+            onChange={handleFileChange}
             style={{ display: 'none' }}
           />
-          {/* <img src="https://thesool.com/common/imageView.do?targetId=PR00000697&targetNm=PRODUCT" /> */}
-          <Button onClick={handleBtnClick}>
-            <PlusIcon />
-          </Button>
+          {imageUrl && <img src={imageUrl} alt="이미지 미리보기" style={{ objectFit: 'cover' }} />}
+          {!imageUrl && (
+            <Button onClick={handleBtnClick}>
+              <PlusIcon />
+            </Button>
+          )}
         </FormHeaderStyled>
         <FormContentStyled>
           <Label htmlFor="text">특산주 이름</Label>

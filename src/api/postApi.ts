@@ -316,11 +316,12 @@ export const fetchImageUploadApi = async (file: File) => {
   formData.append('multipartFile', file);
 
   try {
-    const response = await axios.post(`/api/image`, formData, {
+    const response = await api.post(`/image`, formData, {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
       },
     });
+    console.log(response);
     return response.data;
   } catch (err) {
     console.error('Error fetching image: ', err);
