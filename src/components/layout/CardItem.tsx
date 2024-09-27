@@ -1,26 +1,26 @@
 import styled from '@emotion/styled';
 import ViewIcon from './../../assets/icons/ViewIcon';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import HeartIcon from '@/assets/icons/HeartIcon';
+// import HeartIcon from '@/assets/icons/HeartIcon';
 import { Badge } from '@/components/ui/badge';
 import ExProfileImg from '@/assets/ExProfileImg';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Post } from '@/store/usePostsStore';
-import { useLikeStore } from '@/store/useLikeStore';
+// import { useLikeStore } from '@/store/useLikeStore';
 
 interface CardItemProps {
   post: Post;
 }
 
 const CardItem = ({ post }: CardItemProps) => {
-  const { toggleLike } = useLikeStore();
-  const liked = useLikeStore(state => state.likedPosts.includes(post.id));
+  // const { toggleLike } = useLikeStore();
+  // const liked = useLikeStore(state => state.likedPosts.includes(post.id));
 
   const navigate = useNavigate();
 
   return (
-    <CardStyled onClick={() => navigate(`/post/${post.id}`)}>
+    <CardStyled onClick={() => navigate(`/posts/${post.id}`)}>
       <CardHeaderStyled>
         <img src={post.imageUrl} alt={post.drink.name} />
       </CardHeaderStyled>
@@ -30,13 +30,15 @@ const CardItem = ({ post }: CardItemProps) => {
             <ExProfileImg />
             {post.memberName}
           </span>
-          <HeartIcon
+          {/* <HeartIcon
             onClick={e => {
               e.stopPropagation();
               toggleLike(post.id);
             }}
             liked={liked}
-          />
+          /> */}
+          {/* <HeartIcon
+          /> */}
         </ContentTop>
         <DrinkName>{post.drink.name}</DrinkName>
         <p>{post.content}</p>
@@ -58,9 +60,8 @@ const CardItem = ({ post }: CardItemProps) => {
 };
 
 const CardStyled = styled(Card)`
-  min-width: 150px;
   width: 48.5%;
-  margin-bottom: 10px;
+  margin-bottom: 7.5px;
   border-radius: 10px;
   border: 1px solid ${({ theme }) => theme.colors.lightGray};
   color: ${({ theme }) => theme.colors.black};
@@ -71,27 +72,28 @@ const CardStyled = styled(Card)`
 const CardHeaderStyled = styled(CardHeader)`
   min-width: 135px;
   width: auto;
-  height: 155px;
+  height: 150px;
   padding: 0;
   border-bottom: 1px solid ${({ theme }) => theme.colors.lightGray};
 
   img {
     width: auto;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
   }
 `;
 
 const CardContentStyled = styled(CardContent)`
-  padding: 10px 10px 5px 10px;
+  padding: 8px 8px 0px 8px;
 
   p {
     display: -webkit-box;
-    height: 42px;
+    height: 34px;
     margin-top: 2px;
     font-size: ${({ theme }) => theme.fontSizes.small};
     text-align: left;
-    letter-spacing: -0.2px;
+    letter-spacing: -0.3px;
+    line-height: 17px;
     overflow: hidden;
     text-overflow: ellipsis;
     -webkit-line-clamp: 2;

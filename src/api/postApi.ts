@@ -2,9 +2,16 @@ import axios from 'axios';
 import api from './axios';
 
 /** 전체 게시글 조회 API */
-export const fetchPostsApi = async () => {
+export const fetchPostsApi = async (sortBy: string, page: number = 0, size: number = 10) => {
   try {
-    const response = await axios.get('api/posts');
+    const response = await api.get('/posts', {
+      params: {
+        page,
+        size,
+        sortBy,
+      },
+    });
+    console.log('전체 게시글 받아와', response.data);
     return response.data;
   } catch (err) {
     console.error('Error fetching posts: ', err);
@@ -14,7 +21,7 @@ export const fetchPostsApi = async () => {
 /** 특정 게시글 상세 조회 API */
 export const fetchPostsDetailApi = async (postId: number) => {
   try {
-    const response = await axios.get(`api/posts/${postId}`);
+    const response = await api.get(`/posts/${postId}`);
     return response.data;
   } catch (err) {
     console.error('Error fetching postsDetail: ', err);
@@ -24,8 +31,8 @@ export const fetchPostsDetailApi = async (postId: number) => {
 /** 특정 게시글 댓글 작성 API */
 export const fetchCommentWriteApi = async (postId: number, content: string) => {
   try {
-    const response = await axios.post(
-      'api/comments',
+    const response = await api.post(
+      '/comments',
       {
         postId: postId,
         content: content,
@@ -47,7 +54,7 @@ export const fetchCommentWriteApi = async (postId: number, content: string) => {
 /** 특정 게시글 댓글 조회 API */
 export const fetchCommentsApi = async (postId: number, page: number, size: number) => {
   try {
-    const response = await axios.get(`/api/${postId}/comments?number=${page}&size=${size}`);
+    const response = await api.get(`/${postId}/comments?number=${page}&size=${size}`);
     console.log('API response:', response.data);
     return response.data;
   } catch (err) {
@@ -58,7 +65,7 @@ export const fetchCommentsApi = async (postId: number, page: number, size: numbe
 /** 검색페이지 태그 추천 API */
 export const fetchSuggestedTagsApi = async () => {
   try {
-    const response = await axios.get('/api/suggest/tags');
+    const response = await api.get('/suggest/tags');
     return response.data;
   } catch (err) {
     console.error('Error fetching suggestedTags: ', err);
@@ -68,7 +75,7 @@ export const fetchSuggestedTagsApi = async () => {
 /** 검색페이지 특산주 이름 추천 API */
 export const fetchSuggestedDrinksApi = async () => {
   try {
-    const response = await axios.get('/api/suggest/drinks');
+    const response = await api.get('/suggest/drinks');
     return response.data;
   } catch (err) {
     console.error('Error fetching suggestedDrinks: ', err);
@@ -78,7 +85,7 @@ export const fetchSuggestedDrinksApi = async () => {
 /** 검색페이지 태그 자동완성 API */
 export const fetchAutoCompleteTagApi = async (name: string) => {
   try {
-    const response = await axios.get(`/api/auto-complete/tag?name=${name}`);
+    const response = await api.get(`/auto-complete/tag?name=${name}`);
     return response.data;
   } catch (err) {
     console.error('Error fetching autoCompleteTag: ', err);
@@ -88,7 +95,7 @@ export const fetchAutoCompleteTagApi = async (name: string) => {
 /** 검색페이지 특산주 이름 자동완성 API */
 export const fetchAutoCompleteDrinkApi = async (name: string) => {
   try {
-    const response = await axios.get(`/api/auto-complete/drink?name=${name}`);
+    const response = await api.get(`/auto-complete/drink?name=${name}`);
     return response.data;
   } catch (err) {
     console.error('Error fetching autoCompleteDrink: ', err);
@@ -98,7 +105,7 @@ export const fetchAutoCompleteDrinkApi = async (name: string) => {
 /** 검색페이지 태그로 게시글 검색 API */
 export const fetchTagResultsApi = async (tagNames: string[], page: number, size: number) => {
   try {
-    const response = await axios.post(`/api/search/post/tags?page=${page}&size=${size}`, tagNames, {
+    const response = await api.post(`/search/post/tags?page=${page}&size=${size}`, tagNames, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -112,9 +119,7 @@ export const fetchTagResultsApi = async (tagNames: string[], page: number, size:
 /** 검색페이지 특산주 이름으로 게시글 검색 API */
 export const fetchDrinkResultsApi = async (drink: string, page: number, size: number) => {
   try {
-    const response = await axios.post(
-      `/api/search/post/drinks?drink=${drink}&page=${page}&size=${size}`,
-    );
+    const response = await api.post(`/search/post/drinks?drink=${drink}&page=${page}&size=${size}`);
     return response.data;
   } catch (err) {
     console.error('Erro fetching DrinkResults: ', err);
