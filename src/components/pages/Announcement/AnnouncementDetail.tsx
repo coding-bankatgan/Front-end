@@ -13,22 +13,32 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import DeleteAnnouncement from './DeleteAnnouncement';
 
-const AnnouncementDetail = () => {
+interface AnnouncementDetailProps {
+  showAlert: (type: 'success' | 'error', message: string) => void;
+}
+
+const AnnouncementDetail = ({ showAlert }: AnnouncementDetailProps) => {
   const navigate = useNavigate();
   const { announcements, fetchAnnouncementsDetail } = useAnnouncementStore();
   const { id } = useParams();
   const announcementId = Number(id);
 
   const location = useLocation();
-  const newAnnouncement = location.state;
+  const stateAnnouncement = location.state;
 
   useEffect(() => {
-    fetchAnnouncementsDetail(announcementId);
-  }, [fetchAnnouncementsDetail, announcementId]);
+    const fetchDetail = async () => {
+      if (!stateAnnouncement) {
+        await fetchAnnouncementsDetail(announcementId);
+      }
+    };
+    fetchDetail();
+  }, [fetchAnnouncementsDetail, announcementId, stateAnnouncement]);
 
   const announcement =
-    announcements.find(announcement => announcement.id === announcementId) || newAnnouncement;
+    stateAnnouncement || announcements.find(announcement => announcement.id === announcementId);
 
   return (
     <NoFooterLayoutSub>
@@ -40,8 +50,23 @@ const AnnouncementDetail = () => {
               <EllipsisHorizontalIcon />
             </DropdownMenuTrigger>
             <DropdownMenuContentStyled>
-              <DropdownMenuItem onClick={() => navigate('/')}>수정</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/')}>삭제</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate('/announcement/form', {
+                    state: {
+                      initialTitle: announcement.title,
+                      initialContent: announcement.content,
+                      initialImageUrl: announcement.imageUrl,
+                      announcementId: announcement.id,
+                    },
+                  })
+                }
+              >
+                수정
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <DeleteAnnouncement announcementId={announcementId} showAlert={showAlert} />
+              </DropdownMenuItem>
             </DropdownMenuContentStyled>
           </DropdownMenu>
         </OptionWrapper>

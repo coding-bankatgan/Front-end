@@ -10,6 +10,7 @@ import useAnnouncementStore from '@/store/useAnnouncementStore';
 import styled from '@emotion/styled';
 import PrevBtn from '../../layout/PrevBtn';
 import Pagination from './../../layout/Pagination';
+import useMemberStore from '@/store/useMemberStore';
 
 const AnnouncementBoard = () => {
   /** 페이지 유입 시 기본 데이터 출력 */
@@ -18,12 +19,11 @@ const AnnouncementBoard = () => {
     announcements: state.announcements,
     pagination: state.pagination,
     fetchAnnouncements: state.fetchAnnouncements,
-    setAnnouncements: state.setAnnouncements,
   }));
 
   useEffect(() => {
     fetchAnnouncements(pagination.number, pagination.size);
-  }, [fetchAnnouncements, pagination.number, pagination.size]);
+  }, [pagination.number, pagination.size]);
 
   const handlePageChange = (newPage: number) => {
     fetchAnnouncements(newPage, pagination.size);
@@ -33,7 +33,8 @@ const AnnouncementBoard = () => {
     navigate(`/announcement/${id}`);
   };
 
-  // const role = getRoleFromToken();
+  const { members } = useMemberStore();
+  const isManager = members[0].role === 'MANAGER';
 
   /** 7일 이내에 생성된 공지인지 확인하는 함수 */
   const isNewAnnouncement = (createdAt: string) => {
@@ -59,14 +60,11 @@ const AnnouncementBoard = () => {
         {announcements.length > 0 && (
           <Pagination pagination={pagination} onPageChange={handlePageChange} />
         )}
-        <EditAnnouncementForm onClick={() => navigate('/announcement/form')}>
-          <PlusIcon />
-        </EditAnnouncementForm>
-        {/* {role === 'MANAGER' && (
+        {isManager && (
           <EditAnnouncementForm onClick={() => navigate('/announcement/form')}>
             <PlusIcon />
           </EditAnnouncementForm>
-        )} */}
+        )}
       </ContentWrapper>
     </NoFooterLayoutSub>
   );
