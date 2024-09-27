@@ -20,7 +20,7 @@ const CardItem = ({ post }: CardItemProps) => {
   const navigate = useNavigate();
 
   return (
-    <CardStyled onClick={() => navigate(`/posts/${post.id}`)}>
+    <CardStyled onClick={() => navigate(`/post/${post.id}`)}>
       <CardHeaderStyled>
         <img src={post.imageUrl} alt={post.drink.name} />
       </CardHeaderStyled>

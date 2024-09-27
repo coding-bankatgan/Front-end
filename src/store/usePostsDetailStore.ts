@@ -14,7 +14,7 @@ export interface PostDetail {
     id: number;
     placeName: string;
     name: string;
-    drinkType: string;
+    type: string;
     degree: number;
     sweetness: number;
     cost: number;
@@ -23,34 +23,34 @@ export interface PostDetail {
     imageUrl: string;
     createdAt: string;
   };
-  type: 'REVIEW' | 'ADVERTISEMENT';
+  type: 'AD' | 'REVIEW';
   content: string;
   rating: number;
   tags: Tag[];
-  likeCount: number;
-  commentCount: number;
   imageUrl: string;
   viewCount: number;
+  likeCount: number;
   createdAt: string;
   updatedAt: string;
+  isLiked: boolean;
 }
 
 export interface PostsState {
-  postsDetail: PostDetail[];
-  setPostsDetail: (postsDetail: PostDetail[]) => void;
+  postsDetail: PostDetail | null;
+  setPostsDetail: (postsDetail: PostDetail) => void;
   fetchPostsDetail: (postId: number) => Promise<void>;
 }
 
 export const usePostsDetailStore = create<PostsState>(set => ({
-  postsDetail: [],
-  setPostsDetail: postsDetail => set({ postsDetail }),
+  postsDetail: null,
+  setPostsDetail: (postsDetail: PostDetail) => set({ postsDetail }),
   fetchPostsDetail: async postId => {
     try {
       const data = await fetchPostsDetailApi(postId);
       set({ postsDetail: data });
     } catch (err) {
       console.error('Error fetching posts: ', err);
-      set({ postsDetail: [] });
+      set({ postsDetail: null });
     }
   },
 }));
