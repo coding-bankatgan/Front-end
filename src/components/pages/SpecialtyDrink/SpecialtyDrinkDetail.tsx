@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import useRegistrationStore from '@/store/useRegistrationStore';
 import { useMemberStore } from '@/store/useMemberStore';
 import { mapDrinkType } from '@/data/drinkTypes';
+import api from '@/api/axios';
 
 const SpecialtyDrinkDetail = () => {
   const { registrations, fetchRegistrationsDetail, updateApprovalStatus } = useRegistrationStore();
@@ -31,6 +32,10 @@ const SpecialtyDrinkDetail = () => {
   const [isSelectDisabled, setIsSelectDisabled] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log(selectedApproval);
+  }, [selectedApproval]);
+
+  useEffect(() => {
     if (registration) {
       setSelectedApproval(
         registration.approved === null ? null : (registration.approved as 'true' | 'false'),
@@ -50,6 +55,21 @@ const SpecialtyDrinkDetail = () => {
       updateApprovalStatus(registId, selectedApproval);
       console.log(registId);
       console.log(selectedApproval);
+
+      if (selectedApproval === 'true') {
+        try {
+          await api.put(`/manager/registrations/${registId}/approve`);
+        } catch (error) {
+          console.error('post error');
+        }
+      } else {
+        try {
+          await api.put(`/manager/registrations/${registId}/cancel`);
+        } catch (error) {
+          console.error('post error');
+        }
+      }
+
       navigate('/specialty-drink');
     }
   };
