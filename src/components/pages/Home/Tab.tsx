@@ -3,40 +3,37 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePostsStore } from '@/store/usePostsStore';
 import { useEffect, useState } from 'react';
 import CardItem from '@/components/layout/CardItem';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const Tab = () => {
   const { posts, fetchPosts } = usePostsStore();
   const [selectedTab, setSelectedTab] = useState('all');
   const [sortOrder, setSortOrder] = useState('recent');
+  const [isLoading, setIsLoading] = useState(true);
+
+  // console.log('sssssssss', posts);
 
   useEffect(() => {
     const fetchData = async () => {
-      fetchPosts();
+      setIsLoading(true);
+      const sortBy = sortOrder === 'recent' ? 'createdAt' : 'viewCount';
+      await fetchPosts(sortBy);
+      setIsLoading(false);
     };
 
     fetchData();
-  }, [fetchPosts]);
-
-  const filteredPosts = Array.isArray(posts)
-    ? selectedTab === 'all'
-      ? posts
-      : posts.filter(
-          post => post.type === (selectedTab === 'advertisement' ? 'ADVERTISEMENT' : 'REVIEW'),
-        )
-    : [];
-
-  const sortedPosts = filteredPosts.sort((a, b) => {
-    if (sortOrder === 'recent') {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    } else if (sortOrder === 'views') {
-      return b.viewCount - a.viewCount;
-    }
-    return 0;
-  });
+  }, [selectedTab, sortOrder, fetchPosts]);
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOrder(e.target.value);
   };
+
+  const filteredPosts = Array.isArray(posts)
+    ? posts.filter(post => {
+        if (selectedTab === 'all') return true;
+        return post.type === (selectedTab === 'advertisement' ? 'AD' : 'REVIEW');
+      })
+    : [];
 
   return (
     <TabsStyled defaultValue="all" className="w-[100%]">
@@ -56,8 +53,25 @@ const Tab = () => {
         <option value="views">조회수 순</option>
       </SelectStyled>
       <TabsContentStyled value={selectedTab}>
-        {sortedPosts.length > 0 ? (
-          sortedPosts.map(post => <CardItem key={post.id} post={post} />)
+        {isLoading ? (
+          <SkeWrapper>
+            {Array.from({ length: 10 }).map((_, index) => (
+              <div key={index} className="flex flex-col space-y-2 w-1/2 p-1">
+                <Skeleton className="w-full h-[155px] rounded-xl" />
+                <div className="space-y-1">
+                  <div className="flex flex-row space-x-2">
+                    <Skeleton className="w-6 h-5 rounded-full" />
+                    <Skeleton className="w-full h-5 max-w-[200px]" />
+                  </div>
+                  <Skeleton className="w-full h-8 max-w-[250px]" />
+                  <Skeleton className="w-full h-5 max-w-[250px]" />
+                  <Skeleton className="w-full h-3 max-w-[200px]" />
+                </div>
+              </div>
+            ))}
+          </SkeWrapper>
+        ) : filteredPosts.length > 0 ? (
+          filteredPosts.map(post => <CardItem key={post.id} post={post} />)
         ) : (
           <p>작성된 게시글이 없습니다</p>
         )}
@@ -66,11 +80,19 @@ const Tab = () => {
   );
 };
 
+const SkeWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
 const TabsStyled = styled(Tabs)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 20px;
+  padding: 20px 20px 40px 20px;
   background-color: ${({ theme }) => theme.colors.white};
 
   > button {
