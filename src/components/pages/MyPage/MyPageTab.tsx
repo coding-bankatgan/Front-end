@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
 import { usePostsStore } from '@/store/usePostsStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import CardItem from '@/components/layout/CardItem';
 import FollowTagList from './FollowTagList';
@@ -10,18 +11,28 @@ import { useMemberStore } from '@/store/useMemberStore';
 
 const MyPageTab = () => {
   const { posts, fetchPosts } = usePostsStore();
-  const { currentUser } = useMemberStore();
+  const { members } = useMemberStore();
+  const [sortOrder] = useState('recent');
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('my-posts');
 
   useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
+    const fetchData = async () => {
+      setIsLoading(true);
+      const sortBy = sortOrder;
+      await fetchPosts(sortBy);
+      setIsLoading(false);
+    };
+
+    fetchData();
+  }, [sortOrder, fetchPosts]);
 
   const filteredPosts = Array.isArray(posts)
-    ? posts.filter(posts => posts.memberId === currentUser?.id)
+    ? posts.filter(posts => posts.memberId === members[0].id)
     : [];
 
   return (
-    <TabsStyled defaultValue="my-posts" className="w-[100%]">
+    <TabsStyled className="w-[100%]" value={activeTab} onValueChange={setActiveTab}>
       <TabsListStyled>
         <TabsTrigger value="my-posts">
           <ListIcon />
@@ -30,16 +41,33 @@ const MyPageTab = () => {
           <BookmarkIcon />
         </TabsTrigger>
       </TabsListStyled>
-      <TabsContentStyled value="my-posts">
-        {filteredPosts.length > 0 ? (
+      <TabsPostContentStyled value="my-posts" isActive={activeTab === 'my-posts'}>
+        {isLoading ? (
+          <SkeWrapper>
+            {Array.from({ length: 10 }).map((_, index) => (
+              <div key={index} className="flex flex-col space-y-2 w-1/2 p-1">
+                <Skeleton className="w-full h-[155px] rounded-xl" />
+                <div className="space-y-1">
+                  <div className="flex flex-row space-x-2">
+                    <Skeleton className="w-6 h-5 rounded-full" />
+                    <Skeleton className="w-full h-5 max-w-[200px]" />
+                  </div>
+                  <Skeleton className="w-full h-8 max-w-[250px]" />
+                  <Skeleton className="w-full h-5 max-w-[250px]" />
+                  <Skeleton className="w-full h-3 max-w-[200px]" />
+                </div>
+              </div>
+            ))}
+          </SkeWrapper>
+        ) : filteredPosts.length > 0 ? (
           filteredPosts.map(post => <CardItem key={post.id} post={post} />)
         ) : (
-          <p>아무것도 없어요</p>
+          <p>작성된 게시글이 없습니다</p>
         )}
-      </TabsContentStyled>
-      <TabsContentStyled value="my-tag-lists">
+      </TabsPostContentStyled>
+      <TabsTagsContentStyled value="my-tag-lists" isActive={activeTab === 'my-tag-lists'}>
         <FollowTagList />
-      </TabsContentStyled>
+      </TabsTagsContentStyled>
     </TabsStyled>
   );
 };
@@ -88,11 +116,32 @@ const TabsListStyled = styled(TabsList)`
   }
 `;
 
-const TabsContentStyled = styled(TabsContent)`
-  width: 100%;
-  min-height: 200px;
-  height: auto;
+const TabsPostContentStyled = styled(TabsContent)<{ isActive: boolean }>`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: ${({ isActive }) => (isActive ? '100%' : '0')};
+  min-height: ${({ isActive }) => (isActive ? '200px' : '0')};
+  height: ${({ isActive }) => (isActive ? 'auto' : '0')};
+  margin-top: 10px;
+  overflow: hidden;
+`;
+
+const TabsTagsContentStyled = styled(TabsContent)<{ isActive: boolean }>`
+  width: ${({ isActive }) => (isActive ? '100%' : '0')};
+  min-height: ${({ isActive }) => (isActive ? '200px' : '0')};
+  height: ${({ isActive }) => (isActive ? 'auto' : '0')};
   margin-top: 20px;
+  overflow: hidden;
+`;
+
+const SkeWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 `;
 
 export default MyPageTab;
