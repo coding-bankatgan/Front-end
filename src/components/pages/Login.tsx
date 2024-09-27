@@ -135,10 +135,11 @@ const Login = () => {
     }
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     const googleLoginUri = await getGoogleLoginUri();
     if (googleLoginUri) {
-      window.location.href = googleLoginUri; // 구글 로그인 페이지로 리디렉션
+      window.location.href = googleLoginUri;
     }
   };
 
@@ -157,10 +158,10 @@ const Login = () => {
           const response = await api.post('/google/join', { code: authCode });
           console.log('Login successful:', response.data); // 로그인 성공 처리
 
-          const { access_token, refresh_token } = response.data;
+          const { accessToken, refreshToken } = response.data;
 
-          Cookies.set('access_token', access_token);
-          Cookies.set('refresh_token', refresh_token);
+          Cookies.set('access_token', accessToken);
+          Cookies.set('refresh_token', refreshToken);
         } catch (error) {
           console.error('Error during Google login:', error);
         }
@@ -203,7 +204,7 @@ const Login = () => {
                 <Link to={'/signup'}>
                   <SignupBtn>회원가입</SignupBtn>
                 </Link>
-                <GoogleBtn onClick={handleLogin}>
+                <GoogleBtn type="button" onClick={handleLogin}>
                   <GoogleIcon /> Google로 로그인
                 </GoogleBtn>
               </motion.div>
