@@ -9,8 +9,9 @@ export interface Declaration {
   link: string;
   type: string;
   content: string;
-  approved: true | false | null;
+  approved: boolean | null;
   createdAt: string;
+  rejectReason?: string | null;
 }
 
 export interface DeclarationState {
@@ -26,6 +27,8 @@ export interface DeclarationState {
   setPagination: (pagination: DeclarationState['pagination']) => void;
 
   updateApprovalStatus: (id: number, approved: boolean, rejectReason?: string | null) => void;
+  selectedRejectReasons: { [key: number]: string | null };
+  setSelectedRejectReason: (id: number, reason: string | null) => void;
 
   setDeclarations: (declaration: Declaration[]) => void;
   fetchDeclarations: (page: number, size: number) => Promise<void>;
@@ -73,20 +76,25 @@ const useDeclarationStore = create<DeclarationState>(set => ({
       set({ declarationsDetail: [] });
     }
   },
-  updateApprovalStatus: async (id: number, approved: boolean, rejectReason?: string | null) =>
+  updateApprovalStatus: async (
+    declarationId: number,
+    approved: boolean,
+    rejectReason?: string | null,
+  ) =>
     set(state => {
       const updatedDeclarations = state.declarations.map(declaration =>
-        declaration.id === id ? { ...declaration, approved } : declaration,
+        declaration.id === declarationId ? { ...declaration, approved, rejectReason } : declaration,
       );
+      console.log(updatedDeclarations);
 
-      const declaration = updatedDeclarations.find(decl => decl.id === id);
+      const declaration = updatedDeclarations.find(decl => decl.id === declarationId);
       const { type, content } = declaration || {};
 
       if (declaration) {
         const { addNewNotification } = useNotificationStore.getState();
         console.log(declaration.memberId);
 
-        if (approved) {
+        if (approved === true) {
           // 신고 승인 시
           addNewNotification({
             id: Date.now(), // 변경 필요
@@ -126,6 +134,14 @@ const useDeclarationStore = create<DeclarationState>(set => ({
 
       return { declarations: updatedDeclarations };
     }),
+  selectedRejectReasons: {},
+  setSelectedRejectReason: (id: number, reason: string | null) =>
+    set(state => ({
+      selectedRejectReasons: {
+        ...state.selectedRejectReasons,
+        [id]: reason,
+      },
+    })),
 }));
 
 export default useDeclarationStore;

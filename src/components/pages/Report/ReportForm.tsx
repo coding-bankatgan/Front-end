@@ -5,12 +5,22 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import { fetchDeclarationsWriteApi } from '@/api/postApi';
 // import { getRoleFromToken } from '@/auth';
 
 interface ReportFormProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
 }
+
+export const reportReasons: { [key: string]: string } = {
+  ILLEGAL_INFORMATION: '법률 위반(불법, 사기, 위법 행위 권장 등)',
+  PERSONAL_INFORMATION_EXPOSURE: '개인정보 노출(전화번호, 주소, 주민등록번호 등)',
+  OBSCENE: '음란성/선정성(성적 표현, 외설적인 이미지나 글)',
+  PROFANE_LANGUAGE: '비속어 사용',
+  SPAMMING: '동일한 게시글 반복 게시(도배)',
+  COPYRIGHT_INFRINGEMENT: '저작권에 위배되는 게시글',
+  OTHER: '기타',
+};
 
 const ReportForm = ({ showAlert }: ReportFormProps) => {
   const navigate = useNavigate();
@@ -25,18 +35,17 @@ const ReportForm = ({ showAlert }: ReportFormProps) => {
     if (!type || !content) {
       showAlert('error', '신고 사유와 내용을 입력해주세요.');
       return;
+    } else if (content.length < 10) {
+      showAlert('error', '신고 내용을 10~1000자 사이로 입력해주세요.');
+      return;
     }
 
     try {
-      const response = await axios.post('/api/declarations', {
-        link: postLink,
-        type: type,
-        content: content,
-      });
-      if (response.data) {
-        console.log(response.data);
+      const response = await fetchDeclarationsWriteApi(postLink, type, content);
+      if (response) {
+        console.log(response);
         showAlert('success', '신고가 접수되었습니다');
-        setTimeout(() => navigate(-1), 2000);
+        setTimeout(() => navigate(-1), 1500);
       }
     } catch (error) {
       showAlert('error', '오류가 발생하였습니다. 잠시 후 다시 시도해주세요.');
@@ -48,12 +57,7 @@ const ReportForm = ({ showAlert }: ReportFormProps) => {
     window.open(postLink, '_blank');
   };
 
-  // const role = getRoleFromToken();
-
   const handleCancelClick = () => {
-    // if (role !== 'MANAGER') {
-    //   navigate('/report');
-    // }
     navigate(-1);
   };
 
@@ -71,15 +75,11 @@ const ReportForm = ({ showAlert }: ReportFormProps) => {
             <option value="" disabled hidden>
               신고 유형
             </option>
-            <option value="ILLEGAL_INFORMATION">법률 위반(불법, 사기, 위법 행위 권장 등)</option>
-            <option value="PERSONAL_INFORMATION_EXPOSURE">
-              개인정보 노출(전화번호, 주소, 주민등록번호 등)
-            </option>
-            <option value="OBSCENE">음란성/선정성(성적 표현, 외설적인 이미지나 글)</option>
-            <option value="PROFANE_LANGUAGE">비속어 사용</option>
-            <option value="SPAMMING">동일한 게시글 반복 게시(도배)</option>
-            <option value="COPYRIGHT_INFRINGEMENT">저작권에 위배되는 게시글</option>
-            <option value="OTHER">기타</option>
+            {Object.keys(reportReasons).map(key => (
+              <option key={key} value={key}>
+                {reportReasons[key]}
+              </option>
+            ))}
           </SelectStyled>
           <Label htmlFor="content">신고 내용</Label>
           <TextareaStyled
