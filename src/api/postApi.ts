@@ -290,8 +290,8 @@ export const fetchDeclarationsWriteApi = async (
   content: string,
 ) => {
   try {
-    const response = await axios.post(
-      '/api/declarations',
+    const response = await api.post(
+      '/declarations',
       {
         link: postLink,
         type: type,
@@ -312,7 +312,7 @@ export const fetchDeclarationsWriteApi = async (
 /** 신고글 목록 조회 API */
 export const fetchDeclarationsApi = async (page: number, size: number) => {
   try {
-    const response = await axios.get(`/api/declarations?page=${page}&size=${size}`);
+    const response = await api.get(`/declarations?page=${page}&size=${size}`);
     return response.data;
   } catch (err) {
     console.error('Error fetching declarations: ', err);
@@ -322,7 +322,7 @@ export const fetchDeclarationsApi = async (page: number, size: number) => {
 /** 신고글 조회 API */
 export const fetchDeclarationsDetailApi = async (declarationId: number) => {
   try {
-    const response = await axios.get(`/api/declarations/${declarationId}`);
+    const response = await api.get(`/declarations/${declarationId}`);
     return response.data;
   } catch (err) {
     console.error('Error fetching declarations: ', err);

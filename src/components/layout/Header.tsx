@@ -6,20 +6,26 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Notification from './Notification';
 import BarsIcon from '@/assets/icons/BarsIcon';
 import logo from '../../../public/logo.png';
+import useMemberStore from '@/store/useMemberStore';
 
 interface HeaderProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
-  role: 'USER' | 'MANAGER' | null;
 }
 
-const Header = ({ showAlert, role }: HeaderProps) => {
+const Header = ({ showAlert }: HeaderProps) => {
   const navigate = useNavigate();
+  const { members } = useMemberStore();
+  const [isManager, setIsManager] = useState(false);
+  useEffect(() => {
+    setIsManager(members[0]?.role === 'MANAGER');
+  }, [members]);
 
   const handleReportClick = () => {
-    if (role !== 'MANAGER') {
+    if (!isManager) {
       showAlert('error', '권한이 없습니다.');
       setTimeout(() => 2000);
       return;

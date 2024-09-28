@@ -21,6 +21,7 @@ const ReportBoard = ({ showAlert }: ReportListProps) => {
     declarations: state.declarations,
     pagination: state.pagination,
     fetchDeclarations: state.fetchDeclarations,
+    setDeclarations: state.setDeclarations,
   }));
 
   useEffect(() => {
@@ -30,8 +31,6 @@ const ReportBoard = ({ showAlert }: ReportListProps) => {
   const handlePageChange = (newPage: number) => {
     fetchDeclarations(newPage, pagination.size);
   };
-
-  // const role = getRoleFromToken();
 
   const handleItemClick = (id: number) => {
     // if (role !== 'MANAGER') {
