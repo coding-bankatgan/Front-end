@@ -25,6 +25,8 @@ import {
   SpecialtyDrinkForm,
 } from '../components/pages';
 import { getRoleFromToken } from '@/auth';
+import SearchPassword from '@/components/pages/SearchPassword/SearchPassword';
+import SearchPassword2 from '@/components/pages/SearchPassword/SearchPasswrod2';
 
 interface RouterProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -76,6 +78,8 @@ const Router = ({ showAlert }: RouterProps) => {
         <Route path="/report/form" element={<ReportForm showAlert={showAlert} />} />
 
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/search-password" element={<SearchPassword />} />
+        <Route path="/search-password/2" element={<SearchPassword2 />} />
 
         <Route path="/specialty-drink" element={<SpecialtyDrinkBoard />} />
         <Route path="/specialty-drink/:id" element={<SpecialtyDrinkDetail />} />
