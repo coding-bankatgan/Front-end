@@ -11,10 +11,9 @@ import BellIcon from '@/assets/icons/BellIcon';
 import dayjs from 'dayjs';
 import { Badge } from '@/components/ui/badge';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useNotificationStore from '@/store/useNotificationStore';
 import { useMemberStore } from '@/store/useMemberStore';
-import { useQuery } from '@tanstack/react-query';
 
 interface Notification {
   id: number;
@@ -49,23 +48,10 @@ const Notification = () => {
     useNotificationStore();
   const { currentUser } = useMemberStore();
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
-
-  const {
-    data: _notification = [],
-    isLoading: _,
-    refetch,
-  } = useQuery({
-    queryKey: ['notifications', location.pathname],
-    queryFn: fetchNotifications,
-    refetchInterval: 60000,
-  });
 
   useEffect(() => {
-    if (location.pathname) {
-      refetch();
-    }
-  }, [location.pathname]);
+    fetchNotifications();
+  }, [fetchNotifications]);
 
   const handleNotificationClick = (notification: Notification) => {
     const { type, postId, memberId } = notification;

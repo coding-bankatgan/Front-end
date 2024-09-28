@@ -5,7 +5,6 @@ import { getAddress } from '@/api/postApi';
 import Loading from '@/assets/icons/Loading';
 import { Skeleton } from '@/components/ui/skeleton';
 import api from '@/api/axios';
-import { alcoholsData } from '@/data/alcoholsData';
 
 const Daily = () => {
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -13,25 +12,20 @@ const Daily = () => {
   const [error, setError] = useState<string | null>(null);
   const [isVerification, setIsVerification] = useState<boolean | null>(null);
   const [userAddress, setUserAddress] = useState<string | null>(null);
-  const [rotate, setRotate] = useState(0);
+  const [rotate, setRotate] = useState('false');
   const [imageLoading, setImageLoading] = useState(true);
   const [dailyData, setDailyData] = useState({
-    averageRating: 0,
+    id: 0,
     name: '브라우저 권한을 확인해주세요!',
     placeName: '',
     imageUrl: '',
-    sweetness: 0,
-    type: 0,
-    cost: 0,
-    degree: 0,
-    id: 0,
-    description: '',
+    lat: 0,
+    lon: 0,
   });
 
-  const alcohols = alcoholsData;
-
   const handleRotate = () => {
-    setRotate(prev => prev + 1);
+    setRotate('true');
+    setTimeout(() => setRotate('false'), 1000);
   };
 
   useEffect(() => {
@@ -114,11 +108,7 @@ const Daily = () => {
             </Img>
             <ImgDesc>
               <b>{dailyData?.name}</b>
-              <span>
-                {`${alcohols[dailyData?.type]}`} &nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
-                {`${dailyData?.degree}%`}
-              </span>
-              <span>{`${dailyData?.cost.toLocaleString()} 원`}</span>
+              <span>주종 / 당도 / 도수 / 가격 정보</span>
             </ImgDesc>
           </>
         )}
@@ -191,7 +181,7 @@ const ValiText = styled.div`
   }
 `;
 
-const LoadingContainer = styled.div<{ rotate: number }>`
+const LoadingContainer = styled.div<{ rotate: boolean | string }>`
   position: absolute;
   right: 20px;
   bottom: 20px;
@@ -200,7 +190,11 @@ const LoadingContainer = styled.div<{ rotate: number }>`
   color: ${({ theme }) => theme.colors.darkGray};
   cursor: pointer;
   transition: transform 1s ease;
-  transform: rotate(${({ rotate }) => rotate * 360}deg);
+  ${({ rotate }) =>
+    rotate === 'true' &&
+    `
+  transform: rotate(360deg);
+`}
 
   svg {
     width: 100%;

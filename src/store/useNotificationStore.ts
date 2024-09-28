@@ -64,14 +64,12 @@ const useNotificationStore = create<NotificationState>(set => ({
 
         const newCount = notifications.filter((n: Notification) => n.isNew).length;
         set({ newNotificationCount: newCount });
-        return notifications;
       }
     } catch (error) {
       set({
         notifications: [],
         pagination: { totalElements: 0, totalPages: 0, size: 20, number: 0 },
       });
-      return [];
     }
   },
   markAsRead: (id: number) => {

@@ -40,7 +40,7 @@ const SignUp = () => {
     setCancelTokenSource(source);
 
     try {
-      await api.get(`/members/email/${email}/validation`, { cancelToken: source.token });
+      await axios.get(`/api/members/email/${email}/validation`, { cancelToken: source.token });
       setValidatedLoading(false);
       setValidatedText('');
       setValidatedEmail(true);

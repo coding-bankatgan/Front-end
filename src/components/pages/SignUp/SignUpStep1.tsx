@@ -146,7 +146,7 @@ const SignUpStep1 = ({
 
 export default SignUpStep1;
 
-export const AlertText = styled.p`
+const AlertText = styled.p`
   margin-top: -7px;
   height: 11px;
   line-height: 11px;
@@ -154,16 +154,16 @@ export const AlertText = styled.p`
   color: ${({ theme }) => theme.colors.error};
 `;
 
-export const Validation = styled.span`
+const Validation = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
   color: ${({ theme }) => theme.colors.error};
 `;
 
-export const CheckEmail = styled.span`
+const CheckEmail = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
   color: ${({ theme }) => theme.colors.darkGray};
 `;
-export const ConFirmed = styled.span`
+const ConFirmed = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
   color: ${({ theme }) => theme.colors.success};
 `;
@@ -177,7 +177,7 @@ const spin = keyframes`
   }
 `;
 
-export const Loading = styled.div`
+const Loading = styled.div`
   margin-left: 3px;
   width: 15px;
   height: 15px;
@@ -218,8 +218,7 @@ export const Container = styled.div`
   }
 
   input {
-    width: 98%;
-    margin: 0 auto 10px auto;
+    margin-bottom: 10px;
     background-color: ${({ theme }) => theme.colors.brightGray};
     font-size: ${({ theme }) => theme.fontSizes.small};
 

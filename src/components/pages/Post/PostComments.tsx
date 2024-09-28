@@ -59,11 +59,17 @@ const PostComments = ({ postId }: PostCommentsProps) => {
 
   /** 특정 게시글의 댓글 가져오는 함수 */
   const fetchComments = async (postId: number, page: number, size: number) => {
-    console.log('Fetching comments for page:', page);
     const data = await fetchCommentsApi(postId, page, size);
 
     if (data) {
-      setComments(data.content);
+      setComments(prevComments => {
+        const newComments = [...prevComments, ...data.content];
+        // 댓글 ID를 기준으로 중복 제거
+        const uniqueComments = Array.from(
+          new Map(newComments.map(comment => [comment.id, comment])).values(),
+        );
+        return uniqueComments;
+      });
 
       setPagination({
         totalElements: data.totalElements,
@@ -76,16 +82,14 @@ const PostComments = ({ postId }: PostCommentsProps) => {
 
   useEffect(() => {
     fetchComments(postId, pagination.number, pagination.size);
-  }, [postId, pagination.number]);
+  }, [postId, pagination.number, pagination.size]);
 
   const handleAnonymousChange = () => {
     setIsAnonymous(!isAnonymous);
   };
 
   const handlePageChange = (newPage: number) => {
-    if (newPage < 0 || newPage >= pagination.totalPages) return;
-    // 페이지 번호만 업데이트, fetchComments로 새로운 댓글을 가져옴
-    setPagination(prev => ({ ...prev, number: newPage }));
+    fetchComments(postId, newPage, pagination.size);
   };
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -102,27 +106,17 @@ const PostComments = ({ postId }: PostCommentsProps) => {
       if (response) {
         const newCommentData = {
           ...response,
-          id: response.id,
+          id: Date.now(),
           memberName: isAnonymous ? '익명' : response.memberName,
         };
 
-        setComments(prevComments => {
-          // 최신 댓글이 위로 오도록 정렬 및 중복 제거
-          const updatedComments = [newCommentData, ...prevComments].sort(
-            (a, b) => b.createdAt - a.createdAt,
-          );
-          return Array.from(
-            new Map(updatedComments.map(comment => [comment.id, comment])).values(),
-          );
-        });
-
+        setComments(prevComments => [newCommentData, ...prevComments]);
         setNewComment('');
         setIsAnonymous(false);
 
-        // 알림관련
         const { currentUser } = useMemberStore.getState(); // 2
         console.log('currentUser Id : ', currentUser?.id);
-        const post = postsDetail;
+        const post = postsDetail.find(post => post.id === postId);
         if (!post) {
           console.error('게시글을 찾을 수 없습니다.');
           return;
