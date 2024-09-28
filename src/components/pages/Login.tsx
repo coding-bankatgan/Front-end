@@ -40,6 +40,13 @@ const Login = () => {
   const controls = useAnimation();
 
   useEffect(() => {
+    const cookie = Cookies.get('access_token');
+    if (cookie) {
+      navigate('/');
+    }
+  }, []);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 2500);
