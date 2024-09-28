@@ -4,13 +4,14 @@ import ViewIcon from './../../../assets/icons/ViewIcon';
 import AlertDialogTag from '@/components/layout/AlertDialogTag';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { usePostsDetailStore } from '@/store/usePostsDetailStore';
 import PostComments from './PostComments';
 import EllipsisHorizontalIcon from '@/assets/icons/EllipsisHorizontalIcon';
 import ChatIcon from '@/assets/icons/ChatIcon';
 // import HeartIcon from '@/assets/icons/HeartIcon';
 import { mapDrinkType } from '@/data/drinkTypes';
+import { fetchCommentsApi } from '@/api/postApi';
 // import { useLikeStore } from '@/store/useLikeStore';
 
 const typeMap = {
@@ -23,6 +24,7 @@ interface PostProps {
 }
 
 const Post = ({ showAlert }: PostProps) => {
+  const [commentCount, setCommentCount] = useState(0);
   const { postsDetail, fetchPostsDetail } = usePostsDetailStore();
   const { id } = useParams();
   const postId = Number(id);
@@ -32,6 +34,7 @@ const Post = ({ showAlert }: PostProps) => {
 
   useEffect(() => {
     fetchPostsDetail(postId);
+    fetchCommentCount();
   }, [fetchPostsDetail, postId]);
 
   if (!postsDetail) {
@@ -43,6 +46,16 @@ const Post = ({ showAlert }: PostProps) => {
   if (!post) {
     return <p>게시글을 찾을 수 없습니다.</p>;
   }
+
+  /** 특정 게시글의 댓글 수 가져오는 함수 */
+  const fetchCommentCount = async () => {
+    try {
+      const commentsData = await fetchCommentsApi(postId, 0, 10);
+      setCommentCount(commentsData.totalElements);
+    } catch (err) {
+      console.error('Error fetching comments counts: ', err);
+    }
+  };
 
   return (
     <PostLayout>
@@ -69,7 +82,7 @@ const Post = ({ showAlert }: PostProps) => {
             {post.likeCount.toLocaleString()}
           </span>
           <span>
-            <ChatIcon /> 12
+            <ChatIcon /> {commentCount.toLocaleString()}
           </span>
         </Interactions>
         <Desc>{post.content}</Desc>
@@ -120,7 +133,7 @@ const Post = ({ showAlert }: PostProps) => {
           </MetaData>
         </EtcWrap>
       </UserPost>
-      <PostComments postId={postId} />
+      <PostComments postId={postId} fetchCommentCount={fetchCommentCount} />
     </PostLayout>
   );
 };
