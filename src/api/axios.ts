@@ -29,7 +29,7 @@ api.interceptors.request.use(
     if (accessToken) {
       config.headers['Access-Token'] = accessToken;
     } else {
-      // window.location.href = '/login';
+      window.location.href = '/login';
     }
     return config;
   },
@@ -51,8 +51,8 @@ api.interceptors.response.use(
       try {
         const refreshToken = Cookies.get('refresh_token');
 
-        const refreshResponse = await api.post(
-          '/members',
+        const refreshResponse = await axios.post(
+          '/api/members',
           {},
           { headers: { 'Refresh-Token': refreshToken } },
         );
