@@ -2,7 +2,6 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const queryClient = new QueryClient();
 
@@ -15,8 +14,6 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
-    <GoogleOAuthProvider clientId="455387223609-2ptall2ouehp7kd1uskrrroi8ft9o39t.apps.googleusercontent.com">
-      <App />
-    </GoogleOAuthProvider>
+    <App />
   </QueryClientProvider>,
 );
