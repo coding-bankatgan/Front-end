@@ -11,6 +11,7 @@ import Notification from './Notification';
 import BarsIcon from '@/assets/icons/BarsIcon';
 import logo from '../../../public/logo.png';
 import useMemberStore from '@/store/useMemberStore';
+import Cookies from 'js-cookie';
 
 interface HeaderProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -33,6 +34,12 @@ const Header = ({ showAlert }: HeaderProps) => {
     navigate('/report');
   };
 
+  const handleLogout = () => {
+    Cookies.remove('access_token');
+    Cookies.remove('refresh_token');
+    navigate('/login');
+  };
+
   return (
     <HeaderLayout>
       <Logo onClick={() => navigate('/')}>
@@ -51,6 +58,7 @@ const Header = ({ showAlert }: HeaderProps) => {
               특산주 신청 리스트
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleReportClick}>신고 접수 리스트</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>로그아웃</DropdownMenuItem>
           </DropdownMenuContentStyled>
         </DropdownMenu>
       </MenuWrapper>
@@ -101,6 +109,9 @@ const DropdownMenuContentStyled = styled(DropdownMenuContent)`
   div {
     padding: 10px 0;
     font-size: ${({ theme }) => theme.fontSizes.small};
+  }
+  div:last-child {
+    color: ${({ theme }) => theme.colors.error};
   }
 `;
 
