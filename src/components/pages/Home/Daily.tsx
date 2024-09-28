@@ -113,12 +113,26 @@ const Daily = () => {
               )}
             </Img>
             <ImgDesc>
-              <b>{dailyData?.name}</b>
-              <span>
-                {`${alcohols[dailyData?.type]}`} &nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
-                {`${dailyData?.degree}%`}
-              </span>
-              <span>{`${dailyData?.cost.toLocaleString()} 원`}</span>
+              {imageLoading ? (
+                <SkeletonContainer>
+                  <Skeleton />
+                </SkeletonContainer>
+              ) : (
+                <b>{dailyData?.name}</b>
+              )}
+              {imageLoading ? (
+                <SkeletonContainer>
+                  <Skeleton />
+                </SkeletonContainer>
+              ) : (
+                <>
+                  <span>
+                    {`${alcohols[dailyData?.type]}`} &nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
+                    {`${dailyData?.degree}%`}
+                  </span>
+                  <span>{`${dailyData?.cost.toLocaleString()} 원`}</span>
+                </>
+              )}
             </ImgDesc>
           </>
         )}
@@ -172,6 +186,16 @@ const DailyTop = styled.div`
 const DailyDesc = styled.span`
   color: ${({ theme }) => theme.colors.gray};
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
+`;
+
+const SkeletonContainer = styled.div`
+  width: 130px;
+  height: 21px;
+  margin-bottom: 3px;
+  > div {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const ValiText = styled.div`
