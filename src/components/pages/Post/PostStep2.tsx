@@ -57,6 +57,7 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
   };
 
   useEffect(() => {
+    setHasMore(true);
     const debounceTimeout = setTimeout(() => {
       fetchAutocomplete();
     }, 500);
@@ -65,13 +66,17 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
   }, [searchTerm]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHasMore(true);
     setSearchTerm(e.target.value);
     e.target.value === '' ? setViewAutocomplete(false) : setViewAutocomplete(true);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
-    setSearchTerm(suggestion); // 추천 항목 클릭 시 검색어에 반영
-    setViewAutocomplete(false); // 선택 후 자동완성 목록 닫기
+    console.log(suggestion);
+    setHasMore(true);
+    setSearchTerm(suggestion);
+    setPoint(prev => prev + 1);
+    setViewAutocomplete(false);
   };
 
   const handleRegionChange = (value: string) => {
@@ -83,7 +88,14 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
     setSelectedRegionId(regionsId ?? null);
   }, [selectedRegion]);
 
+  const [searchResults, setSearchResults] = useState<Drink[]>([]);
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [point, setPoint] = useState(0);
+
   useEffect(() => {
+    setHasMore(true);
     const handler = setTimeout(() => {
       if (searchTerm) {
         setPage(0);
@@ -95,12 +107,7 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchTerm]);
-
-  const [searchResults, setSearchResults] = useState<Drink[]>([]);
-  const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  }, [searchTerm, point]);
 
   const loadingRef = useRef<HTMLDivElement | null>(null);
 
@@ -121,7 +128,6 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
 
       const data = [response.data];
       console.log('data : ', data);
-      console.log(data[0].content);
       setSearchResults(prevResults => {
         const isDuplicate = data[0].content.some((newItem: Drink) =>
           prevResults.some(prevItem => prevItem.id === newItem.id),
@@ -133,7 +139,7 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
           return [...prevResults, ...data[0].content];
         }
       });
-      setHasMore(data[0].content.length > 0);
+      setHasMore(data[0].content.length >= 10);
     } catch (error) {
       console.error('Error fetching search results:', error);
       setHasMore(false);
@@ -143,19 +149,21 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
   };
 
   useEffect(() => {
+    console.log('page ', searchTerm);
+
     if (searchTerm !== '') {
       fetchSearchResults();
     }
   }, [page]);
 
-  useEffect(() => {
-    setPage(0);
-    setHasMore(true);
-  }, [searchTerm]);
+  // useEffect(() => {
+  //   setPage(0);
+  //   setHasMore(true);
+  // }, [searchTerm]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasMore && !loading) {
+      if (entries[0].isIntersecting && hasMore && !loading && window.scrollY !== 0) {
         setPage(prevPage => prevPage + 1);
       }
     });
@@ -171,12 +179,10 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
     };
   }, [loadingRef, hasMore, loading]);
 
-  useEffect(() => {
-    console.log(searchResults);
-  }, [searchResults]);
-
   const handleFocus = () => {
+    setHasMore(true);
     setViewAutocomplete(true);
+    console.log(hasMore);
   };
   const handleBlur = () => {
     setTimeout(() => setViewAutocomplete(false), 100);
@@ -209,7 +215,12 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
         {viewAutocomplete && suggestions.length > 0 && (
           <AutocompleteList>
             {suggestions.map((suggestion, idx) => (
-              <AutocompleteItem key={idx} onClick={() => handleSuggestionClick(suggestion)}>
+              <AutocompleteItem
+                key={idx}
+                onClick={() => {
+                  handleSuggestionClick(suggestion);
+                }}
+              >
                 {suggestion}
               </AutocompleteItem>
             ))}
@@ -223,6 +234,7 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
               nextStep={nextStep}
               setDrinkData={setDrinkData}
               contents={searchResults}
+              loading={loading}
             ></SearchResults>
             <div ref={loadingRef} style={{ height: '20px', background: 'transparent' }}></div>
           </>
