@@ -54,8 +54,7 @@ export const fetchCommentWriteApi = async (postId: number, content: string) => {
 /** 특정 게시글 댓글 조회 API */
 export const fetchCommentsApi = async (postId: number, page: number, size: number) => {
   try {
-    const response = await api.get(`/${postId}/comments?number=${page}&size=${size}`);
-    console.log('API response:', response.data);
+    const response = await api.get(`/${postId}/comments?page=${page}&size=${size}`);
     return response.data;
   } catch (err) {
     console.error('Error fetching comments: ', err);
