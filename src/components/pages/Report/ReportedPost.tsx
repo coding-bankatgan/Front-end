@@ -6,17 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import useDeclarationStore from '@/store/useDeclarationStore';
 import styled from '@emotion/styled';
-import { reportReasons } from '@/components/pages/Report/ReportForm';
-import api from '@/api/axios';
 
 const ReportedPost = () => {
-  const {
-    declarations,
-    fetchDeclarationsDetail,
-    updateApprovalStatus,
-    selectedRejectReasons,
-    setSelectedRejectReason,
-  } = useDeclarationStore();
+  const { declarations, fetchDeclarationsDetail, updateApprovalStatus } = useDeclarationStore();
   const { id } = useParams();
   const declarationId = Number(id);
   const navigate = useNavigate();
@@ -27,11 +19,11 @@ const ReportedPost = () => {
 
   const declaration = declarations.find(declaration => declaration.id === declarationId);
 
-  /** approve 기능 */
+  //** approve 기능 */
   const [selectedApproval, setSelectedApproval] = useState<true | false | null>(null);
+  const [selectedRejectReason, setSelectedRejectReason] = useState<string | null>(null);
   const [isSelectDisabled, setIsSelectDisabled] = useState<boolean>(false);
 
-  /** 반려 사유 */
   const rejectReasons: { [key: string]: string } = {
     POST_DELETED_BY_USER: '사용자가 신고당한 게시글을 삭제한 경우',
     NOT_RELEVANT: '신고 내용이 게시글과 관련이 없는 경우',
@@ -40,7 +32,18 @@ const ReportedPost = () => {
     DUPLICATE_REPORT: '신고자의 의미없는 반복된 신고',
   };
 
-  /** approve 상태 저장 */
+  const renderMessage = () => {
+    const approvalState = declaration?.approved !== null ? declaration?.approved : selectedApproval;
+    switch (approvalState) {
+      case true:
+        return '신고 주신 부분 검토하였으며, 게시글 내 사유와 관련된 부분 확인되어 게시글 삭제 진행하였습니다. 제보에 감사드립니다.';
+      case false:
+        return '신고 주신 부분 검토하였으나, 수정이 필요한 부분 확인되지 않아 신고 요청 반려되었습니다.';
+      default:
+        return '';
+    }
+  };
+
   useEffect(() => {
     if (declaration) {
       setSelectedApproval(
@@ -52,49 +55,36 @@ const ReportedPost = () => {
 
   const handleApprovalChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    setSelectedApproval(value === '' ? null : value === 'true' ? true : false);
+    setSelectedApproval(
+      value === '' ? null : value === 'true' ? true : false, // 문자열을 boolean으로 변환
+    );
+    if (value === 'false') {
+      setSelectedRejectReason(null); // 반려 선택 시 반려 사유 초기화
+    }
   };
 
-  /** 반려 사유 저장 */
   const handleRejectReasonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedRejectReason(declarationId, event.target.value);
+    setSelectedRejectReason(event.target.value);
   };
 
-  useEffect(() => {
-    console.log(selectedApproval);
-  }, [selectedApproval]);
-
-  /** 링크 연결 */
   const handleInputClick = () => {
     window.open(declaration?.link, '_blank');
   };
 
-  /** api 통신 */
   const handleUpdateClick = async () => {
     if (selectedApproval !== null) {
       let rejectReasonText: string | null = null;
 
-      if (selectedApproval === false && selectedRejectReasons[declarationId] !== null) {
-        rejectReasonText = selectedRejectReasons[declarationId] || '기타 사유 없음';
+      if (selectedApproval === false && selectedRejectReason !== null) {
+        rejectReasonText = rejectReasons[selectedRejectReason];
       }
 
       updateApprovalStatus(declarationId, selectedApproval, rejectReasonText);
-
-      try {
-        if (selectedApproval === true) {
-          await api.put(`/manager/declarations/${declarationId}/approve`);
-        } else if (selectedApproval === false) {
-          await api.put(`/manager/declarations/${declarationId}/cancel`, {
-            type: rejectReasonText || '기타',
-          });
-        }
-        navigate('/report');
-      } catch (error) {
-        console.error('post error');
-      }
+      console.log(id);
+      console.log(selectedApproval);
+      navigate('/report');
     }
   };
-
   const handleCancelClick = () => {
     navigate('/report');
   };
@@ -116,16 +106,7 @@ const ReportedPost = () => {
               readOnly
             />
             <Label>신고 사유</Label>
-            <Input
-              type="text"
-              id="type"
-              value={
-                declaration?.type && reportReasons[declaration.type]
-                  ? reportReasons[declaration.type]
-                  : '알 수 없음'
-              }
-              readOnly
-            />
+            <Input type="text" id="type " value={declaration?.type || '알 수 없음'} readOnly />
           </FormStyled>
           <Label>신고 내용</Label>
           <TextareaStyled id="content" value={declaration?.content || ''} readOnly />
@@ -148,11 +129,7 @@ const ReportedPost = () => {
             </option>
           </SelectStyled>
           {selectedApproval === false && (
-            <SelectStyled
-              value={selectedRejectReasons[declarationId] ?? ''}
-              onChange={handleRejectReasonChange}
-              disabled={isSelectDisabled || selectedApproval !== false}
-            >
+            <SelectStyled value={selectedRejectReason || ''} onChange={handleRejectReasonChange}>
               <option value="" disabled hidden>
                 반려 사유를 선택하세요
               </option>
@@ -163,11 +140,10 @@ const ReportedPost = () => {
               ))}
             </SelectStyled>
           )}
+          <MessageContainer>{renderMessage()}</MessageContainer>
           <ButtonStyled>
             <Button onClick={handleCancelClick}>취소</Button>
-            <Button onClick={handleUpdateClick} disabled={selectedApproval === null}>
-              등록
-            </Button>
+            <Button onClick={handleUpdateClick}>등록</Button>
           </ButtonStyled>
         </BottomStyled>
       </ContentWrapper>
@@ -279,6 +255,12 @@ const SelectStyled = styled.select`
     box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowOrange};
     outline: none;
   }
+`;
+
+const MessageContainer = styled.div`
+  margin-top: 20px;
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 const ButtonStyled = styled.div`

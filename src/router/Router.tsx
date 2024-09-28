@@ -24,6 +24,7 @@ import {
   SpecialtyDrinkDetail,
   SpecialtyDrinkForm,
 } from '../components/pages';
+import { getRoleFromToken } from '@/auth';
 import SearchPassword from '@/components/pages/SearchPassword/SearchPassword';
 import SearchPassword2 from '@/components/pages/SearchPassword/SearchPasswrod2';
 
@@ -49,9 +50,11 @@ const Router = ({ showAlert }: RouterProps) => {
   const isHideHeader = hideHeaderPaths.some(path => location.pathname.startsWith(path));
   const isHideFooter = hideFooterPaths.some(path => location.pathname.startsWith(path));
 
+  const role = getRoleFromToken();
+
   return (
     <>
-      {!isHideHeader && <Header showAlert={showAlert} />}
+      {!isHideHeader && <Header showAlert={showAlert} role={role} />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

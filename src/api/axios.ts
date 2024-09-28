@@ -15,8 +15,12 @@ api.interceptors.request.use(
       (config.url.startsWith('/members/signin') ||
         config.url.startsWith('/members/signup') ||
         config.url.startsWith('/google/join') ||
-        config.url.startsWith('/google/login-uri'))
+        config.url.startsWith('/google/login-uri') ||
+        config.url.startsWith('/members/email') ||
+        config.url.startsWith('/members/request-password-reset'))
     ) {
+      console.log('토큰 헤더 생략 성공');
+
       return config;
     }
 
@@ -25,7 +29,7 @@ api.interceptors.request.use(
     if (accessToken) {
       config.headers['Access-Token'] = accessToken;
     } else {
-      // window.location.href = '/login';
+      window.location.href = '/login';
     }
     return config;
   },
@@ -52,9 +56,10 @@ api.interceptors.response.use(
           {},
           { headers: { 'Refresh-Token': refreshToken } },
         );
+        console.log('access token 재발급');
 
         const newAccessToken = refreshResponse.headers['Access-Token'];
-        // 새 Access Token을 쿠키에 저장
+
         Cookies.set('access_token', newAccessToken);
 
         originalRequest.headers['Access-Token'] = newAccessToken;

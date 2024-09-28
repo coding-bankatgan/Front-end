@@ -47,15 +47,6 @@ const Login = () => {
     return () => clearTimeout(timer);
   }, [controls]);
 
-  // useEffect(() => {
-  //   const dd = async () => {
-  //     const gg = await api.get('/google/login-uri');
-  //     console.log(gg);
-  //   };
-
-  //   dd;
-  // }, [showLoginError]);
-
   /** signup -> login 진입시 */
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
@@ -92,43 +83,10 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchGoogleLoginUri = async () => {
-      try {
-        const response = await api.get('/google/login-uri');
-        console.log(response.data);
-      } catch (error) {
-        console.error('구글 로그인 URI를 가져오는 데 실패했습니다:', error);
-      }
-    };
-
-    fetchGoogleLoginUri();
-  }, []);
-
-  /** google 로그인 인증 */
-  // const sendAuthCode = async (authCode: string) => {
-  //   try {
-  //     const response = await api.post('/google/join', {
-  //       code: authCode,
-  //     });
-  //     console.log(response);
-
-  //     const { access_token, refresh_token } = response.data;
-
-  //     Cookies.set('access_token', access_token);
-  //     Cookies.set('refresh_token', refresh_token);
-
-  //     return { access_token, refresh_token };
-  //   } catch (error) {
-  //     console.error('Failed to send Auth Code:', error);
-  //     throw error;
-  //   }
-  // };
-
   const getGoogleLoginUri = async () => {
     try {
       const response = await api.get('/google/login-uri');
-      return response.data; // 백엔드에서 반환한 URI를 가져옵니다.
+      return response.data;
     } catch (error) {
       console.error('Error fetching Google login URI:', error);
       return null;
@@ -143,13 +101,12 @@ const Login = () => {
     }
   };
 
-  /** 후에 구글 리디렉션 주소에 옮기기 */
   const location = useLocation();
   useEffect(() => {
     const fetchToken = async () => {
       const params = new URLSearchParams(location.search);
 
-      const authCode = params.get('code'); // URL에서 인증 코드 추출
+      const authCode = params.get('code');
 
       if (authCode) {
         try {
@@ -210,6 +167,9 @@ const Login = () => {
                 <GoogleBtn type="button" onClick={handleLogin}>
                   <GoogleIcon /> Google로 로그인
                 </GoogleBtn>
+                <Link to={'/search-password'}>
+                  <SearchPassword>비밀번호 찾기</SearchPassword>
+                </Link>
               </motion.div>
             </FormContainer>
           </LoadFinish>
@@ -243,7 +203,7 @@ const LoadFinish = styled.div`
   padding: 20px;
 `;
 
-const LogoImage = styled.img`
+export const LogoImage = styled.img`
   width: 140px;
   height: 140px;
   margin: 0 auto 0 auto;
@@ -398,4 +358,12 @@ const Error = styled.button`
   color: ${({ theme }) => theme.colors.white};
   top: 30px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+`;
+
+const SearchPassword = styled.div`
+  margin-top: 6px;
+  color: ${({ theme }) => theme.colors.darkGray};
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  text-decoration: underline;
+  text-align: center;
 `;
