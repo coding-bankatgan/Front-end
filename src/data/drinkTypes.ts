@@ -21,7 +21,7 @@ export const type: drinkTypes[] = [
   { value: 'RUM', name: '럼' },
   { value: 'GIN', name: '진' },
   { value: 'VODKA', name: '보드카' },
-  { value: 'TEQUILA', name: '테킬라' },
+  { value: 'TEQUILA', name: '데킬라' },
   { value: 'WINE', name: '와인' },
   { value: 'CHAMPAGNE', name: '샴페인' },
   { value: 'SAKE', name: '사케' },
