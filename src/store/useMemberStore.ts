@@ -33,9 +33,6 @@ export interface MemberState {
   // setCurrentUser: (userId: number) => void;
   fetchMembers: () => Promise<void>;
 
-  isNotificationChecked: boolean;
-  toggleNotification: () => void;
-
   followTags: Tag[];
   addFollowTag: (tag: Tag) => Promise<void>;
   removeFollowTag: (tagId: number) => void;
@@ -46,6 +43,7 @@ export const useMemberStore = create<MemberState>((set, get) => ({
   members: [],
   followTags: [],
   currentUser: null,
+
   setMembers: (members: Member[]) => set({ members }),
   // currentUser: null,
   // setCurrentUser: (userId: number) =>
@@ -59,6 +57,8 @@ export const useMemberStore = create<MemberState>((set, get) => ({
 
       set({ members: [response] });
 
+      const alarmEnabled = [response][0]?.alarmEnabled;
+      console.log(alarmEnabled);
       // const currentUser = response.find((member: Member) => member.id === 1) || null;
       // set({ currentUser }); // currentUser Manager
     } catch (err) {
@@ -112,9 +112,6 @@ export const useMemberStore = create<MemberState>((set, get) => ({
       return state;
     });
   },
-
-  isNotificationChecked: true,
-  toggleNotification: () => set(state => ({ isNotificationChecked: !state.isNotificationChecked })),
 }));
 
 export default useMemberStore;

@@ -11,24 +11,28 @@ import handleImg from '../../../assets/img/handimg.png';
 
 const MyPage = () => {
   /** 유저 정보 */
-  const { currentUser } = useMemberStore();
+  const { members } = useMemberStore();
   const navigate = useNavigate();
 
   return (
     <PageLayout>
       <ContentWrapper>
         <ImgWrapper>
-          <ExProfileImg />
+          {members[0].imageUrl ? (
+            <img src={members[0].imageUrl} alt="Profile" />
+          ) : (
+            <ExProfileImg /> // 기본 이미지
+          )}
           <EditMyPage onClick={() => navigate('/mypage/edit')}>
             <SettingIcon />
           </EditMyPage>
         </ImgWrapper>
         <UserNameWrapper>
-          <h2>{currentUser?.name}</h2>
+          <h2>{members[0]?.name}</h2>
         </UserNameWrapper>
         <BadgeWrapper>
           <img src={handleImg} alt="선호 주종 리스트" />
-          {currentUser?.favorDrinkType?.map(drinkType => (
+          {members[0]?.favorDrinkType?.map(drinkType => (
             <BadgeStyled key={drinkType}>{mapDrinkType(drinkType)}</BadgeStyled>
           ))}
         </BadgeWrapper>
@@ -50,6 +54,12 @@ const ImgWrapper = styled.span`
   > svg {
     width: 100px;
     height: 100px;
+    border: 1px solid ${({ theme }) => theme.colors.lightGray};
+    border-radius: 50%;
+  }
+  img {
+    width: 100%;
+    height: 100%;
     border: 1px solid ${({ theme }) => theme.colors.lightGray};
     border-radius: 50%;
   }

@@ -1,19 +1,6 @@
-import axios from 'axios';
 import create from 'zustand';
-import { mapDrinkType } from '@/data/drinkTypes';
 
-interface specialtyDrink {
-  id: number;
-  region_id: number;
-  name: string;
-  type: string;
-  degree: number;
-  sweetness: number;
-  cost: number;
-  description: string;
-  image_url: string;
-  create_at: string;
-}
+import { alcoholsData } from '@/data/alcoholsData';
 
 interface SpecialtyState {
   alldrinks: string[];
@@ -27,25 +14,22 @@ export const useSpecialtyStore = create<SpecialtyState>((set, get) => ({
   alldrinks: [],
   selectedDrinks: [],
   fetchDrinks: async () => {
-    try {
-      const response = await axios.get<specialtyDrink[]>('/src/mocks/data/specialtyDrink.json');
-      const drinksType = Array.from(new Set(response.data.map(item => mapDrinkType(item.type))));
-      console.log(drinksType);
-      if (Array.isArray(drinksType)) {
-        set({
-          alldrinks: drinksType,
-        });
-      } else {
-        console.error('error: ', drinksType);
-        set({ alldrinks: [] });
-      }
-    } catch (err) {
-      console.error('Error fetching array: ', err);
+    const alcoholNames = Object.values(alcoholsData);
+
+    if (Array.isArray(alcoholNames)) {
+      set({
+        alldrinks: alcoholNames,
+      });
+    } else {
+      console.error('Error with alcohol data');
+      set({ alldrinks: [] });
     }
   },
 
   toggleDrinkSelection: (drink: string) => {
     const { selectedDrinks } = get();
+    console.log(selectedDrinks);
+
     if (selectedDrinks.includes(drink)) {
       set({
         selectedDrinks: selectedDrinks.filter(item => item !== drink),

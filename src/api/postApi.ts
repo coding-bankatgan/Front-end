@@ -425,26 +425,18 @@ export const fetchMemberApi = async () => {
 
 /** 회원정보 수정 API */
 export const fetchMemberWriteApi = async (
-  id: number,
   name: string,
-  favorDrink: string[],
+  favorDrinkType: (string | undefined)[],
   alarmEnabled: boolean,
 ) => {
   try {
-    const response = await axios.post(
-      '/api/members',
-      {
-        id: id,
-        name: name,
-        favorDrink: favorDrink,
-        alarmEnabled: alarmEnabled,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+    console.log('보내기 직전 : ', favorDrinkType);
+
+    const response = await api.post('/members', {
+      name: name,
+      favorDrinkType: favorDrinkType,
+      alarmEnabled: alarmEnabled,
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching memberWrite: ', error);

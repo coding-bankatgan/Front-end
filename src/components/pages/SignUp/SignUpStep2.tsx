@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { Container, Header, ScrollCont, Wrapper } from './SignUpStep1';
 import { Button } from './SignUp';
+import { alcoholsData } from '@/data/alcoholsData';
 
 const SignUpStep2 = ({
   handleSubmit,
@@ -15,54 +16,8 @@ const SignUpStep2 = ({
   validatedAlcohols: boolean;
   containerRef: React.RefObject<HTMLDivElement>;
 }) => {
-  const alcohols: string[] = [
-    'SOJU',
-    'BEER',
-    'LIQUOR',
-    'MAKGEOLLI',
-    'DONGDONGJU',
-    'CHEONGJU',
-    'YAKJU',
-    'FRUIT WINE',
-    'LIQUEUR',
-    'DISTILLED SPIRITS',
-    'GAOLIANG LIQUOR',
-    'FOLK LIQUOR',
-    'WHISKEY',
-    'BRANDY',
-    'RUM',
-    'GIN',
-    'VODKA',
-    'TEQUILA',
-    'WINE',
-    'CHAMPAGNE',
-    'SAKE',
-    'OTHER',
-  ];
-  const alcoholsName: string[] = [
-    '소주',
-    '맥주',
-    '양주',
-    '막걸리',
-    '동동주',
-    '청주',
-    '약주',
-    '과실주',
-    '리큐르',
-    '증류주',
-    '고량주',
-    '민속주',
-    '위스키',
-    '브랜디',
-    '럼주',
-    '진',
-    '보드카',
-    '데킬라',
-    '와인',
-    '샴페인',
-    '사케',
-    '기타',
-  ];
+  const alcohols: string[] = Object.keys(alcoholsData);
+  const alcoholsName: string[] = Object.values(alcoholsData);
 
   return (
     <Wrapper>

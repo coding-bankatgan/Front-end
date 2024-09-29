@@ -256,7 +256,7 @@ const RatingContainer = styled.div`
   font-size: ${({ theme }) => theme.fontSizes.small};
 `;
 
-const DeleteImageButton = styled.div`
+export const DeleteImageButton = styled.div`
   padding: 7px;
   position: absolute;
   top: 10px;
@@ -270,7 +270,7 @@ const DeleteImageButton = styled.div`
   }
 `;
 
-const DeleteButton = styled.button`
+export const DeleteButton = styled.button`
   color: ${({ theme }) => theme.colors.white};
   margin-left: 5px;
 

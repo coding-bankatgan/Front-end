@@ -1,5 +1,5 @@
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -24,57 +24,63 @@ import CustomAlert from '@/components/layout/CustomAlert';
 import WithDraw from './WithDraw';
 import { fetchMemberWriteApi } from '@/api/postApi';
 
+import { alcoholsData } from '@/data/alcoholsData';
+
+import CloseIcon from '@/assets/icons/CloseIcon';
+import api from '@/api/axios';
+
 interface EditMyPageProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
 }
 
 const EditMyPage = ({ showAlert }: EditMyPageProps) => {
   /** 유저 정보 */
-  const { currentUser } = useMemberStore();
+  const { members, fetchMembers } = useMemberStore();
+
+  /** 알림 수신 동의 */
+  const notificationToggle = async () => {
+    setAlarmEnabled(!alarmEnabled);
+  };
 
   /** 상태값 관리 */
-  const [id] = useState(currentUser?.id || null);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [alarmEnabled, setAlarmEnabled] = useState<boolean>(currentUser?.alarmEnabled || false);
-  const [name, setName] = useState(currentUser?.name || '');
+  const [id] = useState(members[0]?.id || null);
+  const [profileImage, setProfileImage] = useState<string | null>(members[0]?.imageUrl);
+  const [alarmEnabled, setAlarmEnabled] = useState<boolean>(members[0]?.alarmEnabled);
+  const [name, setName] = useState(members[0]?.name || '');
   const [currentPassword, setcurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   /** alert 및 알람 관리 */
-  const [isAgreeChecked, setIsAgreeChecked] = useState(false);
+  const [isAgreeChecked, setIsAgreeChecked] = useState(localStorage.getItem('gpsVeri') === 'on');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [saveAlertVisible, setSaveAlertVisible] = useState(false);
 
   /** 유효성 검사 */
-  const [passwordError, setPasswordError] = useState<string>('');
-  const [isCurrentPasswordValid, setIsCurrentPasswordValid] = useState<boolean>(false);
+
   const [isNameValid, setIsNameValid] = useState(true);
   const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
 
   const navigate = useNavigate();
 
-  /** 알림 수신 동의 */
-  const { isNotificationChecked, toggleNotification } = useMemberStore();
-  const notificationToggle = () => {
-    setAlarmEnabled(!alarmEnabled);
-    toggleNotification();
-  };
-  console.log(isNotificationChecked);
+  /** 수정사항 post */
 
   /** 위치정보 제공 동의 */
   const agreeToggle = () => {
     setIsAgreeChecked(!isAgreeChecked);
+    !isAgreeChecked
+      ? localStorage.setItem('gpsVeri', 'on')
+      : localStorage.setItem('gpsVeri', 'off');
   };
 
   /** 사용자 닉네임 변경 */
   useEffect(() => {
-    if (currentUser) {
-      setName(currentUser.name);
+    if (members) {
+      setName(members[0].name);
     }
-  }, [currentUser]);
+  }, [members]);
 
   /** 유효성 검사 */
   /** 닉네임 */
@@ -83,19 +89,11 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
   };
 
   /** 현재 패스워드 */
-  const validateCurrentPassword = () => {
-    if (currentUser && currentPassword !== currentUser.currentPassword) {
-      setPasswordError('기존 패스워드와 일치하지 않습니다.');
-      setIsCurrentPasswordValid(false);
-    } else {
-      setPasswordError('');
-      setIsCurrentPasswordValid(true);
-    }
-  };
 
   /** 신규 패스워드 */
   const validateNewPassword = (password: string) => {
-    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,15}$/;
+    const regex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>~`;])[A-Za-z\d!@#$%^&*(),.?":{}|<>~`;]{8,15}$/;
     return regex.test(password);
   };
 
@@ -119,11 +117,11 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
   }, [fetchDrinks]);
 
   useEffect(() => {
-    if (currentUser) {
-      const favorDrinks = currentUser.favorDrinkType.map(type => mapDrinkType(type));
+    if (members) {
+      const favorDrinks = members[0].favorDrinkType.map(type => mapDrinkType(type));
       setSelectedDrinks(favorDrinks);
     }
-  }, [currentUser, setSelectedDrinks]);
+  }, [members, setSelectedDrinks]);
 
   /** 선호주종 5개 제한 */
   const handleDrinkSelection = (drink: string) => {
@@ -149,12 +147,29 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
     }
   };
 
+  const [formData, setFormData] = useState<FormData | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleFileChange = () => {
+    const file = fileInputRef.current?.files?.[0];
+    if (file) {
+      const newFormData = new FormData();
+      newFormData.append('multipartFile', file);
+      console.log(newFormData);
+      setFormData(newFormData);
+    }
+  };
+
+  useEffect(() => {
+    handleFileChange;
+    console.log(formData);
+  }, [fileInputRef]);
+
   /** 저장 */
   const handleSave = async () => {
     // 저장 가능 조건
     const canSave =
       isNameValid &&
-      (isCurrentPasswordValid || currentPassword.trim() === '') &&
       (newPassword.trim() === '' || isNewPasswordValid) &&
       (confirmPassword.trim() === '' || isConfirmPasswordValid) &&
       (newPassword.trim() === '' || confirmPassword === newPassword);
@@ -162,8 +177,33 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
     if (canSave) {
       if (id !== null) {
         try {
-          const response = await fetchMemberWriteApi(id, name, selectedDrinks, alarmEnabled);
+          const selectedDrinksName = selectedDrinks
+            .map(value => Object.entries(alcoholsData).find(([_, val]) => val === value)?.[0])
+            .filter(Boolean);
+
+          const response = await fetchMemberWriteApi(name, selectedDrinksName, alarmEnabled);
+
+          if (profileImage === null) {
+            await api.put('/members/profile', { url: null });
+          } else {
+            if (formData) {
+              const imageUrl = await api.post('/image', formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              });
+              await api.put('/members/profile', { url: imageUrl.data });
+            }
+          }
+          if (newPassword) {
+            await api.post('/members/password-change', {
+              currentPassword: currentPassword,
+              newPassword: newPassword,
+            });
+          }
+
           if (response) {
+            fetchMembers();
             navigate('/mypage');
           } else {
             setSaveAlertVisible(true);
@@ -180,9 +220,6 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
       if (!isNameValid) {
         showAlert('error', '닉네임은 2~7자로 입력해주세요.');
       }
-      if (currentPassword.trim() !== '' && !isCurrentPasswordValid) {
-        showAlert('error', '기존 패스워드가 일치하지 않습니다.');
-      }
       if (newPassword.trim() !== '' && !isNewPasswordValid) {
         showAlert('error', '신규 패스워드는 8~15자로 대소문자, 숫자, 특수문자를 포함해야 합니다.');
       }
@@ -195,12 +232,24 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
     }
   };
 
+  const handleImageDelete = () => {
+    setProfileImage(null);
+  };
+
   return (
     <NoFooterLayout>
       <ContentWrapper>
         <EditTop>
           <b>회원정보 수정</b>
           <ImgWrapper onClick={() => document.getElementById('profileImageInput')?.click()}>
+            <DeleteContainer
+              onClick={e => {
+                e.stopPropagation();
+                handleImageDelete();
+              }}
+            >
+              <CloseIcon />
+            </DeleteContainer>
             {profileImage ? (
               <img src={profileImage} alt="Profile" />
             ) : (
@@ -211,24 +260,24 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
             id="profileImageInput"
             type="file"
             accept="image/*"
+            ref={fileInputRef}
             style={{ display: 'none' }}
-            onChange={handleImageChange}
+            onChange={e => {
+              handleImageChange(e);
+              handleFileChange();
+            }}
           />
         </EditTop>
         <EditMid>
           <Label htmlFor="email">아이디(이메일)</Label>
-          <Input
-            type="email"
-            placeholder={currentUser ? currentUser.email : '로딩 중...'}
-            disabled
-          />
+          <Input type="email" placeholder={members ? members[0].email : '로딩 중...'} disabled />
           <Label htmlFor="name">
             닉네임(이름)
             {!isNameValid && <Validation>※2~7자로 해주세요.</Validation>}
           </Label>
           <Input
             type="name"
-            placeholder={currentUser ? currentUser.name : '로딩 중...'}
+            placeholder={members ? members[0].name : '로딩 중...'}
             name="name"
             id="name"
             value={name}
@@ -240,16 +289,13 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
             id="currentPassword"
             value={currentPassword}
             onChange={e => setcurrentPassword(e.target.value)}
-            onBlur={validateCurrentPassword}
           />
-          {passwordError && <AlertText>{passwordError}</AlertText>}
           <Label htmlFor="newPassword">신규 패스워드</Label>
           <Input
             type="password"
             id="newPassword"
             value={newPassword}
             onChange={e => setNewPassword(e.target.value)}
-            disabled={!isCurrentPasswordValid}
           />
           {!isNewPasswordValid && (
             <AlertText>※8~15자로 대소문자, 숫자, 특수문자를 포함해야 합니다.</AlertText>
@@ -260,7 +306,6 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
             id="confirmPassword"
             value={confirmPassword}
             onChange={e => setConfirmPassword(e.target.value)}
-            disabled={!isCurrentPasswordValid}
           />
           {!isConfirmPasswordValid && <AlertText>비밀번호가 일치하지 않습니다.</AlertText>}
           <Label htmlFor="">선호주종</Label>
@@ -288,8 +333,8 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
           <SwitchWrapper>
             <span>나의 게시글에 대한 댓글 알림</span>
             <div>
-              {isNotificationChecked ? 'ON' : 'OFF'}
-              <Switch checked={isNotificationChecked} onClick={notificationToggle} />
+              {alarmEnabled ? 'ON' : 'OFF'}
+              <Switch checked={alarmEnabled} onClick={notificationToggle} />
             </div>
           </SwitchWrapper>
           <Label htmlFor="">정보 제공 동의</Label>
@@ -297,7 +342,7 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
             <span>위치 정보 제공 동의</span>
             <div>
               {isAgreeChecked ? 'ON' : 'OFF'}
-              <Switch onClick={agreeToggle} />
+              <Switch checked={isAgreeChecked} onClick={agreeToggle} />
             </div>
           </SwitchWrapper>
         </EditBottom>
@@ -326,7 +371,7 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
           {saveAlertVisible && (
             <CustomAlert
               type="error"
-              message="새 비밀번호와 확인 비밀번호가 일치하지 않습니다."
+              message="패스워드를 다시 한 번 확인해 주세요."
               onClose={() => setSaveAlertVisible(false)}
             />
           )}
@@ -335,6 +380,25 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
     </NoFooterLayout>
   );
 };
+const DeleteContainer = styled.span`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 27px;
+  height: 27px;
+  border: 1px solid ${({ theme }) => theme.colors.lightGray};
+  border-radius: 30px;
+  z-index: 15;
+
+  > svg {
+    width: 27px;
+    height: 27px;
+    padding: 3px;
+    background-color: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.colors.error};
+    border-radius: 30px;
+  }
+`;
 
 const EditTop = styled.div`
   display: flex;
@@ -366,6 +430,7 @@ const Validation = styled.span`
 const ImgWrapper = styled.div`
   display: flex;
   position: relative;
+  width: 100px;
   height: 100px;
   margin-bottom: 20px;
   justify-content: center;
@@ -375,6 +440,14 @@ const ImgWrapper = styled.div`
     position: absolute;
     width: 100px;
     height: 100px;
+    border: 1px solid ${({ theme }) => theme.colors.lightGray};
+    border-radius: 50%;
+  }
+
+  img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
     border: 1px solid ${({ theme }) => theme.colors.lightGray};
     border-radius: 50%;
   }
@@ -403,7 +476,7 @@ const Label = styled.label`
   color: ${({ theme }) => theme.colors.black};
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
-  :not(:first-of-type)::before {
+  &::before {
     content: '*';
     margin-right: 3px;
     color: ${({ theme }) => theme.colors.point};
