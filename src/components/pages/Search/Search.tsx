@@ -18,6 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import CloseIcon from './../../../assets/icons/CloseIcon';
 import CardItem from '@/components/layout/CardItem';
 import getWeekRange from '../../../utils/dateSearch';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface SuggestedTag {
   tagId: number;
@@ -25,8 +26,8 @@ interface SuggestedTag {
 }
 
 interface SuggestedDrink {
-  drinkId: number;
-  drinkName: string;
+  id: number;
+  name: string;
 }
 
 type SuggestedData = SuggestedTag | SuggestedDrink;
@@ -61,6 +62,8 @@ const Search = () => {
   const [totalElements, setTotalElements] = useState();
   const [totalPages, setTotalPages] = useState();
   const [hasSearched, setHasSearched] = useState(false);
+  const [isLoadingResults, setIsLoadingResults] = useState(false); // 검색 결과 로딩
+  const [isLoadingTagRemove, setIsLoadingTagRemove] = useState(false); // 태그 삭제 로딩
 
   useEffect(() => {
     console.log(totalElements);
@@ -122,9 +125,8 @@ const Search = () => {
   /** 태그 삭제 시 검색결과 재반영 */
   useEffect(() => {
     const tagNames = tags.map(tag => tag.name);
-
     searchResults.filter((post: Post) => post.tags.some(tag => tagNames.includes(tag)));
-  }, [tags]);
+  }, [tags, searchResults]);
 
   /** input value값 변경 */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -189,6 +191,8 @@ const Search = () => {
         const drinkSearchTerm =
           updatedTags.length === 1 ? updatedTags[0].name.replace('#', '') : '';
 
+        setIsLoadingResults(true);
+
         setTimeout(async () => {
           try {
             if (searchType === 'tag') {
@@ -207,6 +211,8 @@ const Search = () => {
             setHasSearched(true);
           } catch (err) {
             console.error('검색 중 오류 발생: ', err);
+          } finally {
+            setIsLoadingResults(false);
           }
         }, 200);
 
@@ -238,6 +244,7 @@ const Search = () => {
 
       const drinkSearchTerm = updatedTags.length > 0 ? updatedTags[0].name.replace('#', '') : '';
 
+      setIsLoadingTagRemove(true);
       setTimeout(async () => {
         try {
           if (searchType === 'tag') {
@@ -253,6 +260,8 @@ const Search = () => {
           }
         } catch (err) {
           console.error('검색 중 오류 발생: ', err);
+        } finally {
+          setIsLoadingTagRemove(false);
         }
       }, 200);
 
@@ -266,9 +275,7 @@ const Search = () => {
   /** Top15 항목 클릭 시 뱃지 변환 및 검색 결과 */
   const handleSuggestedClick = (item: SuggestedTag | SuggestedDrink) => {
     const newTagName =
-      searchType === 'tag'
-        ? `#${(item as SuggestedTag).tagName}`
-        : (item as SuggestedDrink).drinkName;
+      searchType === 'tag' ? `#${(item as SuggestedTag).tagName}` : (item as SuggestedDrink).name;
 
     setTags(prevTags => {
       if (
@@ -398,14 +405,33 @@ const Search = () => {
                   <span onClick={() => handleSuggestedClick(item)}>
                     {searchType === 'tag'
                       ? (item as SuggestedTag).tagName
-                      : (item as SuggestedDrink).drinkName}
+                      : (item as SuggestedDrink).name}
                   </span>
                 </div>
               ))}
             </RecommendContent>
           </Recommend>
         )}
-        {hasSearched ? (
+        {isLoadingTagRemove ? (
+          <></>
+        ) : isLoadingResults ? (
+          <SkeWrapper>
+            {Array.from({ length: 10 }).map((_, index) => (
+              <div key={index} className="flex flex-col space-y-2 w-1/2 p-1">
+                <Skeleton className="w-full h-[155px] rounded-xl" />
+                <div className="space-y-1">
+                  <div className="flex flex-row space-x-2">
+                    <Skeleton className="w-6 h-5 rounded-full" />
+                    <Skeleton className="w-full h-5 max-w-[200px]" />
+                  </div>
+                  <Skeleton className="w-full h-8 max-w-[250px]" />
+                  <Skeleton className="w-full h-5 max-w-[250px]" />
+                  <Skeleton className="w-full h-3 max-w-[200px]" />
+                </div>
+              </div>
+            ))}
+          </SkeWrapper>
+        ) : hasSearched ? (
           Array.isArray(searchResults) && searchResults.length > 0 ? (
             <ResultsWrapper>
               <span>검색결과 ({searchResults.length}개)</span>
@@ -425,6 +451,15 @@ const Search = () => {
     </SearchLayout>
   );
 };
+
+const SkeWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 72px 20px 20px 20px;
+`;
 
 const SearchLayout = styled.div`
   display: flex;
