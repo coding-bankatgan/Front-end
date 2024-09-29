@@ -5,14 +5,13 @@ import AlertDialogTag from '@/components/layout/AlertDialogTag';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import { usePostsDetailStore } from '@/store/usePostsDetailStore';
 import PostComments from './PostComments';
 import EllipsisHorizontalIcon from '@/assets/icons/EllipsisHorizontalIcon';
 import ChatIcon from '@/assets/icons/ChatIcon';
-// import HeartIcon from '@/assets/icons/HeartIcon';
+import HeartIcon from '@/assets/icons/HeartIcon';
 import { mapDrinkType } from '@/data/drinkTypes';
 import { fetchCommentsApi } from '@/api/postApi';
-// import { useLikeStore } from '@/store/useLikeStore';
+import { usePostsStore } from '@/store/usePostsStore';
 
 const typeMap = {
   AD: '광고',
@@ -24,13 +23,20 @@ interface PostProps {
 }
 
 const Post = ({ showAlert }: PostProps) => {
-  const [commentCount, setCommentCount] = useState(0);
-  const { postsDetail, fetchPostsDetail } = usePostsDetailStore();
+  const [commentCount, setCommentCount] = useState<number | null>(null);
+  const { postsDetail, fetchPostsDetail, togglePostLike } = usePostsStore();
   const { id } = useParams();
   const postId = Number(id);
 
-  // const { toggleLike } = useLikeStore();
-  // const liked = useLikeStore(state => state.likedPosts.includes(postId));
+  /** 특정 게시글의 댓글 수 가져오는 함수 */
+  const fetchCommentCount = async () => {
+    try {
+      const commentsData = await fetchCommentsApi(postId, 0, 10);
+      setCommentCount(commentsData.totalElements);
+    } catch (err) {
+      console.error('Error fetching comments counts: ', err);
+    }
+  };
 
   useEffect(() => {
     fetchPostsDetail(postId);
@@ -46,16 +52,6 @@ const Post = ({ showAlert }: PostProps) => {
   if (!post) {
     return <p>게시글을 찾을 수 없습니다.</p>;
   }
-
-  /** 특정 게시글의 댓글 수 가져오는 함수 */
-  const fetchCommentCount = async () => {
-    try {
-      const commentsData = await fetchCommentsApi(postId, 0, 10);
-      setCommentCount(commentsData.totalElements);
-    } catch (err) {
-      console.error('Error fetching comments counts: ', err);
-    }
-  };
 
   return (
     <PostLayout>
@@ -78,11 +74,11 @@ const Post = ({ showAlert }: PostProps) => {
         </Img>
         <Interactions>
           <span>
-            {/* <HeartIcon onClick={() => toggleLike(post.id)} liked={liked} /> */}
+            <HeartIcon onClick={() => togglePostLike(post.id, post.isLiked)} liked={post.isLiked} />
             {post.likeCount.toLocaleString()}
           </span>
           <span>
-            <ChatIcon /> {commentCount.toLocaleString()}
+            <ChatIcon /> {commentCount?.toLocaleString()}
           </span>
         </Interactions>
         <Desc>{post.content}</Desc>

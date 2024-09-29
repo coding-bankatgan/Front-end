@@ -21,10 +21,20 @@ export const fetchPostsApi = async (sortBy: string, page: number = 0, size: numb
 /** 특정 게시글 상세 조회 API */
 export const fetchPostsDetailApi = async (postId: number) => {
   try {
-    const response = await api.get(`/posts/${postId}`);
+    const response = await api.get(`/post/${postId}`);
     return response.data;
   } catch (err) {
     console.error('Error fetching postsDetail: ', err);
+  }
+};
+
+/** 특정 게시글 좋아요 토글 API */
+export const fetchPostLikeApi = async (postId: number) => {
+  try {
+    const response = await api.put(`/posts/${postId}/like`);
+    return response.data;
+  } catch (err) {
+    console.error('Error toggling like:', err);
   }
 };
 
