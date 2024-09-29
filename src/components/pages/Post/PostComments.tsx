@@ -129,8 +129,9 @@ const PostComments = ({ postId, fetchCommentCount }: PostCommentsProps) => {
           return;
         }
         const { memberId } = post;
+        const { members } = useMemberStore();
         console.log('post memberId : ', memberId);
-        const isNotificationChecked = useMemberStore.getState().isNotificationChecked; // 정상작동
+        const isNotificationChecked = members[0].alarmEnabled; // 정상작동
 
         if (currentUser && currentUser.id !== memberId && isNotificationChecked) {
           const notification = {
