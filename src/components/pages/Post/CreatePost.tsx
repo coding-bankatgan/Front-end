@@ -6,20 +6,41 @@ import PostStep3 from './PostStep3';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChangePage from './ChangePage';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '@/api/axios';
+import CustomAlert from '@/components/layout/CustomAlert';
 
 const CreatePost = () => {
+  const location = useLocation();
+  const postToEdit = location.state?.postId ? location.state : null; // 수정 모드인지 확인
+  const isEditMode = !!postToEdit; // 수정 모드 여부를 boolean으로 관리
+
+  // 수정 모드일 때 step을 3으로 설정하는 useEffect 추가
+  useEffect(() => {
+    if (isEditMode && location.state?.step) {
+      setStep(location.state.step); // location.state에서 step 값이 있을 경우 설정
+      setDrinkData(prev => ({
+        ...prev,
+        degree: postToEdit?.degree || 0,
+        sweetness: postToEdit?.sweetness || 0,
+      }));
+    }
+  }, [isEditMode, postToEdit, location.state]);
+
   const [step, setStep] = useState(1);
   const [isNext, setIsNext] = useState(true);
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState(postToEdit?.category || '');
   const [imageName, setImageName] = useState('');
   const [formData, setFormData] = useState(new FormData());
-  const [formattedContent, setFormattedContent] = useState('');
-  const [tags, setTags] = useState<string[]>([]);
-  const [rating, setRating] = useState(0);
+  const [formattedContent, setFormattedContent] = useState(postToEdit?.initialContent || '');
+  const [tags, setTags] = useState<string[]>(postToEdit?.initialTags || []);
+  const [rating, setRating] = useState(postToEdit?.initialRating || 0);
+  const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   useEffect(() => {
+    if (postToEdit) {
+      return;
+    }
     const tagsWithoutHash = tags.map(tag => tag.replace('#', ''));
     console.log(tagsWithoutHash);
 
@@ -32,9 +53,14 @@ const CreatePost = () => {
       imageUrl: 'url',
     };
     console.log(data);
-  }, [tags]);
+  }, [tags, postToEdit]);
 
   const submitPost = async () => {
+    if (tags.length < 1) {
+      setAlert({ type: 'error', message: '태그는 최소 1개 이상 작성해주세요' });
+      return;
+    }
+
     const tagsWithoutHash = tags.map(tag => tag.replace('#', ''));
     try {
       if (imageName !== '') {
@@ -45,23 +71,36 @@ const CreatePost = () => {
         });
         console.log(imageUrl);
 
-        await api.post('/posts', {
-          drinkId: drinkData.id,
-          type: category,
-          content: formattedContent,
-          rating: rating,
-          tag: tagsWithoutHash,
-          imageUrl: imageUrl.data,
-        });
+        if (isEditMode === true) {
+          console.log(postToEdit?.postId);
+          await api.put(`/posts/${postToEdit.postId}`, {
+            drinkId: drinkData.id,
+            memberId: postToEdit?.memberId || 0,
+            type: category,
+            content: formattedContent,
+            rating,
+            tags: tagsWithoutHash,
+            imageUrl,
+          });
+        } else {
+          await api.post('/posts', {
+            drinkId: drinkData.id,
+            type: category,
+            content: formattedContent,
+            rating: rating,
+            tag: tagsWithoutHash,
+            imageUrl: imageUrl.data,
+          });
 
-        console.log({
-          drinkId: drinkData.id,
-          type: category,
-          content: formattedContent,
-          rating: rating,
-          tag: tagsWithoutHash,
-          imageUrl: imageUrl.data,
-        });
+          console.log({
+            drinkId: drinkData.id,
+            type: category,
+            content: formattedContent,
+            rating: rating,
+            tag: tagsWithoutHash,
+            imageUrl: imageUrl.data,
+          });
+        }
       } else {
         await api.post('/posts', {
           drinkId: drinkData.id,
@@ -73,8 +112,8 @@ const CreatePost = () => {
         });
       }
       navigate('/');
-    } catch {
-      console.error('post error');
+    } catch (error) {
+      console.error('post error: ', error);
     }
   };
 
@@ -96,14 +135,14 @@ const CreatePost = () => {
     averageRating: 0,
     cost: 0,
     createdAt: '',
-    degree: 0,
+    degree: postToEdit?.degree || 0,
     description: '',
-    type: '',
-    id: 0,
-    imageUrl: '',
-    name: '',
+    type: postToEdit?.drinkType || '',
+    id: postToEdit?.drinkId || 0,
+    imageUrl: postToEdit?.imageUrl || '',
+    name: postToEdit?.drinkName || '',
     placeName: '',
-    sweetness: 0,
+    sweetness: postToEdit?.sweetness || 0,
   });
   const navigate = useNavigate();
 
@@ -123,7 +162,11 @@ const CreatePost = () => {
 
   const prevStep = () => {
     setIsNext(false);
-    setStep(prevStep => prevStep - 1);
+    if (isEditMode && postToEdit?.postId) {
+      navigate(`/post/${postToEdit.postId}`);
+    } else {
+      setStep(prevStep => prevStep - 1);
+    }
   };
 
   const nextStep = () => {
@@ -134,6 +177,9 @@ const CreatePost = () => {
 
   return (
     <NoFooterLayout>
+      {alert && (
+        <CustomAlert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />
+      )}
       <CreatePostWrapper>
         <AnimatePresence mode="wait">
           {step === 1 && (
@@ -187,6 +233,10 @@ const CreatePost = () => {
                   rating={rating}
                   setRating={setRating}
                   submitPost={submitPost}
+                  initialContent={formattedContent}
+                  initialImageUrl={drinkData.imageUrl}
+                  initialTags={tags}
+                  initialRating={rating}
                 />
               </motion.div>
             </>

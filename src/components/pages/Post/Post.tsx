@@ -2,14 +2,21 @@ import styled from '@emotion/styled';
 import ExProfileImg from '@/assets/ExProfileImg';
 import ViewIcon from './../../../assets/icons/ViewIcon';
 import AlertDialogTag from '@/components/layout/AlertDialogTag';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import PostComments from './PostComments';
 import EllipsisHorizontalIcon from '@/assets/icons/EllipsisHorizontalIcon';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import ChatIcon from '@/assets/icons/ChatIcon';
 import HeartIcon from '@/assets/icons/HeartIcon';
 import { mapDrinkType } from '@/data/drinkTypes';
+import DeletePost from './DeletePost';
 import { fetchCommentsApi } from '@/api/postApi';
 import { usePostsStore } from '@/store/usePostsStore';
 
@@ -23,6 +30,7 @@ interface PostProps {
 }
 
 const Post = ({ showAlert }: PostProps) => {
+  const navigate = useNavigate();
   const [commentCount, setCommentCount] = useState<number | null>(null);
   const { postsDetail, fetchPostsDetail, togglePostLike } = usePostsStore();
   const { id } = useParams();
@@ -66,7 +74,34 @@ const Post = ({ showAlert }: PostProps) => {
           <ExProfileImg />
           {post.memberName}
           <span>
-            <EllipsisHorizontalIcon />
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <EllipsisHorizontalIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContentStyled>
+                <DropdownMenuItem
+                  onClick={() =>
+                    navigate('/create-post', {
+                      state: {
+                        postId: post.id,
+                        initialTags: post.tags.map(tag => tag.tagName),
+                        initialContent: post.content,
+                        initialImageUrl: post.imageUrl,
+                        initialRating: post.rating,
+                        drinkId: post.drink.id,
+                        drinkType: post.drink.type,
+                        step: 3,
+                      },
+                    })
+                  }
+                >
+                  수정
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <DeletePost postId={postId} showAlert={showAlert} />
+                </DropdownMenuItem>
+              </DropdownMenuContentStyled>
+            </DropdownMenu>
           </span>
         </Nickname>
         <Img>
@@ -194,6 +229,15 @@ const Img = styled.div`
 
   img {
     object-fit: cover;
+  }
+`;
+
+const DropdownMenuContentStyled = styled(DropdownMenuContent)`
+  margin: 5px 1px 0 0;
+
+  div {
+    padding: 10px 0;
+    font-size: ${({ theme }) => theme.fontSizes.small};
   }
 `;
 
