@@ -11,6 +11,9 @@ import {
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog';
 import styled from '@emotion/styled';
+import api from '@/api/axios';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 interface WithDrawProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -18,12 +21,25 @@ interface WithDrawProps {
 
 const WithDraw = ({ showAlert }: WithDrawProps) => {
   const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   /** 탈퇴 */
-  const handleWithdraw = () => {
+  const handleWithdraw = async () => {
     console.log('회원 탈퇴 처리 중...');
-    showAlert('success', '회원탈퇴가 완료되었습니다.');
-    setIsWithdrawDialogOpen(false);
+
+    try {
+      await api.delete('/members');
+      showAlert('success', '회원탈퇴가 완료되었습니다.');
+      Cookies.remove('access_token');
+      Cookies.remove('refresh_token');
+      setIsWithdrawDialogOpen(false);
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
+    } catch (error) {
+      showAlert('error', '잠시 후 다시 시도해 주세요.');
+      setIsWithdrawDialogOpen(false);
+    }
   };
 
   return (
