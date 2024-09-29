@@ -49,6 +49,7 @@ const PostStep3 = ({
   initialRating,
 }: PostStep3Props) => {
   const alcohols = alcoholsData;
+  console.log(initialContent, initialImageUrl, initialTags, initialRating);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
