@@ -1,23 +1,20 @@
 import styled from '@emotion/styled';
 import ViewIcon from './../../assets/icons/ViewIcon';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-// import HeartIcon from '@/assets/icons/HeartIcon';
+import HeartIcon from '@/assets/icons/HeartIcon';
 import { Badge } from '@/components/ui/badge';
 import ExProfileImg from '@/assets/ExProfileImg';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { Post } from '@/store/usePostsStore';
-// import { useLikeStore } from '@/store/useLikeStore';
+import { Post, usePostsStore } from '@/store/usePostsStore';
 
 interface CardItemProps {
   post: Post;
 }
 
 const CardItem = ({ post }: CardItemProps) => {
-  // const { toggleLike } = useLikeStore();
-  // const liked = useLikeStore(state => state.likedPosts.includes(post.id));
-
   const navigate = useNavigate();
+  const { togglePostLike } = usePostsStore();
 
   return (
     <CardStyled onClick={() => navigate(`/post/${post.id}`)}>
@@ -30,15 +27,13 @@ const CardItem = ({ post }: CardItemProps) => {
             <ExProfileImg />
             {post.memberName}
           </span>
-          {/* <HeartIcon
+          <HeartIcon
             onClick={e => {
               e.stopPropagation();
-              toggleLike(post.id);
+              togglePostLike(post.id, post.isLiked);
             }}
-            liked={liked}
-          /> */}
-          {/* <HeartIcon
-          /> */}
+            liked={post.isLiked}
+          />
         </ContentTop>
         <DrinkName>{post.drink.name}</DrinkName>
         <p>{post.content}</p>

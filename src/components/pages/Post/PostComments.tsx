@@ -16,6 +16,7 @@ import useNotificationStore from '@/store/useNotificationStore';
 
 interface PostCommentsProps {
   postId: number;
+  fetchCommentCount: () => Promise<void>;
 }
 
 interface Content {
@@ -46,7 +47,7 @@ const wirteComment = async (postId: number, content: string) => {
   }
 };
 
-const PostComments = ({ postId }: PostCommentsProps) => {
+const PostComments = ({ postId, fetchCommentCount }: PostCommentsProps) => {
   const [comments, setComments] = useState<Content[]>([]);
   const [newComment, setNewComment] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
@@ -144,6 +145,9 @@ const PostComments = ({ postId }: PostCommentsProps) => {
           console.log(notification); // 디버깅 용
           useNotificationStore.getState().addNewNotification(notification);
         }
+
+        // 댓글 수 업데이트
+        await fetchCommentCount();
       }
     } catch (err) {
       console.error('Error submitting comment:', err);

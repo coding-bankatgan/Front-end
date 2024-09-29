@@ -11,8 +11,6 @@ const Tab = () => {
   const [sortOrder, setSortOrder] = useState('recent');
   const [isLoading, setIsLoading] = useState(true);
 
-  // console.log('sssssssss', posts);
-
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);

@@ -1,12 +1,12 @@
 import { create } from 'zustand';
-import { fetchPostsApi } from '../api/postApi';
+import { fetchPostLikeApi, fetchPostsApi, fetchPostsDetailApi } from '../api/postApi';
 
-interface Tag {
+export interface Tag {
   tagId: number;
   tagName: string;
 }
 
-interface Drink {
+export interface Drink {
   id: number;
   placeName: string;
   name: string;
@@ -20,6 +20,7 @@ interface Drink {
   createdAt: string;
 }
 
+/** 전체 게시글 */
 export interface Post {
   id: number;
   memberId: number;
@@ -37,22 +38,113 @@ export interface Post {
   updatedAt: string;
 }
 
+/** 특정 게시글 (상세페이지) */
+export interface PostDetail {
+  id: number;
+  memberId: number;
+  memberName: string;
+  drink: Drink;
+  type: 'AD' | 'REVIEW';
+  content: string;
+  rating: number;
+  tags: Tag[];
+  imageUrl: string;
+  viewCount: number;
+  likeCount: number;
+  createdAt: string;
+  updatedAt: string;
+  isLiked: boolean;
+}
+
 export interface PostsState {
+  // 전체 게시글
   posts: Post[];
   setPosts: (posts: Post[]) => void;
   fetchPosts: (sortBy: string, page?: number, size?: number) => Promise<void>;
+  // 특정 게시글
+  postsDetail: PostDetail | null;
+  setPostsDetail: (postsDetail: PostDetail) => void;
+  fetchPostsDetail: (postId: number) => Promise<void>;
+  // 좋아요 토글
+  togglePostLike: (postId: number, currentIsLiked: boolean) => Promise<void>;
 }
 
-export const usePostsStore = create<PostsState>(set => ({
+export const usePostsStore = create<PostsState>((set, get) => ({
+  // 전체 게시글
   posts: [],
   setPosts: posts => set({ posts }),
   fetchPosts: async (sortBy = 'createdAt', page = 0, size = 10) => {
     try {
       const data = await fetchPostsApi(sortBy, page, size);
-      set({ posts: data.content });
+
+      set(state => ({
+        posts: data.content.map((newPost: Post) => {
+          const existingPost = state.posts.find(p => p.id === newPost.id);
+          return existingPost
+            ? { ...newPost, isLiked: existingPost.isLiked } // 기존 좋아요 상태 유지
+            : newPost;
+        }),
+      }));
     } catch (err) {
       console.error('Error fetching posts: ', err);
       set({ posts: [] });
+    }
+  },
+  // 특정 게시글
+  postsDetail: null,
+  setPostsDetail: (postsDetail: PostDetail) => set({ postsDetail }),
+  fetchPostsDetail: async postId => {
+    try {
+      const data = await fetchPostsDetailApi(postId);
+      set(state => ({
+        postsDetail: {
+          ...data,
+          isLiked: state.postsDetail?.isLiked ?? data.isLiked, // 기존 좋아요 상태 유지 또는 API 데이터 사용
+        },
+        posts: state.posts.map(p =>
+          p.id === postId
+            ? { ...p, isLiked: state.postsDetail?.isLiked ?? data.isLiked } // 전체 게시글에서도 좋아요 상태 업데이트
+            : p,
+        ),
+      }));
+    } catch (err) {
+      console.error('Error fetching posts: ', err);
+      set({ postsDetail: null });
+    }
+  },
+  // 좋아요 토글
+  togglePostLike: async (postId: number) => {
+    const post = get().posts.find(p => p.id === postId); // get()으로 상태 가져오기
+    if (!post) return;
+
+    const newIsLiked = !post.isLiked;
+
+    try {
+      await fetchPostLikeApi(postId);
+
+      set(state => ({
+        posts: state.posts.map(p =>
+          p.id === postId
+            ? {
+                ...p,
+                isLiked: newIsLiked,
+                likeCount: newIsLiked ? post.likeCount + 1 : post.likeCount - 1,
+              }
+            : p,
+        ),
+        postsDetail:
+          state.postsDetail && state.postsDetail.id === postId
+            ? {
+                ...state.postsDetail,
+                isLiked: newIsLiked,
+                likeCount: newIsLiked
+                  ? state.postsDetail.likeCount + 1
+                  : state.postsDetail.likeCount - 1,
+              }
+            : state.postsDetail,
+      }));
+    } catch (err) {
+      console.error('Error toggling like:', err);
     }
   },
 }));
