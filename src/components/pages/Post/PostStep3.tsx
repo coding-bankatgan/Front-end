@@ -26,6 +26,10 @@ interface PostStep3Props {
   rating: number;
   setRating: React.Dispatch<React.SetStateAction<number>>;
   submitPost: () => void;
+  initialContent: string; // 추가: 초기 콘텐츠
+  initialImageUrl: string; // 추가: 초기 이미지 URL
+  initialTags: string[]; // 추가: 초기 태그
+  initialRating: number; // 추가: 초기 평점
 }
 
 const PostStep3 = ({
@@ -39,6 +43,10 @@ const PostStep3 = ({
   rating,
   setRating,
   submitPost,
+  initialContent,
+  initialImageUrl,
+  initialTags,
+  initialRating,
 }: PostStep3Props) => {
   const alcohols = alcoholsData;
 
@@ -51,6 +59,9 @@ const PostStep3 = ({
   };
 
   const ratingChanged = (newRating: number) => {
+    if (category === 'AD') {
+      setRating(0);
+    }
     setRating(newRating);
   };
 
@@ -59,7 +70,7 @@ const PostStep3 = ({
   const [tagValue, setTagValue] = useState('');
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if ((e.key === ' ' || e.key === 'Enter') && tags.length < 3) {
+    if (e.key === 'Enter' && tags.length < 3) {
       e.preventDefault();
       const newTag = tagValue.trim();
       if (newTag && !tags.includes(`#${newTag}`)) {
@@ -127,6 +138,15 @@ const PostStep3 = ({
   //   });
   // };
 
+  // 수정된 평점과 태그를 초기화
+  // useEffect(() => {
+  //   if (initialImageUrl) {
+  //     setImagePreview(initialImageUrl);
+  //   }
+  //   setTags(initialTags.map(tag => (tag.startsWith('#') ? tag : `#${tag}`)));
+  //   setRating(initialRating);
+  // }, [initialImageUrl, initialTags, initialRating]);
+
   return (
     <>
       <PostTitle>
@@ -179,20 +199,22 @@ const PostStep3 = ({
             </div>
           </SweetContainer>
         </div>
-        <RatingContainer>
-          <Label htmlFor="rating">평점</Label>
-          <div id="rating">
-            <ReactStars
-              count={5}
-              value={rating}
-              onChange={ratingChanged}
-              size={25}
-              half={true}
-              color1={'white'}
-            />
-            <span>{rating}점</span>
-          </div>
-        </RatingContainer>
+        {category !== 'AD' && (
+          <RatingContainer>
+            <Label htmlFor="rating">평점</Label>
+            <div id="rating">
+              <ReactStars
+                count={5}
+                value={rating}
+                onChange={ratingChanged}
+                size={25}
+                half={true}
+                color1={'white'}
+              />
+              <span>{rating}점</span>
+            </div>
+          </RatingContainer>
+        )}
         <TextareaStyled
           placeholder="포스팅 내용을 작성해주세요."
           value={postContent}

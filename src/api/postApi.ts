@@ -28,6 +28,41 @@ export const fetchPostsDetailApi = async (postId: number) => {
   }
 };
 
+export const fetchPostsModify = async (
+  postId: number,
+  drinkId: number,
+  type: string,
+  content: string,
+  rating: number,
+  tag: string[],
+  imageUrl: string,
+) => {
+  try {
+    const response = await api.put(`/post/${postId}`, {
+      drinkId,
+      type,
+      content,
+      rating,
+      tag,
+      imageUrl,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log('Error modifying posts: ', error);
+  }
+};
+
+export const fetchPostsDelete = async (postId: number) => {
+  try {
+    const response = await api.delete(`/posts/${postId}`);
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.log('Error deleting posts: ', error);
+  }
+};
+
 /** 특정 게시글 좋아요 토글 API */
 export const fetchPostLikeApi = async (postId: number) => {
   try {
