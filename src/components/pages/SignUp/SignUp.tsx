@@ -85,12 +85,11 @@ const SignUp = () => {
   }, [email]);
 
   useEffect(() => {
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasDigit = /\d/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    const lengthValid = password.length >= 8 && password.length <= 15;
-    if (hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar && lengthValid) {
+    const regex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>~`;])[A-Za-z\d!@#$%^&*(),.?":{}|<>~`;]{8,15}$/.test(
+        password,
+      );
+    if (regex) {
       setValidatedPassword(true);
     } else {
       setValidatedPassword(false);
