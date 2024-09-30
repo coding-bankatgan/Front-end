@@ -1,7 +1,7 @@
 import { ContentWrapper, NoFooterLayout } from '@/styles/CommonStyles';
 import { Button } from '@/components/ui/button';
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -30,6 +30,13 @@ const ReportForm = ({ showAlert }: ReportFormProps) => {
 
   const { postLink } = location.state || {};
 
+  useEffect(() => {
+    if (!/^\/post\/\d+$/.test(postLink)) {
+      console.error('잘못된 postLink 경로입니다:', postLink);
+      showAlert('error', '잘못된 링크입니다. 다시 시도해주세요.');
+    }
+  }, [postLink]);
+
   const handleUpdateClick = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!type || !content) {
@@ -37,6 +44,11 @@ const ReportForm = ({ showAlert }: ReportFormProps) => {
       return;
     } else if (content.length < 10) {
       showAlert('error', '신고 내용을 10~1000자 사이로 입력해주세요.');
+      return;
+    }
+
+    if (!/^\/post\/\d+$/.test(postLink)) {
+      showAlert('error', '잘못된 링크입니다. 올바른 게시물 링크를 사용해주세요.');
       return;
     }
 

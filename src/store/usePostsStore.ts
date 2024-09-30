@@ -80,18 +80,31 @@ export const usePostsStore = create<PostsState>((set, get) => ({
   fetchPosts: async (sortBy = 'createdAt', page = 0, size = 10) => {
     try {
       const data = await fetchPostsApi(sortBy, page, size);
+      console.log(data);
 
-      set(state => ({
-        posts: data.content.map((newPost: Post) => {
-          const existingPost = state.posts.find(p => p.id === newPost.id);
-          return existingPost
-            ? { ...newPost, isLiked: existingPost.isLiked } // 기존 좋아요 상태 유지
-            : newPost;
-        }),
-      }));
+      if (data.totalPages < page) {
+        throw new Error('Max Page');
+      }
+
+      set(state => {
+        const updatedPosts = page > 0 ? [...state.posts, ...data.content] : data.content;
+
+        // 중복 포스트 제거
+        const uniquePosts = Array.from(new Set(updatedPosts.map((post: Post) => post.id))).map(id =>
+          updatedPosts.find((post: Post) => post.id === id),
+        );
+
+        return {
+          posts: uniquePosts.map((newPost: Post) => {
+            const existingPost = state.posts.find(p => p.id === newPost.id);
+            return existingPost
+              ? { ...newPost, isLiked: existingPost.isLiked } // 기존 좋아요 상태 유지
+              : newPost;
+          }),
+        };
+      });
     } catch (err) {
-      console.error('Error fetching posts: ', err);
-      set({ posts: [] });
+      throw new Error('Max Page');
     }
   },
   // 특정 게시글
