@@ -48,6 +48,17 @@ const Post = ({ showAlert }: PostProps) => {
   };
 
   useEffect(() => {
+    const path = location.pathname;
+
+    // URL 경로 유효성 검사: '/post/{postId}' 형식이 아니면 경고 알림
+    if (!/^\/post\/\d+$/.test(path)) {
+      console.error('잘못된 URL 경로입니다:', path);
+      showAlert('error', '잘못된 URL 경로입니다. 다시 시도해주세요.');
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
+      return;
+    }
     fetchPostsDetail(postId);
     fetchCommentCount();
   }, [fetchPostsDetail, postId]);
@@ -86,12 +97,16 @@ const Post = ({ showAlert }: PostProps) => {
                     navigate('/create-post', {
                       state: {
                         postId: post.id,
+                        category: post.type,
                         initialTags: post.tags.map(tag => tag.tagName),
                         initialContent: post.content,
                         initialImageUrl: post.imageUrl,
                         initialRating: post.rating,
                         drinkId: post.drink.id,
                         drinkType: post.drink.type,
+                        degree: post.drink.degree,
+                        sweetness: post.drink.sweetness,
+                        drinkName: post.drink.name,
                         step: 3,
                       },
                     })

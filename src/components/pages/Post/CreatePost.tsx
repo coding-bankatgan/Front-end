@@ -19,13 +19,8 @@ const CreatePost = () => {
   useEffect(() => {
     if (isEditMode && location.state?.step) {
       setStep(location.state.step); // location.state에서 step 값이 있을 경우 설정
-      setDrinkData(prev => ({
-        ...prev,
-        degree: postToEdit?.degree || 0,
-        sweetness: postToEdit?.sweetness || 0,
-      }));
     }
-  }, [isEditMode, postToEdit, location.state]);
+  }, [isEditMode, location.state]);
 
   const [step, setStep] = useState(1);
   const [isNext, setIsNext] = useState(true);
@@ -36,6 +31,7 @@ const CreatePost = () => {
   const [tags, setTags] = useState<string[]>(postToEdit?.initialTags || []);
   const [rating, setRating] = useState(postToEdit?.initialRating || 0);
   const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [initialImageUrl] = useState(postToEdit?.initialImageUrl || '');
 
   useEffect(() => {
     if (postToEdit) {
@@ -57,7 +53,10 @@ const CreatePost = () => {
 
   const submitPost = async () => {
     if (tags.length < 1) {
-      setAlert({ type: 'error', message: '태그는 최소 1개 이상 작성해주세요' });
+      setAlert({ type: 'error', message: '태그는 최소 1개 이상 작성해주세요.' });
+      return;
+    } else if (!formattedContent || formattedContent.trim() === '') {
+      setAlert({ type: 'error', message: '내용을 입력해주세요.' });
       return;
     }
 
@@ -71,49 +70,70 @@ const CreatePost = () => {
         });
         console.log(imageUrl);
 
-        if (isEditMode === true) {
-          console.log(postToEdit?.postId);
-          await api.put(`/posts/${postToEdit.postId}`, {
-            drinkId: drinkData.id,
-            memberId: postToEdit?.memberId || 0,
-            type: category,
-            content: formattedContent,
-            rating,
-            tags: tagsWithoutHash,
-            imageUrl,
-          });
-        } else {
-          await api.post('/posts', {
-            drinkId: drinkData.id,
-            type: category,
-            content: formattedContent,
-            rating: rating,
-            tag: tagsWithoutHash,
-            imageUrl: imageUrl.data,
-          });
-
-          console.log({
-            drinkId: drinkData.id,
-            type: category,
-            content: formattedContent,
-            rating: rating,
-            tag: tagsWithoutHash,
-            imageUrl: imageUrl.data,
-          });
-        }
-      } else {
         await api.post('/posts', {
           drinkId: drinkData.id,
           type: category,
           content: formattedContent,
           rating: rating,
           tag: tagsWithoutHash,
-          imageUrl: drinkData.imageUrl,
+          imageUrl: imageUrl.data,
         });
+
+        console.log({
+          drinkId: drinkData.id,
+          type: category,
+          content: formattedContent,
+          rating: rating,
+          tag: tagsWithoutHash,
+          imageUrl: imageUrl.data,
+        });
+        if (isEditMode) {
+          console.log('put');
+          await api.put(`/posts/${postToEdit.postId}`, {
+            drinkId: drinkData.id,
+            type: category,
+            content: formattedContent,
+            rating,
+            tags: tagsWithoutHash,
+            imageUrl: imageUrl.data,
+          });
+          console.log(tagsWithoutHash);
+          console.log('Post updated successfully');
+        }
+      } else {
+        if (isEditMode) {
+          console.log('put');
+          await api.put(`/posts/${postToEdit.postId}`, {
+            drinkId: drinkData.id,
+            type: category,
+            content: formattedContent,
+            rating,
+            tags: tagsWithoutHash,
+            imageUrl: initialImageUrl,
+          });
+          console.log(tagsWithoutHash);
+          console.log('success');
+        } else {
+          console.log('post');
+          await api.post('/posts', {
+            drinkId: drinkData.id,
+            type: category,
+            content: formattedContent,
+            rating: rating,
+            tag: tagsWithoutHash,
+            imageUrl: drinkData.imageUrl,
+          });
+          console.log('post success');
+        }
       }
       navigate('/');
     } catch (error) {
       console.error('post error: ', error);
+      setAlert({
+        type: 'error',
+        message: '게시글 작성 중 오류가 발생했습니다. 다시 시도해주세요.',
+      });
+      return;
     }
   };
 
@@ -139,7 +159,7 @@ const CreatePost = () => {
     description: '',
     type: postToEdit?.drinkType || '',
     id: postToEdit?.drinkId || 0,
-    imageUrl: postToEdit?.imageUrl || '',
+    imageUrl: '',
     name: postToEdit?.drinkName || '',
     placeName: '',
     sweetness: postToEdit?.sweetness || 0,
@@ -234,7 +254,7 @@ const CreatePost = () => {
                   setRating={setRating}
                   submitPost={submitPost}
                   initialContent={formattedContent}
-                  initialImageUrl={drinkData.imageUrl}
+                  initialImageUrl={initialImageUrl}
                   initialTags={tags}
                   initialRating={rating}
                 />

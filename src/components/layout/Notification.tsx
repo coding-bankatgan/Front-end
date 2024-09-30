@@ -31,6 +31,7 @@ const getNotificationTitle = (type: Notification['type']) => {
     case 'COMMENT':
       return '💬 새로운 댓글이 달렸습니다.';
     case 'DECLARATION':
+    case 'REJECTION':
       return '🚨 신고 처리 결과를 확인하세요.';
     case 'REGISTRATION':
       return '🎉 특산주 신청 처리 결과를 확인하세요';
