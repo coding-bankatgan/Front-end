@@ -48,7 +48,7 @@ const Notification = () => {
   const navigate = useNavigate();
   const { notifications, newNotificationCount, fetchNotifications, markAsRead } =
     useNotificationStore();
-  const { currentUser } = useMemberStore();
+  const { members } = useMemberStore();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
@@ -72,11 +72,11 @@ const Notification = () => {
     const { type, postId, memberId } = notification;
     markAsRead(notification.id);
 
-    if (type === 'DECLARATION' || type === 'REMOVED' || postId === null) {
+    if (type === 'DECLARATION' || type === 'REMOVED' || type === 'REJECTION' || postId === null) {
       return;
     }
     if (type === 'COMMENT') {
-      if (memberId === currentUser?.id) {
+      if (memberId === members[0].id) {
         navigate(`/post/${postId}`);
       }
     } else if (type === 'REGISTRATION') {

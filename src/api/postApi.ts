@@ -476,13 +476,12 @@ export const fetchMemberWriteApi = async (
 };
 
 /** 태그 팔로우 추가 API */
-export const fetchTagAddApi = async (tagId: number, tagName: string) => {
+export const fetchTagAddApi = async (tagId: number) => {
   try {
-    const response = await axios.post(
-      '/api/tags/follows',
+    const response = await api.post(
+      '/tags/follows',
       {
         tagId: tagId,
-        tagName: tagName,
       },
       {
         headers: {
@@ -499,7 +498,7 @@ export const fetchTagAddApi = async (tagId: number, tagName: string) => {
 /** 태그 팔로우 목록 조회 API */
 export const fetchTagApi = async () => {
   try {
-    const response = await axios.get(`/api/members/tags/follows`);
+    const response = await api.get(`/members/tags/follows`);
     return response.data;
   } catch (err) {
     console.error('Error fetching tags: ', err);
@@ -507,3 +506,12 @@ export const fetchTagApi = async () => {
 };
 
 /** 태그 팔로우 삭제 API */
+export const fetchTagDeleteApi = async (followId: number) => {
+  try {
+    console.log(followId);
+    const response = await api.delete(`/tags/follows/${followId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting tags: ', error);
+  }
+};

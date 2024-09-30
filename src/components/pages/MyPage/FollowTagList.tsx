@@ -1,20 +1,38 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useMemberStore } from '@/store/useMemberStore';
 import styled from '@emotion/styled';
 import MinusIcon from '@/assets/icons/MinusIcon';
+import CustomAlert from '@/components/layout/CustomAlert';
+import { fetchTagDeleteApi } from '@/api/postApi';
 
 const FollowTagList = () => {
-  const { followTags, currentUser, removeFollowTag, fetchFollowTags } = useMemberStore();
+  const { members, followTags, fetchFollowTags } = useMemberStore();
+  const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   useEffect(() => {
     fetchFollowTags();
   }, [fetchFollowTags]);
 
   const myFollowTags = Array.isArray(followTags)
-    ? followTags.filter(followTags => followTags.memberId === currentUser?.id)
+    ? followTags.filter(followTags => followTags.memberId === members[0].id)
     : [];
-  console.log(myFollowTags);
+
+  const removeFollowTag = async (followId: number, tagName: string) => {
+    try {
+      console.log(followId);
+      console.log(tagName);
+      const response = await fetchTagDeleteApi(followId);
+
+      if (response) {
+        setAlert({ type: 'success', message: `${tagName} 태그가 삭제되었습니다.` });
+        fetchFollowTags();
+      }
+    } catch (error) {
+      setAlert({ type: 'error', message: '태그 삭제에 실패했습니다.' });
+      console.error('error: ', error);
+    }
+  };
 
   return (
     <>
@@ -27,9 +45,16 @@ const FollowTagList = () => {
           {myFollowTags.map(tag => (
             <li key={tag.tagId}>
               #{tag.tagName}
-              <Button onClick={() => removeFollowTag(tag.tagId)}>
+              <Button onClick={() => removeFollowTag(tag.id, tag.tagName)}>
                 <MinusIcon />
               </Button>
+              {alert && (
+                <CustomAlert
+                  type={alert.type}
+                  message={alert.message}
+                  onClose={() => setAlert(null)}
+                />
+              )}
             </li>
           ))}
         </FollowTagListStyled>

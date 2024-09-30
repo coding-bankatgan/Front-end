@@ -21,19 +21,22 @@ interface AlertDialogTagProps {
 }
 
 const AlertDialogTag = ({ children, tagId, showAlert }: AlertDialogTagProps) => {
-  const { currentUser, followTags, addFollowTag, fetchFollowTags } = useMemberStore();
+  const { members, followTags, fetchFollowTags } = useMemberStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const currentUser = members[0];
 
   useEffect(() => {
     if (currentUser) {
       fetchFollowTags();
     }
-  }, [currentUser, fetchFollowTags]);
+  }, [fetchFollowTags]);
 
   const tagName = typeof children === 'string' ? children : '';
 
   const handleAddTagToFollow = async () => {
     if (currentUser) {
+      console.log('followTags:', followTags);
       const isTagAlreadyFollowed = followTags.some(tag => tag.tagName === tagName);
       console.log(isTagAlreadyFollowed);
       console.log(tagName);
@@ -42,18 +45,10 @@ const AlertDialogTag = ({ children, tagId, showAlert }: AlertDialogTagProps) => 
         showAlert('error', '해당 태그는 이미 팔로우 되어 있습니다');
         return;
       }
-
-      const followTag = {
-        memberId: currentUser.id,
-        memberName: currentUser.name,
-        tagId,
-        tagName,
-      };
-
-      const addedTag = await fetchTagAddApi(tagId, tagName);
+      const addedTag = await fetchTagAddApi(tagId);
+      showAlert('success', `#${tagName} 태그가 팔로우 되었습니다.`);
 
       if (addedTag) {
-        await addFollowTag(followTag);
         setIsDialogOpen(false);
       } else {
         showAlert('error', '태그 추가에 실패했습니다.');
