@@ -87,7 +87,7 @@ const WithdrawWrapper = styled.div`
 
   p {
     font-size: ${({ theme }) => theme.fontSizes.small};
-    color: ${({ theme }) => theme.colors.gray};
+    color: ${({ theme }) => theme.colors.error};
   }
 `;
 

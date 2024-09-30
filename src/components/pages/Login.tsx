@@ -348,33 +348,35 @@ const GoogleBtn = styled.button`
 const Complete = styled.button`
   position: absolute;
   width: 310px;
-  padding: 10px;
+  padding: 15px;
   background-color: ${({ theme }) => theme.colors.success};
-  border: 1px solid;
-  border-radius: 10px;
-  border-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  text-align: center;
+  border-radius: 5px;
+  border-color: ${({ theme }) => theme.colors.white};
   top: 30px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 `;
 
 const Error = styled.button`
   position: absolute;
   width: 310px;
-  padding: 10px;
+  padding: 15px;
   background-color: ${({ theme }) => theme.colors.error};
-  border: 1px solid;
-  border-radius: 10px;
-  border-color: ${({ theme }) => theme.colors.white};
   color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  text-align: center;
+  border-radius: 5px;
+  border-color: ${({ theme }) => theme.colors.white};
   top: 30px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 `;
 
 const SearchPassword = styled.div`
-  margin-top: 6px;
+  margin-top: 20px;
   color: ${({ theme }) => theme.colors.darkGray};
-  font-size: ${({ theme }) => theme.fontSizes.small};
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
   text-decoration: underline;
   text-align: center;
 `;

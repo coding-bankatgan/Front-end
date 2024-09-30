@@ -107,6 +107,8 @@ const FollowTagListStyled = styled.div`
     }
 
     svg {
+      width: 20px;
+      height: 20px;
       color: ${({ theme }) => theme.colors.white};
       background-color: ${({ theme }) => theme.colors.gray};
       border-radius: 12px;

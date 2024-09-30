@@ -205,13 +205,14 @@ const ValiText = styled.div`
   align-items: center;
   width: 100%;
   height: 70px;
-  font-weight: bold;
+  font-size: ${({ theme }) => theme.fontSizes.small};
   button {
     margin-top: 4px;
-    padding: 2px 12px 2px 12px;
-    background: ${({ theme }) => theme.colors.success};
-    border-radius: 8px;
+    padding: 3px 10px;
+    background-color: ${({ theme }) => theme.colors.point};
+    border-radius: 15px;
     color: ${({ theme }) => theme.colors.white};
+    font-size: ${({ theme }) => theme.fontSizes.small};
   }
 `;
 

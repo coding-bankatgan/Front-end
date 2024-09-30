@@ -247,6 +247,7 @@ export const Container = styled.div`
 export const Header = styled.h2`
   margin-bottom: 20px;
   font-size: ${({ theme }) => theme.fontSizes.medium};
+  color: ${({ theme }) => theme.colors.black};
   font-weight: bold;
 
   p {

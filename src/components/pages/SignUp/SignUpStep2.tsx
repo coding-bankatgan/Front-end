@@ -41,9 +41,11 @@ const SignUpStep2 = ({
           </AlcoholList>
         </Container>
       </ScrollCont>
-      <Button onClick={() => handleSubmit()} aria-label="회원가입 데이터 제출">
+      <ButtonWrapper>
+        <Button onClick={() => handleSubmit()} aria-label="회원가입 데이터 제출">
         완료
       </Button>
+      </ButtonWrapper>
     </Wrapper>
   );
 };
@@ -84,4 +86,10 @@ const AlcoholItem = styled.button<AlcoholItemProps>`
   justify-content: center;
   align-items: center;
   font-size: ${({ theme }) => theme.fontSizes.small};
+`;
+
+const ButtonWrapper = styled.span`
+  padding-top: 20px;
+  width: 100%;
+  background-color: ${({ theme }) => theme.colors.white};
 `;

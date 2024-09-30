@@ -104,11 +104,11 @@ const BadgeWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 const BadgeStyled = styled(Badge)`
-  margin: 0 4px 0 4px;
+  margin: 0 3px 0 3px;
   padding: 0px 15px;
   height: 27px;
   background-color: ${({ theme }) => theme.colors.primary};

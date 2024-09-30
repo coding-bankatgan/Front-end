@@ -210,9 +210,11 @@ const TitleStyled = styled.div`
   }
 
   > textarea {
+    background-color: ${({ theme }) => theme.colors.brightGray};
+
     &:focus {
-      border-color: ${({ theme }) => theme.colors.focusShadowGray};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
+      border-color: none;
+      box-shadow: none;
     }
   }
 `;
@@ -221,10 +223,10 @@ const FormStyled = styled.div`
   overflow: hidden;
 
   > input {
-    border-radius: 10px;
     border: 1px solid ${({ theme }) => theme.colors.lightGray};
     margin-bottom: 10px;
-    &:focus {
+    :focus,
+    :hover {
       border-color: ${({ theme }) => theme.colors.focusShadowGray};
       box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     }
@@ -233,21 +235,19 @@ const FormStyled = styled.div`
 
 const TextareaStyled = styled(Textarea)`
   height: 150px;
-  margin-top: 5px;
   margin-bottom: 10px;
   background-color: ${({ theme }) => theme.colors.lightGray};
   resize: none;
 
-  &:focus {
+  :focus,
+  :hover {
     border-color: ${({ theme }) => theme.colors.focusShadowGray};
     box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
   }
 `;
 
 const Label = styled.label`
-  margin-bottom: 5px;
-  font-size: ${({ theme }) => theme.fontSizes.small};
-  font-weight: bold;
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
   ::before {
     content: '*';
@@ -296,11 +296,13 @@ const ButtonStyled = styled.div`
   button {
     width: 48%;
     height: 45px;
+    color: ${({ theme }) => theme.colors.white};
     font-size: ${({ theme }) => theme.fontSizes.base};
     border-radius: 30px;
 
     :nth-of-type(1) {
-      background-color: ${({ theme }) => theme.colors.gray};
+      background-color: ${({ theme }) => theme.colors.lightGray};
+      color: ${({ theme }) => theme.colors.darkGray};
     }
 
     :nth-of-type(2) {

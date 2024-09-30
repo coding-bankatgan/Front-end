@@ -100,10 +100,10 @@ const ReportForm = ({ showAlert }: ReportFormProps) => {
             onChange={e => setContent(e.target.value)}
             placeholder="기타 사유를 입력해주세요"
           />
-          <Label>
+          <WarningTxt>
             이미지 수정 요청 시<br />
             관리자 이메일(admin@gmail.com)로 요청해주시기 바랍니다.
-          </Label>
+          </WarningTxt>
         </FormContentStyled>
         <FormBottomStyled>
           <Button onClick={handleCancelClick}>취소</Button>
@@ -120,18 +120,18 @@ const NoFooterLayoutSub = styled(NoFooterLayout)`
 
 const TitleStyled = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.medium};
-  margin-bottom: 10px;
+  font-weight: bold;
+  margin-bottom: 20px;
 `;
 
 const FormHeaderStyled = styled.div`
   margin-bottom: 20px;
-  border-radius: 10px;
+  border-radius: 5px;
   border: 1px solid ${({ theme }) => theme.colors.lightGray};
   overflow: hidden;
 `;
 
 const Label = styled.label`
-  margin: 5px 0;
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
   :not(:last-child)::before {
@@ -139,11 +139,11 @@ const Label = styled.label`
     margin-right: 3px;
     color: ${({ theme }) => theme.colors.point};
   }
+`;
 
-  :last-child {
-    font-size: ${({ theme }) => theme.fontSizes.xxsmall};
-    color: ${({ theme }) => theme.colors.error};
-  }
+const WarningTxt = styled.p`
+  font-size: ${({ theme }) => theme.fontSizes.xsmall};
+  color: ${({ theme }) => theme.colors.error};
 `;
 
 const FormContentStyled = styled.div`
@@ -165,7 +165,6 @@ const SelectStyled = styled.select`
   width: 100%;
   height: 40px;
   margin-left: auto;
-  margin-top: 8px;
   margin-bottom: 20px;
   font-size: ${({ theme }) => theme.fontSizes.small};
   border: 1px solid ${({ theme }) => theme.colors.lightGray};
@@ -180,16 +179,15 @@ const SelectStyled = styled.select`
 
 const TextareaStyled = styled(Textarea)`
   height: 150px;
-  margin-top: 5px;
   margin-bottom: 10px;
-  background-color: ${({ theme }) => theme.colors.lightGray};
+  background-color: ${({ theme }) => theme.colors.brightGray};
   resize: none;
 `;
 
 const FormBottomStyled = styled.div`
   display: flex;
-  margin-top: 20px;
-  justify-content: space-around;
+  margin-top: 50px;
+  justify-content: space-between;
 
   button {
     width: 48%;
@@ -198,11 +196,13 @@ const FormBottomStyled = styled.div`
     border-radius: 30px;
 
     :nth-of-type(1) {
-      background-color: ${({ theme }) => theme.colors.gray};
+      background-color: ${({ theme }) => theme.colors.lightGray};
+      color: ${({ theme }) => theme.colors.darkGray};
     }
 
     :nth-of-type(2) {
       background-color: ${({ theme }) => theme.colors.primary};
+      color: ${({ theme }) => theme.colors.white};
     }
   }
 `;

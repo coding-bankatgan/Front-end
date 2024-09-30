@@ -531,7 +531,7 @@ const Search = () => {
         ) : hasSearched ? (
           Array.isArray(searchResults) && searchResults.length > 0 ? (
             <ResultsWrapper>
-              <span>검색결과</span>
+              <span>검색결과 ({searchResults.length}개)</span>
               <div>
                 {searchResults.map((result: any, idx) => (
                   <CardItem key={idx} post={result} />
