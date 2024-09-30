@@ -7,6 +7,7 @@ import ExProfileImg from '@/assets/ExProfileImg';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Post, usePostsStore } from '@/store/usePostsStore';
+import DOMPurify from 'dompurify';
 
 interface CardItemProps {
   post: Post;
@@ -41,7 +42,7 @@ const CardItem = ({ post }: CardItemProps) => {
           />
         </ContentTop>
         <DrinkName>{post.drink.name}</DrinkName>
-        <p dangerouslySetInnerHTML={{ __html: post.content }}></p>
+        <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}></p>
         <TagWrapper>
           {post.tags.map(tag => (
             <Badge key={tag.tagId}>#{tag.tagName}</Badge>

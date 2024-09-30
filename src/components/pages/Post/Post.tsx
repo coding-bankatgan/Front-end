@@ -19,6 +19,7 @@ import { mapDrinkType } from '@/data/drinkTypes';
 import DeletePost from './DeletePost';
 import { fetchCommentsApi } from '@/api/postApi';
 import { usePostsStore } from '@/store/usePostsStore';
+import DOMPurify from 'dompurify';
 
 const typeMap = {
   AD: '광고',
@@ -117,7 +118,7 @@ const Post = ({ showAlert }: PostProps) => {
             <ChatIcon /> {commentCount?.toLocaleString()}
           </span>
         </Interactions>
-        <Desc dangerouslySetInnerHTML={{ __html: post.content }}></Desc>
+        <Desc dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}></Desc>
         <EtcWrap>
           <TagWrapper>
             {post.tags.map(tag => (
