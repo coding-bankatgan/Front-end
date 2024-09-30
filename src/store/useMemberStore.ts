@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { fetchMemberApi, fetchTagApi } from '@/api/postApi';
 
 interface Tag {
-  id?: number;
+  id: number;
   memberId: number;
   memberName: string;
   tagId: number;
@@ -34,12 +34,10 @@ export interface MemberState {
   fetchMembers: () => Promise<void>;
 
   followTags: Tag[];
-  addFollowTag: (tag: Tag) => Promise<void>;
-  removeFollowTag: (tagId: number) => void;
   fetchFollowTags: () => Promise<void>;
 }
 
-export const useMemberStore = create<MemberState>((set, get) => ({
+export const useMemberStore = create<MemberState>(set => ({
   members: [],
   followTags: [],
   currentUser: null,
@@ -66,51 +64,12 @@ export const useMemberStore = create<MemberState>((set, get) => ({
     }
   },
   fetchFollowTags: async () => {
-    const state = get();
-    const currentUser = state.currentUser;
-
-    if (currentUser) {
-      try {
-        const response = await fetchTagApi();
-        const userFollowTags = response.filter((tag: Tag) => tag.memberId === currentUser.id);
-        console.log(userFollowTags);
-        set({ followTags: userFollowTags });
-      } catch (err) {
-        console.log('Error fetching tags:', err);
-      }
+    try {
+      const response = await fetchTagApi();
+      set({ followTags: response });
+    } catch (err) {
+      console.log('Error fetching tags:', err);
     }
-  },
-  addFollowTag: async (tag: Tag) => {
-    set(state => {
-      const currentUser = state.currentUser;
-      if (currentUser && Array.isArray(currentUser.followTags)) {
-        return {
-          ...state,
-          currentUser: {
-            ...currentUser,
-            followTags: [...currentUser.followTags, tag],
-          },
-        };
-      }
-      return state;
-    });
-  },
-  removeFollowTag: (tagId: number) => {
-    set(state => {
-      const currentUser = state.currentUser;
-
-      if (currentUser && currentUser.followTags) {
-        return {
-          ...state,
-          currentUser: {
-            ...currentUser,
-            followTags: currentUser.followTags.filter(tag => tag.tagId !== tagId),
-          },
-        };
-      }
-
-      return state;
-    });
   },
 }));
 
