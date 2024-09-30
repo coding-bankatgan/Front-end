@@ -20,6 +20,7 @@ import DeletePost from './DeletePost';
 import { fetchCommentsApi } from '@/api/postApi';
 import { usePostsStore } from '@/store/usePostsStore';
 import DOMPurify from 'dompurify';
+import { motion } from 'framer-motion';
 
 const typeMap = {
   AD: '광고',
@@ -36,6 +37,11 @@ const Post = ({ showAlert }: PostProps) => {
   const { postsDetail, fetchPostsDetail, togglePostLike } = usePostsStore();
   const { id } = useParams();
   const postId = Number(id);
+  const [isLiked, setIsLiked] = useState(false);
+
+  const toggleLike = () => {
+    setIsLiked(!isLiked);
+  };
 
   /** 특정 게시글의 댓글 수 가져오는 함수 */
   const fetchCommentCount = async () => {
@@ -126,8 +132,30 @@ const Post = ({ showAlert }: PostProps) => {
         </Img>
         <Interactions>
           <span>
-            <HeartIcon onClick={() => togglePostLike(post.id, post.isLiked)} liked={post.isLiked} />
-            {post.likeCount.toLocaleString()}
+            <motion.button
+              onClick={toggleLike}
+              whileTap={{ scale: 1.3 }}
+              animate={{
+                scale: post.isLiked ? [1, 1.3, 1] : [1, 1.3, 1],
+                color: post.isLiked ? '#FF3140' : '#4B463F',
+              }}
+              transition={{
+                type: 'spring',
+                stiffness: 500, // 스프링 강도
+                damping: 20, // 반동 후 멈추는 정도
+                bounce: 20, // 튕기는 효과
+              }}
+              style={{
+                border: 'none',
+                background: 'none',
+              }}
+            >
+              <HeartIcon
+                onClick={() => togglePostLike(post.id, post.isLiked)}
+                liked={post.isLiked}
+              />
+            </motion.button>
+            <span>{post.likeCount.toLocaleString()}</span>
           </span>
           <span>
             <ChatIcon /> {commentCount?.toLocaleString()}
@@ -296,14 +324,15 @@ const Interactions = styled.div`
   align-items: center;
   margin: 10px 0 10px 20px;
 
-  span {
+  > span {
     display: flex;
     justify-content: flex-start;
     align-items: center;
     font-size: ${({ theme }) => theme.fontSizes.small};
 
-    :nth-of-type(1) {
-      margin-right: 10px;
+    span {
+      min-width: 20px;
+      width: auto;
     }
 
     svg {

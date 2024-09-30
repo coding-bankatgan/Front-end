@@ -137,8 +137,6 @@ export const usePostsStore = create<PostsState>((set, get) => ({
     const newIsLiked = !post.isLiked;
 
     try {
-      await fetchPostLikeApi(postId);
-
       set(state => ({
         posts: state.posts.map(p =>
           p.id === postId
@@ -160,6 +158,8 @@ export const usePostsStore = create<PostsState>((set, get) => ({
               }
             : state.postsDetail,
       }));
+
+      await fetchPostLikeApi(postId);
     } catch (err) {
       console.error('Error toggling like:', err);
     }

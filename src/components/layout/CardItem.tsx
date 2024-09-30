@@ -7,9 +7,11 @@ import ExProfileImg from '@/assets/ExProfileImg';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Post, usePostsStore } from '@/store/usePostsStore';
+import { motion } from 'framer-motion';
 import CustomAlert from '@/components/layout/CustomAlert';
 import { useState } from 'react';
 import DOMPurify from 'dompurify';
+import { useState } from 'react';
 
 interface CardItemProps {
   post: Post;
@@ -18,7 +20,12 @@ interface CardItemProps {
 const CardItem = ({ post }: CardItemProps) => {
   const navigate = useNavigate();
   const { togglePostLike } = usePostsStore();
+  const [isLiked, setIsLiked] = useState(false);
   const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  const toggleLike = () => {
+    setIsLiked(!isLiked);
+  };
 
   const handleCardClick = () => {
     if (window.location.pathname.startsWith('/posts/')) {
@@ -55,13 +62,43 @@ const CardItem = ({ post }: CardItemProps) => {
 
             {post.memberName}
           </span>
-          <HeartIcon
-            onClick={e => {
-              e.stopPropagation();
-              togglePostLike(post.id, post.isLiked);
+          <motion.button
+            onClick={toggleLike}
+            style={{
+              border: 'none',
+              background: 'none',
+              cursor: 'pointer',
             }}
-            liked={post.isLiked}
-          />
+          >
+            <motion.div
+              whileTap={{ scale: 1.2 }}
+              animate={{
+                scale: post.isLiked ? [1, 1.2, 1] : [1, 1.2, 1],
+                color: post.isLiked ? '#FF3140' : '#4B463F',
+              }}
+              transition={{
+                type: 'spring',
+                stiffness: 500, // 스프링 강도
+                damping: 20, // 반동 후 멈추는 정도
+                bounce: 0.5, // 튕기는 효과
+              }}
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '18px',
+                height: '18px',
+              }}
+            >
+              <HeartIcon
+                onClick={e => {
+                  e.stopPropagation();
+                  togglePostLike(post.id, post.isLiked);
+                }}
+                liked={post.isLiked}
+              />
+            </motion.div>
+          </motion.button>
         </ContentTop>
         <DrinkName>{post.drink.name}</DrinkName>
         <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}></p>
