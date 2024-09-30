@@ -37,10 +37,9 @@ const Post = ({ showAlert }: PostProps) => {
   const { postsDetail, fetchPostsDetail, togglePostLike } = usePostsStore();
   const { id } = useParams();
   const postId = Number(id);
-  const [isLiked, setIsLiked] = useState(false);
 
-  const toggleLike = () => {
-    setIsLiked(!isLiked);
+  const handleLikeClick = () => {
+    togglePostLike(post.id, post.isLiked);
   };
 
   /** 특정 게시글의 댓글 수 가져오는 함수 */
@@ -133,7 +132,7 @@ const Post = ({ showAlert }: PostProps) => {
         <Interactions>
           <span>
             <motion.button
-              onClick={toggleLike}
+              onClick={handleLikeClick}
               whileTap={{ scale: 1.3 }}
               animate={{
                 scale: post.isLiked ? [1, 1.3, 1] : [1, 1.3, 1],
@@ -151,7 +150,7 @@ const Post = ({ showAlert }: PostProps) => {
               }}
             >
               <HeartIcon
-                onClick={() => togglePostLike(post.id, post.isLiked)}
+                // onClick={() => togglePostLike(post.id, post.isLiked)}
                 liked={post.isLiked}
               />
             </motion.button>

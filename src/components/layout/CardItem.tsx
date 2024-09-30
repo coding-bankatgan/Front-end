@@ -19,11 +19,11 @@ interface CardItemProps {
 const CardItem = ({ post }: CardItemProps) => {
   const navigate = useNavigate();
   const { togglePostLike } = usePostsStore();
-  const [isLiked, setIsLiked] = useState(false);
   const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-  const toggleLike = () => {
-    setIsLiked(!isLiked);
+  const handleLikeClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    togglePostLike(post.id, post.isLiked);
   };
 
   const handleCardClick = () => {
@@ -62,7 +62,7 @@ const CardItem = ({ post }: CardItemProps) => {
             {post.memberName}
           </span>
           <motion.button
-            onClick={toggleLike}
+            onClick={handleLikeClick}
             style={{
               border: 'none',
               background: 'none',
@@ -90,10 +90,10 @@ const CardItem = ({ post }: CardItemProps) => {
               }}
             >
               <HeartIcon
-                onClick={e => {
-                  e.stopPropagation();
-                  togglePostLike(post.id, post.isLiked);
-                }}
+                // onClick={e => {
+                //   e.stopPropagation();
+                //   togglePostLike(post.id, post.isLiked);
+                // }}
                 liked={post.isLiked}
               />
             </motion.div>
