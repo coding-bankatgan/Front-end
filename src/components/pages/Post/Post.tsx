@@ -21,6 +21,7 @@ import { fetchCommentsApi } from '@/api/postApi';
 import { usePostsStore } from '@/store/usePostsStore';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
+import useMemberStore from '@/store/useMemberStore';
 
 const typeMap = {
   AD: '광고',
@@ -35,6 +36,7 @@ const Post = ({ showAlert }: PostProps) => {
   const navigate = useNavigate();
   const [commentCount, setCommentCount] = useState<number | null>(null);
   const { postsDetail, fetchPostsDetail, togglePostLike } = usePostsStore();
+  const { members } = useMemberStore();
   const { id } = useParams();
   const postId = Number(id);
 
@@ -92,38 +94,40 @@ const Post = ({ showAlert }: PostProps) => {
 
           {post.memberName}
           <span>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <EllipsisHorizontalIcon />
-              </DropdownMenuTrigger>
-              <DropdownMenuContentStyled>
-                <DropdownMenuItem
-                  onClick={() =>
-                    navigate('/create-post', {
-                      state: {
-                        postId: post.id,
-                        category: post.type,
-                        initialTags: post.tags.map(tag => tag.tagName),
-                        initialContent: post.content,
-                        initialImageUrl: post.imageUrl,
-                        initialRating: post.rating,
-                        drinkId: post.drink.id,
-                        drinkType: post.drink.type,
-                        degree: post.drink.degree,
-                        sweetness: post.drink.sweetness,
-                        drinkName: post.drink.name,
-                        step: 3,
-                      },
-                    })
-                  }
-                >
-                  수정
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <DeletePost postId={postId} showAlert={showAlert} />
-                </DropdownMenuItem>
-              </DropdownMenuContentStyled>
-            </DropdownMenu>
+            {post.memberId === members[0].id && (
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <EllipsisHorizontalIcon />
+                </DropdownMenuTrigger>
+                <DropdownMenuContentStyled>
+                  <DropdownMenuItem
+                    onClick={() =>
+                      navigate('/create-post', {
+                        state: {
+                          postId: post.id,
+                          category: post.type,
+                          initialTags: post.tags.map(tag => tag.tagName),
+                          initialContent: post.content,
+                          initialImageUrl: post.imageUrl,
+                          initialRating: post.rating,
+                          drinkId: post.drink.id,
+                          drinkType: post.drink.type,
+                          degree: post.drink.degree,
+                          sweetness: post.drink.sweetness,
+                          drinkName: post.drink.name,
+                          step: 3,
+                        },
+                      })
+                    }
+                  >
+                    수정
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <DeletePost postId={postId} showAlert={showAlert} />
+                  </DropdownMenuItem>
+                </DropdownMenuContentStyled>
+              </DropdownMenu>
+            )}
           </span>
         </Nickname>
         <Img>

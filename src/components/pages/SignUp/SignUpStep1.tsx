@@ -63,6 +63,7 @@ const SignUpStep1 = ({
             id="name"
             value={name}
             onChange={e => setName(e.target.value)}
+            aria-label="닉네임(이름) 입력"
           />
           <AlertText>{name === '' && confirmAlert && '닉네임(이름)을 입력해주세요.'}</AlertText>
           <Label htmlFor="email">
@@ -78,6 +79,7 @@ const SignUpStep1 = ({
             onChange={e => {
               setDate(e.target.value);
             }}
+            aria-label="생년월일 입력"
           />
           <AlertText>{date === '' && confirmAlert && '생년월일을 선택해주세요.'}</AlertText>
           <Label htmlFor="email">
@@ -101,6 +103,7 @@ const SignUpStep1 = ({
             id="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
+            aria-label="아이디(이메일) 입력"
           />
           <AlertText>
             {email === '' && confirmAlert && '올바른 아이디(이메일)를 입력해주세요.'}
@@ -113,6 +116,7 @@ const SignUpStep1 = ({
             id="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
+            aria-label="패스워드 입력"
           />
           <AlertText>
             {
@@ -128,6 +132,7 @@ const SignUpStep1 = ({
             value={confirmPassword}
             onChange={e => setConfirmPassword(e.target.value)}
             required
+            aria-label="패스워드 확인 입력"
           />
           <AlertText>
             {password && confirmPassword && !isMatch && '패스워드가 일치하지 않습니다.'}
@@ -139,7 +144,9 @@ const SignUpStep1 = ({
           </AlarmTextStyled>
         </Container>
       </ScrollCont>
-      <Button onClick={() => nextSlide()}>다음</Button>
+      <Button onClick={() => nextSlide()} aria-label="다음 단계로 이동">
+        다음
+      </Button>
     </Wrapper>
   );
 };

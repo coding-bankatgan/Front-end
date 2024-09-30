@@ -33,6 +33,7 @@ const SignUpStep2 = ({
                 key={alcohol}
                 isSelected={selectedAlcohols.includes(alcohol)}
                 onClick={() => handleSelect(alcohol)}
+                aria-label={`주종 선택: ${alcoholsName[idx]}`}
               >
                 {alcoholsName[idx]}
               </AlcoholItem>
@@ -41,7 +42,9 @@ const SignUpStep2 = ({
         </Container>
       </ScrollCont>
       <ButtonWrapper>
-        <Button onClick={() => handleSubmit()}>완료</Button>
+        <Button onClick={() => handleSubmit()} aria-label="회원가입 데이터 제출">
+        완료
+      </Button>
       </ButtonWrapper>
     </Wrapper>
   );

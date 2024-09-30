@@ -19,11 +19,11 @@ const MyPage = () => {
       <ContentWrapper>
         <ImgWrapper>
           {members[0].imageUrl ? (
-            <img src={members[0].imageUrl} alt="Profile" />
+            <img src={members[0].imageUrl} alt="프로필 사진" />
           ) : (
-            <ExProfileImg /> // 기본 이미지
+            <ExProfileImg aria-label="기본 프로필 이미지" />
           )}
-          <EditMyPage onClick={() => navigate('/mypage/edit')}>
+          <EditMyPage onClick={() => navigate('/mypage/edit')} aria-label="내정보 수정하기">
             <SettingIcon />
           </EditMyPage>
         </ImgWrapper>
@@ -33,7 +33,9 @@ const MyPage = () => {
         <BadgeWrapper>
           <img src={handleImg} alt="선호 주종 리스트" />
           {members[0]?.favorDrinkType?.map(drinkType => (
-            <BadgeStyled key={drinkType}>{mapDrinkType(drinkType)}</BadgeStyled>
+            <BadgeStyled key={drinkType} aria-label="선호 주종">
+              {mapDrinkType(drinkType)}
+            </BadgeStyled>
           ))}
         </BadgeWrapper>
         <MyPageTab />

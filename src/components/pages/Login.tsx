@@ -161,21 +161,25 @@ const Login = () => {
             {/* </motion.div> */}
             <FormContainer onSubmit={handleSubmit}>
               <motion.div initial="hidden" animate="visible" variants={slideUpWithFade} key="form">
-                <LogoImage src={symbol} alt="오늘한잔" />
+                <LogoImage src={symbol} alt="오늘한잔" aria-label="로고" />
                 <Heading>지역 특산주를 위한 플랫폼</Heading>
                 <Label htmlFor="email">아이디(이메일)</Label>
                 <Input type="email" name="email" id="email" />
                 <Label htmlFor="password">패스워드</Label>
                 <Input type="password" name="password" id="password" />
-                <LoginBtn type="submit">로그인</LoginBtn>
+                <LoginBtn type="submit" aria-label="로그인">
+                  로그인
+                </LoginBtn>
                 <Link to={'/signup'}>
-                  <SignupBtn>회원가입</SignupBtn>
+                  <SignupBtn aria-label="회원가입으로 이동">회원가입</SignupBtn>
                 </Link>
-                <GoogleBtn type="button" onClick={handleLogin}>
+                <GoogleBtn type="button" onClick={handleLogin} aria-label="Google로 로그인">
                   <GoogleIcon /> Google로 로그인
                 </GoogleBtn>
                 <Link to={'/search-password'}>
-                  <SearchPassword>비밀번호 찾기</SearchPassword>
+                  <SearchPassword aria-label="비밀번호 찾기 페이지로 이동">
+                    비밀번호 찾기
+                  </SearchPassword>
                 </Link>
               </motion.div>
             </FormContainer>

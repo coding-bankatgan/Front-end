@@ -66,6 +66,7 @@ const Notification = () => {
     if (location.pathname) {
       refetch();
     }
+    console.log(notifications);
   }, [location.pathname]);
 
   const handleNotificationClick = (notification: Notification) => {
@@ -113,7 +114,9 @@ const Notification = () => {
               </NoticeTop>
               <NoticeTitle>{getNotificationTitle(notification.type)}</NoticeTitle>
               <NoticeContent style={{ whiteSpace: 'pre-line' }}>
-                {notification.content}
+                {notification.type === 'REJECTION'
+                  ? '반려 : ' + notification?.content?.split(':')[1]?.trim()
+                  : notification.content}
               </NoticeContent>
             </NoticeSection>
           ))}

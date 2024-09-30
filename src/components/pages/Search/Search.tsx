@@ -411,7 +411,7 @@ const Search = () => {
     <SearchLayout>
       <SearchFixed>
         <SearchTop>
-          <span onClick={prevBtn}>
+          <span onClick={prevBtn} aria-label="이전 페이지로 돌아가기">
             <ArrowLeftIcon />
           </span>
           검색하기
@@ -437,6 +437,7 @@ const Search = () => {
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 disabled={tags.length === 3}
+                aria-label="태그로 게시글 검색"
               />
             ) : (
               <Input
@@ -445,6 +446,7 @@ const Search = () => {
                 placeholder="오메기술"
                 onKeyDown={handleKeyDown}
                 disabled={tags.length === 1}
+                aria-label="특산주이름으로 게시글 검색"
               />
             )}
 
@@ -453,7 +455,11 @@ const Search = () => {
             {isAutoVisible && autoCompleteData.length > 0 && (
               <AutoCompleteList>
                 {autoCompleteData.map((item, idx) => (
-                  <AutoCompleteItem key={idx} onClick={() => handleAutoCompleteClick(item)}>
+                  <AutoCompleteItem
+                    key={idx}
+                    onClick={() => handleAutoCompleteClick(item)}
+                    aria-label={`자동완성: ${item}`}
+                  >
                     {item}
                   </AutoCompleteItem>
                 ))}
@@ -467,7 +473,7 @@ const Search = () => {
                 <BadgeStyled key={tag.id || idx}>
                   <div>
                     <span>{tag.name}</span>
-                    <span onClick={() => handleBadgeRemove(tag.id)}>
+                    <span onClick={() => handleBadgeRemove(tag.id)} aria-label="태그 제거">
                       <CloseIcon />
                     </span>
                   </div>
@@ -493,7 +499,7 @@ const Search = () => {
               {suggestedData.map((item, idx) => (
                 <div key={idx}>
                   <Rank highlight={idx === 0 || idx === 1 || idx === 2}>{idx + 1}</Rank>
-                  <span onClick={() => handleSuggestedClick(item)}>
+                  <span onClick={() => handleSuggestedClick(item)} aria-label="인기 키워드">
                     {searchType === 'tag'
                       ? (item as SuggestedTag).tagName
                       : (item as SuggestedDrink).name}
