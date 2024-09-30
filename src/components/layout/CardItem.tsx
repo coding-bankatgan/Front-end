@@ -11,7 +11,6 @@ import { motion } from 'framer-motion';
 import CustomAlert from '@/components/layout/CustomAlert';
 import { useState } from 'react';
 import DOMPurify from 'dompurify';
-import { useState } from 'react';
 
 interface CardItemProps {
   post: Post;
