@@ -1,11 +1,9 @@
 import styled from '@emotion/styled';
 
 interface HeartIconProps {
-  // onClick: (e: React.MouseEvent) => void;
   liked: boolean;
 }
 
-// const HeartIcon = ({ onClick, liked }: HeartIconProps) => {
 const HeartIcon = ({ liked }: HeartIconProps) => {
   return (
     <SvgStyled
