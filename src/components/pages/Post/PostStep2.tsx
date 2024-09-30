@@ -192,12 +192,16 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
     <>
       <Title>어떤 특산주에 대해 작성하실 건가요?</Title>
       <SelectSearchGroup>
-        <SelectStyled value={selectedRegion} onChange={e => handleRegionChange(e.target.value)}>
+        <SelectStyled
+          value={selectedRegion}
+          onChange={e => handleRegionChange(e.target.value)}
+          aria-label="지역 선택"
+        >
           <option value="" disabled>
             시/도
           </option>
           {regions.map(region => (
-            <option value={region.name} key={region.value}>
+            <option value={region.name} key={region.value} aria-label="region.name">
               {region.name}
             </option>
           ))}
@@ -209,6 +213,7 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
             onBlur={handleBlur}
             onFocus={handleFocus}
             placeholder="특산주 이름을 입력하세요."
+            aria-label="특산주 검색"
           />
           <SearchIcon />
         </Search>

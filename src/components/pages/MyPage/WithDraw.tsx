@@ -46,7 +46,9 @@ const WithDraw = ({ showAlert }: WithDrawProps) => {
     <WithdrawWrapper>
       <AlertDialog open={isWithdrawDialogOpen} onOpenChange={setIsWithdrawDialogOpen}>
         <AlertDialogTrigger asChild>
-          <p onClick={() => setIsWithdrawDialogOpen(true)}>회원탈퇴</p>
+          <p onClick={() => setIsWithdrawDialogOpen(true)} aria-label="회원 탈퇴 하기">
+            회원탈퇴
+          </p>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -63,10 +65,15 @@ const WithDraw = ({ showAlert }: WithDrawProps) => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancelStyled onClick={() => setIsWithdrawDialogOpen(false)}>
+            <AlertDialogCancelStyled
+              onClick={() => setIsWithdrawDialogOpen(false)}
+              aria-label="취소"
+            >
               취소
             </AlertDialogCancelStyled>
-            <AlertDialogActionStyled onClick={handleWithdraw}>탈퇴</AlertDialogActionStyled>
+            <AlertDialogActionStyled onClick={handleWithdraw} aria-label="회원 탈퇴 하기">
+              탈퇴
+            </AlertDialogActionStyled>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -46,23 +46,37 @@ const Header = ({ showAlert }: HeaderProps) => {
 
   return (
     <HeaderLayout>
-      <Logo onClick={() => navigate('/')}>
+      <Logo aria-label="로고" onClick={() => navigate('/')}>
         <img src={logo} alt="오늘한잔" />
       </Logo>
       <MenuWrapper>
-        <Notification />
+        <Notification aria-label="알림" />
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger aria-label="메뉴 열기">
             <BarsIcon />
           </DropdownMenuTrigger>
           <DropdownMenuContentStyled>
-            <DropdownMenuItem onClick={() => navigate('/announcement')}>공지사항</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/faq')}>FAQ</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/specialty-drink')}>
+            <DropdownMenuItem
+              onClick={() => navigate('/announcement')}
+              aria-label="공지사항으로 이동"
+            >
+              공지사항
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/faq')} aria-label="FAQ로 이동">
+              FAQ
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigate('/specialty-drink')}
+              aria-label="특산주 신청 리스트로 이동"
+            >
               특산주 신청 리스트
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleReportClick}>신고 접수 리스트</DropdownMenuItem>
-            <DropdownMenuItem onClick={handleLogout}>로그아웃</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleReportClick} aria-label="신고 접수 리스트로 이동">
+              신고 접수 리스트
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout} aria-label="로그아웃">
+              로그아웃
+            </DropdownMenuItem>
           </DropdownMenuContentStyled>
         </DropdownMenu>
       </MenuWrapper>

@@ -10,7 +10,7 @@ const PrevBtn = () => {
   };
 
   return (
-    <PrevBtnContainer>
+    <PrevBtnContainer aria-label="뒤로가기">
       <div onClick={prevBtn}>
         <ArrowLeftIcon />
       </div>
