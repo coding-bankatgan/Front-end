@@ -12,6 +12,7 @@ const Tab = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [isContentVisible, setIsContentVisible] = useState(false); // 데이터 받아올 때 애니메이션 상태
 
   const loadingRef = useRef<HTMLDivElement | null>(null);
 
@@ -54,16 +55,23 @@ const Tab = () => {
     if (!hasMore) {
       return;
     }
+
+    setIsContentVisible(false);
+
     const fetchData = async () => {
       setIsLoading(true);
-      const sortBy = sortOrder === 'recent' ? 'createdAt' : 'viewCount';
       try {
+        const sortBy = sortOrder === 'recent' ? 'createdAt' : 'viewCount';
+        await new Promise(resolve => setTimeout(resolve, 1000));
         await fetchPosts(sortBy, page);
       } catch (error) {
         setHasMore(false);
+      } finally {
+        setIsLoading(false);
+        setTimeout(() => {
+          setIsContentVisible(true); // 데이터를 받아온 후 애니메이션 시작
+        }, 200);
       }
-
-      setIsLoading(false);
     };
 
     fetchData();
@@ -103,7 +111,7 @@ const Tab = () => {
       </SelectStyled>
       <TabsContentStyled value={selectedTab}>
         {isLoading ? (
-          <SkeWrapper>
+          <SkeWrapper className={isLoading ? 'fade-in' : 'fade-out'}>
             {Array.from({ length: 10 }).map((_, index) => (
               <div key={index} className="flex flex-col space-y-2 w-1/2 p-1">
                 <Skeleton className="w-full h-[155px] rounded-xl" />
@@ -120,12 +128,11 @@ const Tab = () => {
             ))}
           </SkeWrapper>
         ) : filteredPosts.length > 0 ? (
-          <>
+          <ContentWrapper className={isContentVisible ? 'visible' : ''}>
             {filteredPosts.map(post => (
               <CardItem key={post.id} post={post} />
             ))}
-            <div ref={loadingRef} />
-          </>
+          </ContentWrapper>
         ) : (
           <p>작성된 게시글이 없습니다</p>
         )}
@@ -135,12 +142,37 @@ const Tab = () => {
   );
 };
 
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+
+  &.visible {
+    opacity: 1;
+  }
+`;
+
 const SkeWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  transition: opacity 0.3s ease-in-out;
+
+  &.fade-out {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  &.fade-in {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+  }
 `;
 
 const TabsStyled = styled(Tabs)`
