@@ -49,7 +49,6 @@ const PostStep3 = ({
   initialRating,
 }: PostStep3Props) => {
   const alcohols = alcoholsData;
-  console.log(initialContent, initialImageUrl, initialTags, initialRating);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -85,7 +84,7 @@ const PostStep3 = ({
     setTags(prevTags => prevTags.filter(tag => tag !== tagToDelete));
   };
 
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(initialImageUrl);
 
   const handleFileChange = () => {
     const file = fileInputRef.current?.files?.[0];
@@ -105,7 +104,7 @@ const PostStep3 = ({
     setImageName('');
   };
 
-  const [postContent, setPostContent] = useState('');
+  const [postContent, setPostContent] = useState(initialContent || '');
   // const [formattedContent, setFormattedContent] = useState('');
   const handlePostContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPostContent(e.target.value);
@@ -139,14 +138,17 @@ const PostStep3 = ({
   //   });
   // };
 
-  // 수정된 평점과 태그를 초기화
-  // useEffect(() => {
-  //   if (initialImageUrl) {
-  //     setImagePreview(initialImageUrl);
-  //   }
-  //   setTags(initialTags.map(tag => (tag.startsWith('#') ? tag : `#${tag}`)));
-  //   setRating(initialRating);
-  // }, [initialImageUrl, initialTags, initialRating]);
+  // 수정
+  useEffect(() => {
+    const formattedTags = initialTags.map(tag => (tag.startsWith('#') ? tag : `#${tag}`));
+    if (JSON.stringify(formattedTags) !== JSON.stringify(tags)) {
+      setTags(formattedTags);
+    }
+
+    if (initialRating !== rating) {
+      setRating(initialRating);
+    }
+  }, [initialTags, initialRating, tags, rating]);
 
   return (
     <>
@@ -218,7 +220,7 @@ const PostStep3 = ({
         )}
         <TextareaStyled
           placeholder="포스팅 내용을 작성해주세요."
-          value={postContent}
+          value={postContent || ''}
           onChange={handlePostContentChange}
         />
         <TagsContainer>

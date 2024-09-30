@@ -10,6 +10,7 @@ export interface Declaration {
   type: string;
   content: string;
   approved: boolean | null;
+  cancelType: string | null;
   createdAt: string;
   rejectReason?: string | null;
 }
@@ -27,8 +28,6 @@ export interface DeclarationState {
   setPagination: (pagination: DeclarationState['pagination']) => void;
 
   updateApprovalStatus: (id: number, approved: boolean, rejectReason?: string | null) => void;
-  selectedRejectReasons: { [key: number]: string | null };
-  setSelectedRejectReason: (id: number, reason: string | null) => void;
 
   setDeclarations: (declaration: Declaration[]) => void;
   fetchDeclarations: (page: number, size: number) => Promise<void>;
@@ -117,15 +116,12 @@ const useDeclarationStore = create<DeclarationState>(set => ({
           });
         } else {
           // 신고 반려 시
-          const rejectionMessage = rejectReason
-            ? `신고 요청이 반려되었습니다. \n 반려 사유: ${rejectReason}`
-            : '신고 요청이 반려되었습니다.';
           addNewNotification({
             id: Date.now(),
             memberId: declaration.memberId,
             postId: null,
-            type: 'DECLARATION',
-            content: rejectionMessage,
+            type: 'REJECTION',
+            content: `${declaration.cancelType} 사유로 인해 신고 반려되었습니다.`,
             createdAt: new Date().toISOString(),
             isNew: true,
           });
@@ -134,14 +130,6 @@ const useDeclarationStore = create<DeclarationState>(set => ({
 
       return { declarations: updatedDeclarations };
     }),
-  selectedRejectReasons: {},
-  setSelectedRejectReason: (id: number, reason: string | null) =>
-    set(state => ({
-      selectedRejectReasons: {
-        ...state.selectedRejectReasons,
-        [id]: reason,
-      },
-    })),
 }));
 
 export default useDeclarationStore;

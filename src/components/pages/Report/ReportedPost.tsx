@@ -10,13 +10,7 @@ import { reportReasons } from '@/components/pages/Report/ReportForm';
 import api from '@/api/axios';
 
 const ReportedPost = () => {
-  const {
-    declarations,
-    fetchDeclarationsDetail,
-    updateApprovalStatus,
-    selectedRejectReasons,
-    setSelectedRejectReason,
-  } = useDeclarationStore();
+  const { declarations, fetchDeclarationsDetail, updateApprovalStatus } = useDeclarationStore();
   const { id } = useParams();
   const declarationId = Number(id);
   const navigate = useNavigate();
@@ -29,6 +23,9 @@ const ReportedPost = () => {
 
   /** approve 기능 */
   const [selectedApproval, setSelectedApproval] = useState<true | false | null>(null);
+  const [selectedRejectReasons, setSelectedRejectReasons] = useState<{
+    [key: number]: string | null;
+  }>({});
   const [isSelectDisabled, setIsSelectDisabled] = useState<boolean>(false);
 
   /** 반려 사유 */
@@ -47,6 +44,12 @@ const ReportedPost = () => {
         declaration.approved === null ? null : (declaration.approved as true | false),
       );
       setIsSelectDisabled(declaration.approved !== null);
+      if (declaration.cancelType) {
+        setSelectedRejectReasons(prev => ({
+          ...prev,
+          [declarationId]: declaration.cancelType,
+        }));
+      }
     }
   }, [declaration]);
 
@@ -57,7 +60,11 @@ const ReportedPost = () => {
 
   /** 반려 사유 저장 */
   const handleRejectReasonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedRejectReason(declarationId, event.target.value);
+    const value = event.target.value;
+    setSelectedRejectReasons(prev => ({
+      ...prev,
+      [declarationId]: value,
+    }));
   };
 
   useEffect(() => {

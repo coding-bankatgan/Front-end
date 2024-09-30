@@ -7,6 +7,8 @@ import ExProfileImg from '@/assets/ExProfileImg';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Post, usePostsStore } from '@/store/usePostsStore';
+import CustomAlert from '@/components/layout/CustomAlert';
+import { useState } from 'react';
 import DOMPurify from 'dompurify';
 
 interface CardItemProps {
@@ -16,9 +18,29 @@ interface CardItemProps {
 const CardItem = ({ post }: CardItemProps) => {
   const navigate = useNavigate();
   const { togglePostLike } = usePostsStore();
+  const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  const handleCardClick = () => {
+    if (window.location.pathname.startsWith('/posts/')) {
+      setAlert({
+        type: 'error',
+        message: '잘못된 URL 형식입니다. 유효한 경로는 /post/입니다.',
+      });
+      return;
+    }
+
+    navigate(`/post/${post.id}`);
+  };
 
   return (
-    <CardStyled onClick={() => navigate(`/post/${post.id}`)}>
+    <CardStyled onClick={handleCardClick}>
+      {alert && (
+        <CustomAlert
+          type={alert.type}
+          message={alert.message}
+          onClose={() => setAlert(null)} // 알림 닫기
+        />
+      )}
       <CardHeaderStyled>
         <img src={post.imageUrl} alt={post.drink.name} />
       </CardHeaderStyled>
