@@ -122,7 +122,6 @@ const PostComments = ({ postId, fetchCommentCount, showAlert }: PostCommentsProp
           id: response.id,
           memberName: isAnonymous ? '익명' : response.memberName,
         };
-        console.log('끼야야야야야야야아아아아아악', newCommentData);
 
         setComments(prevComments => {
           // 최신 댓글이 위로 오도록 정렬 및 중복 제거
