@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import SearchIcon from './../../../assets/icons/SearchIcon';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   fetchAutoCompleteDrinkApi,
   fetchAutoCompleteTagApi,
@@ -56,21 +56,58 @@ const Search = () => {
   const [tags, setTags] = useState<Tag[]>([]); // 뱃지로 변환
   const [autoCompleteData, setAutoCompleteData] = useState<string[]>([]); // 자동완성 데이터
   const [isAutoVisible, setIsAutoVisible] = useState(false); // 자동완성 비활성화
-  const [searchResults, setSearchResults] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [size, setSize] = useState(10);
+  const [searchResults, setSearchResults] = useState<Post[]>([]);
+  const [page, setPage] = useState(0);
+  const [size, _setSize] = useState(10);
   const [totalElements, setTotalElements] = useState();
   const [totalPages, setTotalPages] = useState();
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoadingResults, setIsLoadingResults] = useState(false); // 검색 결과 로딩
   const [isLoadingTagRemove, setIsLoadingTagRemove] = useState(false); // 태그 삭제 로딩
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadingRef = useRef<HTMLDivElement | null>(null);
+
+  const handleObserver: IntersectionObserverCallback = entries => {
+    if (!hasMore) {
+      return;
+    }
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage(prevPage => prevPage + 1);
+    }
+  };
+  useEffect(() => {
+    setPage(0);
+    setHasMore(true);
+    setSearchResults([]);
+  }, [tags]);
+
+  useEffect(() => {
+    const options: IntersectionObserverInit = {
+      root: null,
+      rootMargin: '2px 100px',
+      threshold: 0.1,
+    };
+
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+
+    return () => {
+      if (loadingRef.current) {
+        observer.unobserve(loadingRef.current);
+      }
+    };
+  }, [loadingRef, hasMore]);
 
   useEffect(() => {
     console.log(totalElements);
     console.log(totalPages);
-    setCurrentPage(0);
-    setSize(10);
-  }, []);
+    setPage(0);
+    setHasMore(true);
+  }, [inputValue]);
 
   const prevBtn = () => {
     navigate(-1);
@@ -103,14 +140,17 @@ const Search = () => {
   useEffect(() => {
     const debounceData = setTimeout(async () => {
       if (inputValue.trim().length > 1) {
-        let data;
         if (searchType === 'tag') {
-          data = await fetchAutoCompleteTagApi(inputValue.replace('#', ''));
+          const data = await fetchAutoCompleteTagApi(inputValue.replace('#', ''));
+
+          setAutoCompleteData(data || []);
+          setIsAutoVisible(true);
         } else if (searchType === 'drink') {
-          data = await fetchAutoCompleteDrinkApi(inputValue);
+          const data = await fetchAutoCompleteDrinkApi(inputValue);
+
+          setAutoCompleteData(data || []);
+          setIsAutoVisible(true);
         }
-        setAutoCompleteData(data || []);
-        setIsAutoVisible(true);
       } else {
         setAutoCompleteData([]);
         setIsAutoVisible(false);
@@ -196,13 +236,13 @@ const Search = () => {
         setTimeout(async () => {
           try {
             if (searchType === 'tag') {
-              const results = await fetchTagResultsApi(tagNamesWithoutHash, currentPage, size);
+              const results = await fetchTagResultsApi(tagNamesWithoutHash, page, size);
               setSearchResults(results.content);
               setTotalElements(results.totalElements);
               setTotalPages(results.totalPages);
             } else if (searchType === 'drink') {
               if (drinkSearchTerm) {
-                const results = await fetchDrinkResultsApi(drinkSearchTerm, currentPage, size);
+                const results = await fetchDrinkResultsApi(drinkSearchTerm, page, size);
                 setSearchResults(results.content);
                 setTotalElements(results.totalElements);
                 setTotalPages(results.totalPages);
@@ -248,12 +288,15 @@ const Search = () => {
       setTimeout(async () => {
         try {
           if (searchType === 'tag') {
-            const results = await fetchTagResultsApi(tagNamesWithoutHash, currentPage, size);
+            const results = await fetchTagResultsApi(tagNamesWithoutHash, page, size);
+            console.log(results);
+
             setSearchResults(results.content);
             setTotalElements(results.totalElements);
             setTotalPages(results.totalPages);
           } else if (searchType === 'drink') {
-            const results = await fetchDrinkResultsApi(drinkSearchTerm, currentPage, size);
+            const results = await fetchDrinkResultsApi(drinkSearchTerm, page, size);
+            console.log(results);
             setSearchResults(results.content);
             setTotalElements(results.totalElements);
             setTotalPages(results.totalPages);
@@ -297,15 +340,14 @@ const Search = () => {
   const searchByResults = async (tags: Tag[]) => {
     try {
       const tagNames = tags.map(tag => tag.name.replace('#', ''));
-
       if (searchType === 'tag') {
-        const results = await fetchTagResultsApi(tagNames, currentPage, size);
+        const results = await fetchTagResultsApi(tagNames, page, size);
         setSearchResults(results.content);
         setTotalElements(results.totalElements);
         setTotalPages(results.totalPages);
       } else {
         const drinkNames = tagNames[0];
-        const results = await fetchDrinkResultsApi(drinkNames, currentPage, size);
+        const results = await fetchDrinkResultsApi(drinkNames, page, size);
         setSearchResults(results.content);
         setTotalElements(results.totalElements);
         setTotalPages(results.totalPages);
@@ -315,6 +357,55 @@ const Search = () => {
       console.error('검색 중 오류 발생:', err);
     }
   };
+
+  useEffect(() => {
+    if (!hasMore) {
+      return;
+    }
+    try {
+      if (page > 0) {
+        const fetchData = async () => {
+          if (searchType === 'tag') {
+            console.log(tags);
+            const tagNames = tags.map(tag => tag.name.replace('#', ''));
+            const results = await fetchTagResultsApi(tagNames, page, size);
+            const data: Post[] = [...searchResults, ...results.content];
+            console.log();
+            if (results.content.length === 0) {
+              throw new Error('Max Page');
+            }
+            setSearchResults(data);
+            setTotalElements(results.totalElements);
+            setTotalPages(results.totalPages);
+          } else {
+            const drinkNames = tags[0].name;
+            const results = await fetchDrinkResultsApi(drinkNames, page, size);
+            const data: Post[] = [...searchResults, ...results.content];
+            console.log();
+            if (results.content.length === 0) {
+              throw new Error('Max Page');
+            }
+            setSearchResults(data);
+            setTotalElements(results.totalElements);
+            setTotalPages(results.totalPages);
+          }
+        };
+
+        fetchData();
+      }
+    } catch (error) {
+      setHasMore(false);
+    }
+  }, [page]);
+
+  useEffect(() => {
+    if (page > 0) {
+    }
+  }, [page]);
+
+  useEffect(() => {
+    console.log(searchType);
+  }, [searchType]);
 
   return (
     <SearchLayout>
@@ -434,9 +525,9 @@ const Search = () => {
         ) : hasSearched ? (
           Array.isArray(searchResults) && searchResults.length > 0 ? (
             <ResultsWrapper>
-              <span>검색결과 ({searchResults.length}개)</span>
+              <span>검색결과</span>
               <div>
-                {searchResults.map((result, idx) => (
+                {searchResults.map((result: any, idx) => (
                   <CardItem key={idx} post={result} />
                 ))}
               </div>
@@ -447,6 +538,7 @@ const Search = () => {
             </NoResultsWrapper>
           )
         ) : null}
+        {hasMore && <div ref={loadingRef} />}
       </RecommendResultWrapper>
     </SearchLayout>
   );
