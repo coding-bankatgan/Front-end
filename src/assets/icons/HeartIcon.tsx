@@ -13,7 +13,6 @@ const HeartIcon = ({ liked }: HeartIconProps) => {
       strokeWidth={1.5}
       stroke="currentColor"
       className="size-6"
-      // onClick={onClick}
       liked={liked}
     >
       <path
