@@ -24,7 +24,12 @@ const CardItem = ({ post }: CardItemProps) => {
       <CardContentStyled>
         <ContentTop>
           <span>
-            <ExProfileImg />
+            {post.memberImageUrl ? (
+              <img src={post.memberImageUrl} alt={post.memberName} />
+            ) : (
+              <ExProfileImg />
+            )}
+
             {post.memberName}
           </span>
           <HeartIcon
@@ -36,7 +41,7 @@ const CardItem = ({ post }: CardItemProps) => {
           />
         </ContentTop>
         <DrinkName>{post.drink.name}</DrinkName>
-        <p>{post.content}</p>
+        <p dangerouslySetInnerHTML={{ __html: post.content }}></p>
         <TagWrapper>
           {post.tags.map(tag => (
             <Badge key={tag.tagId}>#{tag.tagName}</Badge>
@@ -109,6 +114,12 @@ const ContentTop = styled.div`
       width: 20px;
       height: 20px;
       margin-right: 3px;
+    }
+
+    > img {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
     }
   }
 

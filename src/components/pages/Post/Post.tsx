@@ -71,7 +71,8 @@ const Post = ({ showAlert }: PostProps) => {
       </PostTitleSection>
       <UserPost>
         <Nickname>
-          <ExProfileImg />
+          {post.memberImageUrl ? <img src={post.memberImageUrl} /> : <ExProfileImg />}
+
           {post.memberName}
           <span>
             <DropdownMenu>
@@ -116,7 +117,7 @@ const Post = ({ showAlert }: PostProps) => {
             <ChatIcon /> {commentCount?.toLocaleString()}
           </span>
         </Interactions>
-        <Desc>{post.content}</Desc>
+        <Desc dangerouslySetInnerHTML={{ __html: post.content }}></Desc>
         <EtcWrap>
           <TagWrapper>
             {post.tags.map(tag => (
@@ -253,6 +254,13 @@ const Nickname = styled.div`
     width: 30px;
     height: 30px;
     margin-right: 5px;
+  }
+
+  > img {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    border-radius: 50%;
   }
 
   span {
