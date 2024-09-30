@@ -7,16 +7,25 @@ import WarningIcon from '@/assets/icons/WarningIcon';
 import Pagination from './../../layout/Pagination';
 import { useEffect, useState } from 'react';
 import ExProfileImg from '@/assets/ExProfileImg';
-import { fetchCommentsApi, fetchCommentWriteApi } from '@/api/postApi';
+import EllipsisHorizontalIcon from '@/assets/icons/EllipsisHorizontalIcon';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { fetchCommentsApi, fetchCommentWriteApi, fetchCommentsModifyApi } from '@/api/postApi';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { useMemberStore } from '@/store/useMemberStore';
 import { usePostsDetailStore } from '@/store/usePostsDetailStore';
 import useNotificationStore from '@/store/useNotificationStore';
+import DeleteComment from './DeleteComment';
 
 interface PostCommentsProps {
   postId: number;
   fetchCommentCount: () => Promise<void>;
+  showAlert: (type: 'success' | 'error', message: string) => void;
 }
 
 interface Content {
@@ -39,16 +48,18 @@ interface PagenationInfo {
 }
 
 /** 댓글 작성 API 호출 함수 */
-const wirteComment = async (postId: number, content: string) => {
+const writeComment = async (postId: number, content: string, anonymous: boolean) => {
   try {
-    const response = await fetchCommentWriteApi(postId, content);
+    console.log('API 호출 시:', { postId, content, anonymous });
+    const response = await fetchCommentWriteApi(postId, content, !anonymous);
+    console.log(response);
     return response;
   } catch (err) {
     console.error('Error writing comment: ', err);
   }
 };
 
-const PostComments = ({ postId, fetchCommentCount }: PostCommentsProps) => {
+const PostComments = ({ postId, fetchCommentCount, showAlert }: PostCommentsProps) => {
   const [comments, setComments] = useState<Content[]>([]);
   const [newComment, setNewComment] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
@@ -81,8 +92,9 @@ const PostComments = ({ postId, fetchCommentCount }: PostCommentsProps) => {
   }, [postId, pagination.number]);
 
   const handleAnonymousChange = () => {
-    setIsAnonymous(!isAnonymous);
+    setIsAnonymous(prev => !prev);
   };
+  console.log(isAnonymous);
 
   const handlePageChange = (newPage: number) => {
     if (newPage < 0 || newPage >= pagination.totalPages) return;
@@ -99,7 +111,10 @@ const PostComments = ({ postId, fetchCommentCount }: PostCommentsProps) => {
     if (newComment.trim() === '') return;
 
     try {
-      const response = await wirteComment(postId, newComment);
+      console.log('API 호출 전 - isAnonymous:', isAnonymous);
+      const response = await writeComment(postId, newComment, isAnonymous);
+      console.log(response);
+      console.log('Anonymous value sent:', isAnonymous);
 
       if (response) {
         const newCommentData = {
@@ -107,6 +122,7 @@ const PostComments = ({ postId, fetchCommentCount }: PostCommentsProps) => {
           id: response.id,
           memberName: isAnonymous ? '익명' : response.memberName,
         };
+        console.log(newCommentData);
 
         setComments(prevComments => {
           // 최신 댓글이 위로 오도록 정렬 및 중복 제거
@@ -163,23 +179,77 @@ const PostComments = ({ postId, fetchCommentCount }: PostCommentsProps) => {
     navigate(`/report/form`, { state: { postLink } });
   };
 
+  /** 댓글 수정 */
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null); // 수정할 댓글 ID
+  const [editingContent, setEditingContent] = useState('');
+  const [editingAnonymous, setEditingAnonymous] = useState(false);
+
+  const handleEditingChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setEditingContent(e.target.value);
+  };
+
+  const handleCommentEdit = (comment: Content) => {
+    setEditingCommentId(comment.id);
+    setEditingContent(comment.content);
+    setEditingAnonymous(comment.anonymous);
+  };
+
+  const handleEditSubmit = async () => {
+    if (editingCommentId === null) return;
+    if (editingContent.trim() === '') return;
+
+    try {
+      await fetchCommentsModifyApi(editingCommentId!, editingContent, editingAnonymous);
+
+      // 댓글 상태 업데이트
+      setComments(prevComments =>
+        prevComments.map(comment =>
+          comment.id === editingCommentId
+            ? { ...comment, content: editingContent, anonymous: editingAnonymous }
+            : comment,
+        ),
+      );
+
+      // 수정 상태 초기화
+      setEditingCommentId(null);
+      setEditingContent('');
+      setEditingAnonymous(false);
+    } catch (err) {
+      console.error('Error editing comment:', err);
+    }
+  };
+
   return (
     <CommentWrapper>
       <Write>
         <div>
-          <Textarea
-            placeholder="댓글을 작성해주세요."
-            value={newComment}
-            onChange={handleCommentChange}
-          />
+          {editingCommentId ? (
+            <Textarea
+              placeholder="댓글을 수정해주세요."
+              value={editingContent}
+              onChange={handleEditingChange}
+            />
+          ) : (
+            <Textarea
+              placeholder="댓글을 작성해주세요."
+              value={newComment}
+              onChange={handleCommentChange}
+            />
+          )}
           <CheckBoxWrapper>
             <Checkbox id="other" checked={isAnonymous} onCheckedChange={handleAnonymousChange} />
             <label htmlFor="other">익명</label>
           </CheckBoxWrapper>
         </div>
-        <Button onClick={handleCommentSubmit}>
-          <SendIcon />
-        </Button>
+        {editingCommentId ? (
+          <Button onClick={handleEditSubmit}>
+            <SendIcon />
+          </Button>
+        ) : (
+          <Button onClick={handleCommentSubmit}>
+            <SendIcon />
+          </Button>
+        )}
       </Write>
       <Comments>
         {comments.length > 0 ? (
@@ -198,6 +268,17 @@ const PostComments = ({ postId, fetchCommentCount }: PostCommentsProps) => {
                 </span>
                 <p>{comment.content}</p>
               </CommentInfoWrapper>
+              <DropdownMenu>
+                <DropdownMenuTriggerStyled>
+                  <EllipsisHorizontalIcon />
+                </DropdownMenuTriggerStyled>
+                <DropdownMenuContentStyled>
+                  <DropdownMenuItem onClick={() => handleCommentEdit(comment)}>
+                    수정
+                  </DropdownMenuItem>
+                  <DeleteComment commentId={comment.id} showAlert={showAlert} />
+                </DropdownMenuContentStyled>
+              </DropdownMenu>
             </Comment>
           ))
         ) : (
@@ -384,6 +465,21 @@ const CommentNickname = styled.span`
 const CommentDate = styled.span`
   color: ${({ theme }) => theme.colors.gray};
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
+`;
+
+const DropdownMenuTriggerStyled = styled(DropdownMenuTrigger)`
+  > svg {
+    color: ${({ theme }) => theme.colors.gray};
+  }
+`;
+
+const DropdownMenuContentStyled = styled(DropdownMenuContent)`
+  margin: 5px 1px 0 0;
+
+  div {
+    padding: 12px 0;
+    font-size: ${({ theme }) => theme.fontSizes.small};
+  }
 `;
 
 const ReportBtn = styled.span`
