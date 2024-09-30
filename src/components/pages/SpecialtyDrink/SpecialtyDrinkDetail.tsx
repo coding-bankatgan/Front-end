@@ -107,7 +107,7 @@ const SpecialtyDrinkDetail = () => {
           </div>
           <div>
             <Label htmlFor="text">도수</Label>
-            <span>{registration?.degree}도</span>
+            <span>{registration?.degree}%</span>
           </div>
         </DrinkInfo>
         <Label htmlFor="text">특산주 정보</Label>
@@ -217,7 +217,7 @@ const Label = styled.label`
 `;
 
 const TextareaStyled = styled(Textarea)`
-  min-height: 100px;
+  min-height: 180px;
   height: auto;
   margin-top: 5px;
   background-color: ${({ theme }) => theme.colors.clearGray};

@@ -354,7 +354,7 @@ const SliderValue = styled.span`
 `;
 
 const TextareaStyled = styled(Textarea)`
-  height: 150px;
+  height: 180px;
   background-color: ${({ theme }) => theme.colors.brightGray};
   resize: none;
 `;

@@ -415,7 +415,6 @@ const DeleteContainer = styled.span`
   right: 0;
   width: 27px;
   height: 27px;
-  border: 1px solid ${({ theme }) => theme.colors.lightGray};
   border-radius: 30px;
   z-index: 15;
 
@@ -425,6 +424,7 @@ const DeleteContainer = styled.span`
     padding: 3px;
     background-color: ${({ theme }) => theme.colors.white};
     color: ${({ theme }) => theme.colors.error};
+    border: 1px solid ${({ theme }) => theme.colors.lightGray};
     border-radius: 30px;
   }
 `;

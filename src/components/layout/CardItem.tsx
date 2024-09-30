@@ -58,8 +58,7 @@ const CardItem = ({ post }: CardItemProps) => {
             ) : (
               <ExProfileImg />
             )}
-
-            {post.memberName}
+            <span>{post.memberName}</span>
           </span>
           <motion.button
             onClick={handleLikeClick}
@@ -141,12 +140,12 @@ const CardContentStyled = styled(CardContent)`
 
   p {
     display: -webkit-box;
-    height: 34px;
-    margin-top: 2px;
+    height: 36px;
+    margin: 2px 0;
     font-size: ${({ theme }) => theme.fontSizes.small};
     text-align: left;
-    letter-spacing: -0.3px;
-    line-height: 17px;
+    letter-spacing: -0.1px;
+    line-height: 18px;
     overflow: hidden;
     text-overflow: ellipsis;
     -webkit-line-clamp: 2;
@@ -163,10 +162,13 @@ const ContentTop = styled.div`
     display: flex;
     font-size: ${({ theme }) => theme.fontSizes.small};
 
+    > span {
+      margin-left: 4px;
+    }
+
     svg {
       width: 20px;
       height: 20px;
-      margin-right: 3px;
     }
 
     > img {

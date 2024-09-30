@@ -219,8 +219,10 @@ const FormImgWrapper = styled.div`
   width: 100%;
   height: 316px;
   margin-top: -3px;
-  background-color: ${({ theme }) => theme.colors.brightGray};
+  background-color: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.lightGray};
   border-radius: 5px;
+  overflow: hidden;
   object-fit: contain;
 
   input {

@@ -88,7 +88,7 @@ const MyPageTab = () => {
         ) : postItem.length > 0 ? (
           postItem.map(post => <CardItem key={post.id} post={post} />)
         ) : (
-          <p>작성된 게시글이 없습니다</p>
+          <NoPostMessage>작성된 게시글이 없습니다</NoPostMessage>
         )}
       </TabsPostContentStyled>
       <TabsTagsContentStyled value="my-tag-lists" isActive={activeTab === 'my-tag-lists'}>
@@ -168,6 +168,18 @@ const SkeWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+`;
+
+const NoPostMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  background-color: ${({ theme }) => theme.colors.clearGray};
+  color: ${({ theme }) => theme.colors.gray};
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  border-radius: 10px;
 `;
 
 export default MyPageTab;

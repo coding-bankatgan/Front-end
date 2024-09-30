@@ -9,7 +9,7 @@ const Tab = () => {
   const { posts, fetchPosts, clearPosts } = usePostsStore();
   const [selectedTab, setSelectedTab] = useState('all');
   const [sortOrder, setSortOrder] = useState('recent');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isContentVisible, setIsContentVisible] = useState(false); // 데이터 받아올 때 애니메이션 상태
@@ -52,9 +52,7 @@ const Tab = () => {
   }, [loadingRef, hasMore]);
 
   useEffect(() => {
-    if (!hasMore) {
-      return;
-    }
+    if (!hasMore) return;
 
     setIsContentVisible(false);
 
@@ -69,8 +67,8 @@ const Tab = () => {
       } finally {
         setIsLoading(false);
         setTimeout(() => {
-          setIsContentVisible(true); // 데이터를 받아온 후 애니메이션 시작
-        }, 200);
+          setIsContentVisible(true);
+        }, 150);
       }
     };
 
@@ -113,16 +111,16 @@ const Tab = () => {
         {isLoading ? (
           <SkeWrapper className={isLoading ? 'fade-in' : 'fade-out'}>
             {Array.from({ length: 10 }).map((_, index) => (
-              <div key={index} className="flex flex-col space-y-2 w-1/2 p-1">
+              <div key={index} className="flex flex-col space-y-1 w-[49%] mb-2">
                 <Skeleton className="w-full h-[155px] rounded-xl" />
                 <div className="space-y-1">
                   <div className="flex flex-row space-x-2">
-                    <Skeleton className="w-6 h-5 rounded-full" />
-                    <Skeleton className="w-full h-5 max-w-[200px]" />
+                    <Skeleton className="w-7 h-6 rounded-full" />
+                    <Skeleton className="w-full h-6 max-w-[200px]" />
                   </div>
+                  <Skeleton className="w-full h-12 max-w-[250px]" />
                   <Skeleton className="w-full h-8 max-w-[250px]" />
-                  <Skeleton className="w-full h-5 max-w-[250px]" />
-                  <Skeleton className="w-full h-3 max-w-[200px]" />
+                  <Skeleton className="w-full h-6 max-w-[200px]" />
                 </div>
               </div>
             ))}
@@ -134,10 +132,14 @@ const Tab = () => {
             ))}
           </ContentWrapper>
         ) : (
-          <p>작성된 게시글이 없습니다</p>
+          <NoPostMessage>작성된 게시글이 없습니다</NoPostMessage>
         )}
       </TabsContentStyled>
-      {hasMore ? <div ref={loadingRef} /> : <p>더 이상의 게시글이 없습니다!</p>}
+      {filteredPosts.length === 0 ? null : hasMore && filteredPosts.length >= 8 ? (
+        <div ref={loadingRef} />
+      ) : (
+        <LastPostMessage>마지막 게시글 입니다.</LastPostMessage>
+      )}
     </TabsStyled>
   );
 };
@@ -149,7 +151,7 @@ const ContentWrapper = styled.div`
   align-items: center;
   width: 100%;
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.15s ease-in-out;
 
   &.visible {
     opacity: 1;
@@ -161,17 +163,17 @@ const SkeWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  transition: opacity 0.3s ease-in-out;
+  width: 98%;
+  transition: opacity 0.15s ease-in-out;
 
   &.fade-out {
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.15s ease-in-out;
   }
 
   &.fade-in {
     opacity: 1;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.15s ease-in-out;
   }
 `;
 
@@ -228,6 +230,31 @@ const SelectStyled = styled.select`
     box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
     outline: none;
   }
+`;
+
+const NoPostMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  background-color: ${({ theme }) => theme.colors.clearGray};
+  color: ${({ theme }) => theme.colors.gray};
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  border-radius: 10px;
+`;
+
+const LastPostMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  margin: 15px 0;
+  background-color: ${({ theme }) => theme.colors.clearGray};
+  color: ${({ theme }) => theme.colors.gray};
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  border-radius: 10px;
 `;
 
 export default Tab;
