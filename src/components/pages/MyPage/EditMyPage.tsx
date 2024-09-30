@@ -251,9 +251,9 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
               <CloseIcon />
             </DeleteContainer>
             {profileImage ? (
-              <img src={profileImage} alt="Profile" />
+              <img src={profileImage} alt="프로필 사진" />
             ) : (
-              <ExProfileImg /> // 기본 이미지
+              <ExProfileImg aria-label="기본 프로필 이미지" />
             )}
           </ImgWrapper>
           <input
@@ -266,11 +266,17 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
               handleImageChange(e);
               handleFileChange();
             }}
+            aria-label="이미지 변경"
           />
         </EditTop>
         <EditMid>
           <Label htmlFor="email">아이디(이메일)</Label>
-          <Input type="email" placeholder={members ? members[0].email : '로딩 중...'} disabled />
+          <Input
+            type="email"
+            placeholder={members ? members[0].email : '로딩 중...'}
+            disabled
+            aria-label="사용자 이메일"
+          />
           <Label htmlFor="name">
             닉네임(이름)
             {!isNameValid && <Validation>※2~7자로 해주세요.</Validation>}
@@ -282,6 +288,7 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
             id="name"
             value={name}
             onChange={e => setName(e.target.value)}
+            aria-label="닉네임(이름) 변경"
           />
           <Label htmlFor="currentPassword">기존 패스워드</Label>
           <Input
@@ -289,6 +296,7 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
             id="currentPassword"
             value={currentPassword}
             onChange={e => setcurrentPassword(e.target.value)}
+            aria-label="기존 패스워드 입력"
           />
           <Label htmlFor="newPassword">신규 패스워드</Label>
           <Input
@@ -296,6 +304,7 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
             id="newPassword"
             value={newPassword}
             onChange={e => setNewPassword(e.target.value)}
+            aria-label="패스워드 변경"
           />
           {!isNewPasswordValid && (
             <AlertText>※8~15자로 대소문자, 숫자, 특수문자를 포함해야 합니다.</AlertText>
@@ -306,6 +315,7 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
             id="confirmPassword"
             value={confirmPassword}
             onChange={e => setConfirmPassword(e.target.value)}
+            aria-label="변경할 패스워드 확인"
           />
           {!isConfirmPasswordValid && <AlertText>비밀번호가 일치하지 않습니다.</AlertText>}
           <Label htmlFor="">선호주종</Label>
@@ -322,6 +332,7 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
                 key={drink}
                 isSelected={selectedDrinks.includes(drink)}
                 onClick={() => handleDrinkSelection(drink)}
+                aria-label="선호 주종"
               >
                 {drink}
               </AlcoholItem>
@@ -334,7 +345,11 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
             <span>나의 게시글에 대한 댓글 알림</span>
             <div>
               {alarmEnabled ? 'ON' : 'OFF'}
-              <Switch checked={alarmEnabled} onClick={notificationToggle} />
+              <Switch
+                checked={alarmEnabled}
+                onClick={notificationToggle}
+                aria-label="알림 on/off"
+              />
             </div>
           </SwitchWrapper>
           <Label htmlFor="">정보 제공 동의</Label>
@@ -342,16 +357,22 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
             <span>위치 정보 제공 동의</span>
             <div>
               {isAgreeChecked ? 'ON' : 'OFF'}
-              <Switch checked={isAgreeChecked} onClick={agreeToggle} />
+              <Switch
+                checked={isAgreeChecked}
+                onClick={agreeToggle}
+                aria-label="위치 정보 제공 동의 on/off"
+              />
             </div>
           </SwitchWrapper>
         </EditBottom>
         <WithDraw showAlert={showAlert} />
         <ConfirmWrapper>
-          <Button onClick={() => navigate('/mypage')}>취소</Button>
+          <Button onClick={() => navigate('/mypage')} aria-label="취소하고 마이페이지로 이동">
+            취소
+          </Button>
           <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <AlertDialogTrigger asChild>
-              <Button>저장</Button>
+              <Button aria-label="저장 여부 확인하기">저장</Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -361,10 +382,18 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancelStyled onClick={() => setIsDialogOpen(false)}>
+                <AlertDialogCancelStyled
+                  onClick={() => setIsDialogOpen(false)}
+                  aria-label="저장 취소"
+                >
                   취소
                 </AlertDialogCancelStyled>
-                <AlertDialogActionSuccess onClick={handleSave}>저장</AlertDialogActionSuccess>
+                <AlertDialogActionSuccess
+                  onClick={handleSave}
+                  aria-label="회원정보 수정데이터 전송"
+                >
+                  저장
+                </AlertDialogActionSuccess>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

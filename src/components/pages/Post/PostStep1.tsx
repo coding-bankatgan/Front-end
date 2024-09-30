@@ -16,6 +16,7 @@ const PostStep1 = ({ nextStep, setCategory }: PostStep1Props) => {
             setCategory('REVIEW');
             nextStep();
           }}
+          aria-label="리뷰"
         >
           리뷰
         </Button>
@@ -24,6 +25,7 @@ const PostStep1 = ({ nextStep, setCategory }: PostStep1Props) => {
             setCategory('AD');
             nextStep();
           }}
+          aria-label="광고"
         >
           광고
         </Button>
