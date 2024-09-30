@@ -92,7 +92,7 @@ const SearchPassword = () => {
   return (
     <Wrapper>
       <LogoImage src={symbol} alt="오늘한잔" />
-      <Header>비밀번호 찾기!</Header>
+      <Header>비밀번호 찾기</Header>
       <Container>
         <Label htmlFor="email">
           아이디(이메일)
