@@ -149,10 +149,7 @@ const Post = ({ showAlert }: PostProps) => {
                 background: 'none',
               }}
             >
-              <HeartIcon
-                // onClick={() => togglePostLike(post.id, post.isLiked)}
-                liked={post.isLiked}
-              />
+              <HeartIcon liked={post.isLiked} />
             </motion.button>
             <span>{post.likeCount.toLocaleString()}</span>
           </span>
