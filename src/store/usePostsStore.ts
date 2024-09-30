@@ -76,7 +76,13 @@ export interface PostsState {
 export const usePostsStore = create<PostsState>((set, get) => ({
   // 전체 게시글
   posts: [],
-  setPosts: posts => set({ posts }),
+  setPosts: posts => {
+    const initializedPosts = posts.map(post => ({
+      ...post,
+      isLiked: post.isLiked ?? false,
+    }));
+    set({ posts: initializedPosts });
+  },
   fetchPosts: async (sortBy = 'createdAt', page = 0, size = 10) => {
     try {
       const data = await fetchPostsApi(sortBy, page, size);
@@ -113,17 +119,17 @@ export const usePostsStore = create<PostsState>((set, get) => ({
   fetchPostsDetail: async postId => {
     try {
       const data = await fetchPostsDetailApi(postId);
-      set(state => ({
-        postsDetail: {
-          ...data,
-          isLiked: state.postsDetail?.isLiked ?? data.isLiked, // 기존 좋아요 상태 유지 또는 API 데이터 사용
-        },
-        posts: state.posts.map(p =>
-          p.id === postId
-            ? { ...p, isLiked: state.postsDetail?.isLiked ?? data.isLiked } // 전체 게시글에서도 좋아요 상태 업데이트
-            : p,
-        ),
-      }));
+      set(state => {
+        const updatedIsLiked = data.isLiked;
+
+        return {
+          posts: state.posts.map(p => (p.id === postId ? { ...p, isLiked: updatedIsLiked } : p)),
+          postsDetail: {
+            ...data,
+            isLiked: updatedIsLiked,
+          },
+        };
+      });
     } catch (err) {
       console.error('Error fetching posts: ', err);
       set({ postsDetail: null });
@@ -131,10 +137,13 @@ export const usePostsStore = create<PostsState>((set, get) => ({
   },
   // 좋아요 토글
   togglePostLike: async (postId: number) => {
-    const post = get().posts.find(p => p.id === postId); // get()으로 상태 가져오기
+    const post = get().posts.find(p => p.id === postId);
     if (!post) return;
 
     const newIsLiked = !post.isLiked;
+    const newLikeCount = newIsLiked
+      ? (post.likeCount ?? 0) + 1
+      : Math.max((post.likeCount ?? 0) - 1, 0);
 
     try {
       set(state => ({
@@ -143,7 +152,7 @@ export const usePostsStore = create<PostsState>((set, get) => ({
             ? {
                 ...p,
                 isLiked: newIsLiked,
-                likeCount: newIsLiked ? post.likeCount + 1 : post.likeCount - 1,
+                likeCount: newLikeCount,
               }
             : p,
         ),
@@ -152,9 +161,7 @@ export const usePostsStore = create<PostsState>((set, get) => ({
             ? {
                 ...state.postsDetail,
                 isLiked: newIsLiked,
-                likeCount: newIsLiked
-                  ? state.postsDetail.likeCount + 1
-                  : state.postsDetail.likeCount - 1,
+                likeCount: newLikeCount,
               }
             : state.postsDetail,
       }));

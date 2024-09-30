@@ -1,11 +1,10 @@
 import styled from '@emotion/styled';
 
 interface HeartIconProps {
-  onClick: (e: React.MouseEvent) => void;
   liked: boolean;
 }
 
-const HeartIcon = ({ onClick, liked }: HeartIconProps) => {
+const HeartIcon = ({ liked }: HeartIconProps) => {
   return (
     <SvgStyled
       xmlns="http://www.w3.org/2000/svg"
@@ -14,7 +13,6 @@ const HeartIcon = ({ onClick, liked }: HeartIconProps) => {
       strokeWidth={1.5}
       stroke="currentColor"
       className="size-6"
-      onClick={onClick}
       liked={liked}
     >
       <path
