@@ -69,6 +69,7 @@ const PostComments = ({ postId, fetchCommentCount, showAlert }: PostCommentsProp
     size: 10,
     number: 0,
   });
+  const { members } = useMemberStore();
 
   /** 특정 게시글의 댓글 가져오는 함수 */
   const fetchComments = async (postId: number, page: number, size: number) => {
@@ -151,7 +152,6 @@ const PostComments = ({ postId, fetchCommentCount, showAlert }: PostCommentsProp
           return;
         }
         const { memberId } = post;
-        const { members } = useMemberStore();
         console.log('post memberId : ', memberId);
         const isNotificationChecked = members[0].alarmEnabled; // 정상작동
 
@@ -273,17 +273,19 @@ const PostComments = ({ postId, fetchCommentCount, showAlert }: PostCommentsProp
                 </span>
                 <p>{comment.content}</p>
               </CommentInfoWrapper>
-              <DropdownMenu>
-                <DropdownMenuTriggerStyled>
-                  <EllipsisHorizontalIcon />
-                </DropdownMenuTriggerStyled>
-                <DropdownMenuContentStyled>
-                  <DropdownMenuItem onClick={() => handleCommentEdit(comment)}>
-                    수정
-                  </DropdownMenuItem>
-                  <DeleteComment commentId={comment.id} showAlert={showAlert} />
-                </DropdownMenuContentStyled>
-              </DropdownMenu>
+              {comment.memberId === members[0].id && (
+                <DropdownMenu>
+                  <DropdownMenuTriggerStyled>
+                    <EllipsisHorizontalIcon />
+                  </DropdownMenuTriggerStyled>
+                  <DropdownMenuContentStyled>
+                    <DropdownMenuItem onClick={() => handleCommentEdit(comment)}>
+                      수정
+                    </DropdownMenuItem>
+                    <DeleteComment commentId={comment.id} showAlert={showAlert} />
+                  </DropdownMenuContentStyled>
+                </DropdownMenu>
+              )}
             </Comment>
           ))
         ) : (
