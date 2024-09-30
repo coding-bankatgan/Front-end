@@ -51,7 +51,7 @@ interface PagenationInfo {
 const writeComment = async (postId: number, content: string, anonymous: boolean) => {
   try {
     console.log('API 호출 시:', { postId, content, anonymous });
-    const response = await fetchCommentWriteApi(postId, content, !anonymous);
+    const response = await fetchCommentWriteApi(postId, content, anonymous);
     console.log(response);
     return response;
   } catch (err) {
@@ -122,7 +122,6 @@ const PostComments = ({ postId, fetchCommentCount, showAlert }: PostCommentsProp
           id: response.id,
           memberName: isAnonymous ? '익명' : response.memberName,
         };
-        console.log(newCommentData);
 
         setComments(prevComments => {
           // 최신 댓글이 위로 오도록 정렬 및 중복 제거
@@ -136,6 +135,12 @@ const PostComments = ({ postId, fetchCommentCount, showAlert }: PostCommentsProp
 
         setNewComment('');
         setIsAnonymous(false);
+
+        // 댓글 수 업데이트
+        await fetchCommentCount();
+
+        // 댓글 다시 불러오기 (페이지 번호는 그대로 유지)
+        await fetchComments(postId, pagination.number, pagination.size);
 
         // 알림관련
         const { currentUser } = useMemberStore.getState(); // 2
@@ -455,6 +460,10 @@ const CommentInfoWrapper = styled.div`
   p {
     font-size: ${({ theme }) => theme.fontSizes.small};
   }
+
+  > div {
+    background: blue;
+  }
 `;
 
 const CommentNickname = styled.span`
@@ -468,16 +477,22 @@ const CommentDate = styled.span`
 `;
 
 const DropdownMenuTriggerStyled = styled(DropdownMenuTrigger)`
+  margin-left: auto;
+  margin-bottom: auto;
+
   > svg {
+    margin-right: 0;
+    margin-top: -3px;
     color: ${({ theme }) => theme.colors.gray};
   }
 `;
 
 const DropdownMenuContentStyled = styled(DropdownMenuContent)`
   margin: 5px 1px 0 0;
+  width: 40px !important;
 
   div {
-    padding: 12px 0;
+    padding: 6px 8px;
     font-size: ${({ theme }) => theme.fontSizes.small};
   }
 `;
