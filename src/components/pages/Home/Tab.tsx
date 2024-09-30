@@ -1,26 +1,77 @@
 import styled from '@emotion/styled';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePostsStore } from '@/store/usePostsStore';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import CardItem from '@/components/layout/CardItem';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const Tab = () => {
-  const { posts, fetchPosts } = usePostsStore();
+  const { posts, fetchPosts, clearPosts } = usePostsStore();
   const [selectedTab, setSelectedTab] = useState('all');
   const [sortOrder, setSortOrder] = useState('recent');
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadingRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    clearPosts();
+    setPage(0);
+    setHasMore(true);
+  }, [selectedTab, sortOrder]);
+
+  const handleObserver: IntersectionObserverCallback = entries => {
+    if (!hasMore) {
+      return;
+    }
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage(prevPage => prevPage + 1);
+    }
+  };
+
+  useEffect(() => {
+    const options: IntersectionObserverInit = {
+      root: null,
+      rootMargin: '2px 100px',
+      threshold: 0.1,
+    };
+
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+
+    return () => {
+      if (loadingRef.current) {
+        observer.unobserve(loadingRef.current);
+      }
+    };
+  }, [loadingRef, hasMore]);
+
+  useEffect(() => {
+    if (!hasMore) {
+      return;
+    }
     const fetchData = async () => {
       setIsLoading(true);
       const sortBy = sortOrder === 'recent' ? 'createdAt' : 'viewCount';
-      await fetchPosts(sortBy);
+      try {
+        await fetchPosts(sortBy, page);
+      } catch (error) {
+        setHasMore(false);
+      }
+
       setIsLoading(false);
     };
 
     fetchData();
-  }, [selectedTab, sortOrder, fetchPosts]);
+  }, [page, selectedTab, sortOrder]);
+
+  useEffect(() => {
+    console.log(hasMore);
+  }, [hasMore]);
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOrder(e.target.value);
@@ -69,11 +120,16 @@ const Tab = () => {
             ))}
           </SkeWrapper>
         ) : filteredPosts.length > 0 ? (
-          filteredPosts.map(post => <CardItem key={post.id} post={post} />)
+          <>
+            {filteredPosts.map(post => (
+              <CardItem key={post.id} post={post} />
+            ))}
+          </>
         ) : (
           <p>작성된 게시글이 없습니다</p>
         )}
       </TabsContentStyled>
+      {hasMore ? <div ref={loadingRef} /> : <p>더 이상의 게시글이 없습니다!</p>}
     </TabsStyled>
   );
 };
