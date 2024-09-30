@@ -25,6 +25,7 @@ export interface Post {
   id: number;
   memberId: number;
   memberName: string;
+  memberImageUrl: string;
   drink: Drink;
   type: 'REVIEW' | 'AD';
   content: string;
@@ -43,6 +44,7 @@ export interface PostDetail {
   id: number;
   memberId: number;
   memberName: string;
+  memberImageUrl: string;
   drink: Drink;
   type: 'AD' | 'REVIEW';
   content: string;
@@ -67,6 +69,8 @@ export interface PostsState {
   fetchPostsDetail: (postId: number) => Promise<void>;
   // 좋아요 토글
   togglePostLike: (postId: number, currentIsLiked: boolean) => Promise<void>;
+  clearPosts: () => void;
+  clearPostsDetail: () => void;
 }
 
 export const usePostsStore = create<PostsState>((set, get) => ({
@@ -147,4 +151,6 @@ export const usePostsStore = create<PostsState>((set, get) => ({
       console.error('Error toggling like:', err);
     }
   },
+  clearPosts: () => set({ posts: [] }),
+  clearPostsDetail: () => set({ postsDetail: null }),
 }));
