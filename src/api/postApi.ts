@@ -120,7 +120,13 @@ export const fetchSuggestedTagsApi = async () => {
 export const fetchSuggestedDrinksApi = async () => {
   try {
     const response = await api.get('/suggest/drinks');
-    return response.data;
+    if (Array.isArray(response.data)) {
+      const drinks = response.data.map(drink => ({
+        id: drink.id,
+        name: drink.name,
+      }));
+      return drinks;
+    }
   } catch (err) {
     console.error('Error fetching suggestedDrinks: ', err);
   }
