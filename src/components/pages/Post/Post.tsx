@@ -181,7 +181,7 @@ const Post = ({ showAlert }: PostProps) => {
           </MetaData>
         </EtcWrap>
       </UserPost>
-      <PostComments postId={postId} fetchCommentCount={fetchCommentCount} />
+      <PostComments postId={postId} fetchCommentCount={fetchCommentCount} showAlert={showAlert} />
     </PostLayout>
   );
 };

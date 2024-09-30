@@ -74,14 +74,14 @@ export const fetchPostLikeApi = async (postId: number) => {
 };
 
 /** 특정 게시글 댓글 작성 API */
-export const fetchCommentWriteApi = async (postId: number, content: string) => {
+export const fetchCommentWriteApi = async (postId: number, content: string, anonymous: boolean) => {
   try {
     const response = await api.post(
       '/comments',
       {
         postId: postId,
         content: content,
-        anonymous: false,
+        anonymous: anonymous,
       },
       {
         headers: {
@@ -89,7 +89,7 @@ export const fetchCommentWriteApi = async (postId: number, content: string) => {
         },
       },
     );
-
+    console.log(response.data);
     return response.data;
   } catch (err) {
     console.error('Error fetching commentWrite: ', err);
@@ -103,6 +103,32 @@ export const fetchCommentsApi = async (postId: number, page: number, size: numbe
     return response.data;
   } catch (err) {
     console.error('Error fetching comments: ', err);
+  }
+};
+
+/** 특정 게시글 댓글 수정 */
+export const fetchCommentsModifyApi = async (id: number, content: string, anonymous: boolean) => {
+  try {
+    const response = await api.put(`/comments/${id}`, {
+      id,
+      content,
+      anonymous,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error modifying comments: ', error);
+  }
+};
+
+/** 특정 게시글 댓글 삭제 API */
+export const fetchCommentsDeleteApi = async (id: number) => {
+  try {
+    const response = await api.delete(`/comments/${id}`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting comments: ', error);
   }
 };
 
