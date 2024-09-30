@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
-import { usePostsStore } from '@/store/usePostsStore';
+import { Post, usePostsStore } from '@/store/usePostsStore';
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import CardItem from '@/components/layout/CardItem';
@@ -15,21 +15,47 @@ const MyPageTab = () => {
   const [sortOrder] = useState('recent');
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('my-posts');
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [postItem, setPostItem] = useState<Post[]>([]);
 
   useEffect(() => {
+    if (!hasMore) {
+      return;
+    }
     const fetchData = async () => {
-      setIsLoading(true);
+      console.log('실행');
+
+      setIsLoading(false);
       const sortBy = sortOrder;
-      await fetchPosts(sortBy);
+      try {
+        await fetchPosts(sortBy, page);
+        setTimeout(() => {
+          setPage(prev => prev + 1);
+        }, 50);
+      } catch (error) {
+        console.log('끝');
+        setHasMore(false);
+      }
+
       setIsLoading(false);
     };
 
     fetchData();
-  }, [sortOrder, fetchPosts]);
+  }, [page, sortOrder]);
 
-  const filteredPosts = Array.isArray(posts)
-    ? posts.filter(posts => posts.memberId === members[0].id)
-    : [];
+  useEffect(() => {
+    const filteredPosts = Array.isArray(posts)
+      ? posts.filter(post => post.memberId === members[0].id)
+      : [];
+
+    setPostItem(prev => {
+      const newPosts = filteredPosts.filter(
+        post => !prev.some(prevPost => prevPost.id === post.id),
+      );
+      return [...prev, ...newPosts];
+    });
+  }, [posts]);
 
   return (
     <TabsStyled className="w-[100%]" value={activeTab} onValueChange={setActiveTab}>
@@ -59,8 +85,8 @@ const MyPageTab = () => {
               </div>
             ))}
           </SkeWrapper>
-        ) : filteredPosts.length > 0 ? (
-          filteredPosts.map(post => <CardItem key={post.id} post={post} />)
+        ) : postItem.length > 0 ? (
+          postItem.map(post => <CardItem key={post.id} post={post} />)
         ) : (
           <p>작성된 게시글이 없습니다</p>
         )}
