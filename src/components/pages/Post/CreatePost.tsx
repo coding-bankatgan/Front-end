@@ -94,7 +94,7 @@ const CreatePost = () => {
             type: category,
             content: formattedContent,
             rating,
-            tags: tagsWithoutHash,
+            tag: tagsWithoutHash,
             imageUrl: imageUrl.data,
           });
           console.log(tagsWithoutHash);
@@ -108,7 +108,7 @@ const CreatePost = () => {
             type: category,
             content: formattedContent,
             rating,
-            tags: tagsWithoutHash,
+            tag: tagsWithoutHash,
             imageUrl: initialImageUrl,
           });
           console.log(tagsWithoutHash);
