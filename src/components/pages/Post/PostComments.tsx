@@ -23,6 +23,7 @@ interface Content {
   id: number;
   memberId: number;
   memberName: string;
+  memberImageUrl: string;
   postId: number;
   content: string;
   anonymous: boolean;
@@ -184,7 +185,12 @@ const PostComments = ({ postId, fetchCommentCount }: PostCommentsProps) => {
         {comments.length > 0 ? (
           comments.map(comment => (
             <Comment key={comment.id}>
-              <ExProfileImg />
+              {comment.memberImageUrl ? (
+                <img src={comment.memberImageUrl} alt={comment.memberName} />
+              ) : (
+                <ExProfileImg />
+              )}
+
               <CommentInfoWrapper>
                 <span>
                   <CommentNickname>{comment.memberName}</CommentNickname>
@@ -345,6 +351,13 @@ const Comment = styled.div`
     width: 26px;
     height: 26px;
     margin-right: 8px;
+  }
+
+  img {
+    width: 26px;
+    height: 26px;
+    margin-right: 8px;
+    border-radius: 50%;
   }
 `;
 

@@ -12,6 +12,7 @@ import BarsIcon from '@/assets/icons/BarsIcon';
 import logo from '../../../public/logo.png';
 import useMemberStore from '@/store/useMemberStore';
 import Cookies from 'js-cookie';
+import { usePostsStore } from '@/store/usePostsStore';
 
 interface HeaderProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -21,6 +22,7 @@ const Header = ({ showAlert }: HeaderProps) => {
   const navigate = useNavigate();
   const { members } = useMemberStore();
   const [isManager, setIsManager] = useState(false);
+  const { clearPosts, clearPostsDetail } = usePostsStore();
   useEffect(() => {
     setIsManager(members[0]?.role === 'MANAGER');
   }, [members]);
@@ -37,6 +39,8 @@ const Header = ({ showAlert }: HeaderProps) => {
   const handleLogout = () => {
     Cookies.remove('access_token');
     Cookies.remove('refresh_token');
+    clearPosts();
+    clearPostsDetail();
     navigate('/login');
   };
 
