@@ -89,13 +89,7 @@ const CardItem = ({ post }: CardItemProps) => {
                 height: '18px',
               }}
             >
-              <HeartIcon
-                // onClick={e => {
-                //   e.stopPropagation();
-                //   togglePostLike(post.id, post.isLiked);
-                // }}
-                liked={post.isLiked}
-              />
+              <HeartIcon liked={post.isLiked} />
             </motion.div>
           </motion.button>
         </ContentTop>
