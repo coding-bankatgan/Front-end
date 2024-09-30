@@ -308,6 +308,7 @@ const Nickname = styled.div`
   }
 
   span {
+    display: flex;
     margin-left: auto;
     padding: 0;
 
