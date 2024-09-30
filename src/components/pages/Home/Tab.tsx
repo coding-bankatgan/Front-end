@@ -124,6 +124,7 @@ const Tab = () => {
             {filteredPosts.map(post => (
               <CardItem key={post.id} post={post} />
             ))}
+            <div ref={loadingRef} />
           </>
         ) : (
           <p>작성된 게시글이 없습니다</p>
