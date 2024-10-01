@@ -25,7 +25,7 @@ import {
   SpecialtyDrinkForm,
 } from '../components/pages';
 import SearchPassword from '@/components/pages/SearchPassword/SearchPassword';
-import SearchPassword2 from '@/components/pages/SearchPassword/SearchPasswrod2';
+import SearchPassword2 from '@/components/pages/SearchPassword/SearchPassword2';
 
 interface RouterProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
