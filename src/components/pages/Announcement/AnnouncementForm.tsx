@@ -56,12 +56,6 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = () => {
     }
   };
 
-  useEffect(() => {
-    if (imageUrl) {
-      console.log('현재 저장된 이미지 URL:', imageUrl);
-    }
-  }, [imageUrl]);
-
   const handleAnnouncementSubmit = async () => {
     if (newTitle.trim() === '' || newContent.trim() === '') return;
 
@@ -77,7 +71,6 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = () => {
         const response = await writeAnnouncement(newTitle, newContent);
         const file = fileInputRef.current?.files?.[0];
         let uploadedImageUrl = '';
-        console.log(uploadedImageUrl);
         if (file) {
           const imageResponse = await fetchImageUploadApi(file);
           uploadedImageUrl = imageResponse;

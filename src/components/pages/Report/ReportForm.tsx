@@ -55,7 +55,6 @@ const ReportForm = ({ showAlert }: ReportFormProps) => {
     try {
       const response = await fetchDeclarationsWriteApi(postLink, type, content);
       if (response) {
-        console.log(response);
         showAlert('success', '신고가 접수되었습니다');
         setTimeout(() => navigate(-1), 1500);
       }

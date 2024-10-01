@@ -66,7 +66,6 @@ const Notification = () => {
     if (location.pathname) {
       refetch();
     }
-    console.log(notifications);
   }, [location.pathname]);
 
   const handleNotificationClick = (notification: Notification) => {

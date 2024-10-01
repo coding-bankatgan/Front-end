@@ -18,7 +18,7 @@ const StepBar = ({ prevSlide, progressValue, currentSlide }: ChangePageProps) =>
       ) : (
         <div className="arrow-container"></div>
       )}
-      <ProgressStyled value={progressValue} />
+      <ProgressStyled value={progressValue} aria-label={`회원가입 진행률 ${currentSlide}/2`} />
     </ChangePageContainer>
   );
 };

@@ -81,8 +81,6 @@ const SearchPassword = () => {
     }
     try {
       await api.post('/members/request-password-reset', { email: email });
-      console.log(email);
-
       navigate('/search-password/2');
     } catch (error) {
       console.error(error);

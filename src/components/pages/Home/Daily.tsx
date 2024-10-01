@@ -54,8 +54,6 @@ const Daily = () => {
         if (latitude !== null && longitude !== null) {
           const date = async () => {
             const item = await api.get(`/suggest/drink?lat=${latitude}&lon=${longitude}`);
-            console.log(item);
-
             setDailyData(item.data);
           };
 
@@ -72,7 +70,6 @@ const Daily = () => {
       if (latitude && longitude) {
         const address = await getAddress(latitude, longitude);
         setUserAddress(`${address.split(' ')[0]} ${address.split(' ')[1]}`);
-        console.log(userAddress);
       }
     };
 

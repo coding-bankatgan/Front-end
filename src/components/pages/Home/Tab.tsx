@@ -75,10 +75,6 @@ const Tab = () => {
     fetchData();
   }, [page, selectedTab, sortOrder]);
 
-  useEffect(() => {
-    console.log(hasMore);
-  }, [hasMore]);
-
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOrder(e.target.value);
   };

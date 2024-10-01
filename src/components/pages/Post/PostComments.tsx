@@ -50,9 +50,7 @@ interface PagenationInfo {
 /** 댓글 작성 API 호출 함수 */
 const writeComment = async (postId: number, content: string, anonymous: boolean) => {
   try {
-    console.log('API 호출 시:', { postId, content, anonymous });
     const response = await fetchCommentWriteApi(postId, content, anonymous);
-    console.log(response);
     return response;
   } catch (err) {
     console.error('Error writing comment: ', err);
@@ -73,7 +71,6 @@ const PostComments = ({ postId, fetchCommentCount, showAlert }: PostCommentsProp
 
   /** 특정 게시글의 댓글 가져오는 함수 */
   const fetchComments = async (postId: number, page: number, size: number) => {
-    console.log('Fetching comments for page:', page);
     const data = await fetchCommentsApi(postId, page, size);
 
     if (data) {
@@ -95,7 +92,6 @@ const PostComments = ({ postId, fetchCommentCount, showAlert }: PostCommentsProp
   const handleAnonymousChange = () => {
     setIsAnonymous(prev => !prev);
   };
-  console.log(isAnonymous);
 
   const handlePageChange = (newPage: number) => {
     if (newPage < 0 || newPage >= pagination.totalPages) return;
@@ -112,11 +108,7 @@ const PostComments = ({ postId, fetchCommentCount, showAlert }: PostCommentsProp
     if (newComment.trim() === '') return;
 
     try {
-      console.log('API 호출 전 - isAnonymous:', isAnonymous);
       const response = await writeComment(postId, newComment, isAnonymous);
-      console.log(response);
-      console.log('Anonymous value sent:', isAnonymous);
-
       if (response) {
         const newCommentData = {
           ...response,
@@ -145,14 +137,12 @@ const PostComments = ({ postId, fetchCommentCount, showAlert }: PostCommentsProp
 
         // 알림관련
         const { currentUser } = useMemberStore.getState(); // 2
-        console.log('currentUser Id : ', currentUser?.id);
         const post = postsDetail;
         if (!post) {
           console.error('게시글을 찾을 수 없습니다.');
           return;
         }
         const { memberId } = post;
-        console.log('post memberId : ', memberId);
         const isNotificationChecked = members[0].alarmEnabled; // 정상작동
 
         if (currentUser && currentUser.id !== memberId && isNotificationChecked) {
@@ -165,7 +155,6 @@ const PostComments = ({ postId, fetchCommentCount, showAlert }: PostCommentsProp
             createdAt: new Date().toISOString(),
             isNew: true,
           };
-          console.log(notification); // 디버깅 용
           useNotificationStore.getState().addNewNotification(notification);
         }
 

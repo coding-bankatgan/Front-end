@@ -51,24 +51,18 @@ export const useMemberStore = create<MemberState>(set => ({
   fetchMembers: async () => {
     try {
       const response = await fetchMemberApi();
-      console.log([response]);
 
       set({ members: [response] });
-
-      const alarmEnabled = [response][0]?.alarmEnabled;
-      console.log(alarmEnabled);
-      // const currentUser = response.find((member: Member) => member.id === 1) || null;
-      // set({ currentUser }); // currentUser Manager
-    } catch (err) {
-      console.log('Error', err);
+    } catch (error) {
+      console.error('Error', error);
     }
   },
   fetchFollowTags: async () => {
     try {
       const response = await fetchTagApi();
       set({ followTags: response });
-    } catch (err) {
-      console.log('Error fetching tags:', err);
+    } catch (error) {
+      console.error('Error fetching tags:', error);
     }
   },
 }));
