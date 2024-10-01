@@ -29,13 +29,32 @@ const Pagination = ({ pagination, onPageChange }: PaginationProps) => {
   };
 
   const renderPageNumbers = () => {
-    return Array.from({ length: totalPages }, (_, idx) => (
-      <PaginationItemStyled key={idx} isActive={idx === number}>
-        <PaginationLink href="#" onClick={() => handlePageChange(idx)}>
-          {idx + 1}
-        </PaginationLink>
-      </PaginationItemStyled>
-    ));
+    const pageNumbers = [];
+    const totalDisplayedPages = 5;
+    let startPage = Math.max(0, number - Math.floor(totalDisplayedPages / 2));
+    let endPage = Math.min(totalPages - 1, startPage + totalDisplayedPages - 1);
+
+    if (startPage === 0) {
+      endPage = Math.min(totalPages - 1, totalDisplayedPages - 1);
+    }
+
+    for (let idx = startPage; idx <= endPage; idx++) {
+      pageNumbers.push(
+        <PaginationItemStyled key={idx} isActive={idx === number}>
+          <PaginationLink href="#" onClick={() => handlePageChange(idx)}>
+            {idx + 1}
+          </PaginationLink>
+        </PaginationItemStyled>,
+      );
+    }
+    if (startPage > 0) {
+      pageNumbers.unshift(<PaginationEllipsis key="start-ellipsis" />);
+    }
+    if (endPage < totalPages - 1) {
+      pageNumbers.push(<PaginationEllipsis key="end-ellipsis" />);
+    }
+
+    return pageNumbers;
   };
 
   return (
@@ -51,11 +70,6 @@ const Pagination = ({ pagination, onPageChange }: PaginationProps) => {
           />
         </PaginationItem>
         {renderPageNumbers()}
-        {totalPages > 5 && (
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-        )}
         <PaginationItem>
           <PaginationNextStyled
             href="#"
