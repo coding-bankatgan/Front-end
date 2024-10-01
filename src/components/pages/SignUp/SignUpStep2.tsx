@@ -57,7 +57,6 @@ const AlcoholList = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  overflow-y: scroll;
   width: 100%;
   gap: 10px;
   scrollbar-width: none;
