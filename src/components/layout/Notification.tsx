@@ -90,8 +90,8 @@ const Notification = () => {
   };
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTriggerStyled>
+    <Sheet open={isOpen} onOpenChange={setIsOpen} aria-label="알림">
+      <SheetTriggerStyled aria-label="알림 열기">
         {newNotificationCount > 0 && <span />} {/* 새로운 알림이 있으면 빨간 점 */}
         <BellIcon />
       </SheetTriggerStyled>

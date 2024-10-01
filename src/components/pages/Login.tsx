@@ -161,7 +161,7 @@ const Login = () => {
             {/* </motion.div> */}
             <FormContainer onSubmit={handleSubmit}>
               <motion.div initial="hidden" animate="visible" variants={slideUpWithFade} key="form">
-                <LogoImage src={symbol} alt="오늘한잔" aria-label="로고" />
+                <LogoImage src={symbol} alt="오늘한잔" aria-label="오늘한잔 심볼" />
                 <Heading>지역 특산주를 위한 플랫폼</Heading>
                 <Label htmlFor="email">아이디(이메일)</Label>
                 <Input type="email" name="email" id="email" />

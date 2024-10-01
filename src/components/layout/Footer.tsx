@@ -48,32 +48,16 @@ const Footer = () => {
 
   return (
     <FooterLayout visible={isFooterVisible}>
-      <IconWrapper
-        onClick={() => handleClick('')}
-        active={activeIcon === ''}
-        aria-label="메인으로 이동"
-      >
+      <IconWrapper onClick={() => handleClick('')} active={activeIcon === ''}>
         <HomeIcon />
       </IconWrapper>
-      <IconWrapper
-        onClick={() => handleClick('search')}
-        active={activeIcon === 'search'}
-        aria-label="검색하기"
-      >
+      <IconWrapper onClick={() => handleClick('search')} active={activeIcon === 'search'}>
         <SearchIcon />
       </IconWrapper>
-      <IconWrapper
-        onClick={() => handleClick('create-post')}
-        active={activeIcon === 'create-post'}
-        aria-label="게시물 작성하기"
-      >
+      <IconWrapper onClick={() => handleClick('create-post')} active={activeIcon === 'create-post'}>
         <ChatIcon />
       </IconWrapper>
-      <IconWrapper
-        onClick={() => handleClick('mypage')}
-        active={activeIcon === 'mypage'}
-        aria-label="마이 페이지로 이동"
-      >
+      <IconWrapper onClick={() => handleClick('mypage')} active={activeIcon === 'mypage'}>
         <UserIcon />
       </IconWrapper>
     </FooterLayout>

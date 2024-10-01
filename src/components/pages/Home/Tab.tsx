@@ -105,7 +105,7 @@ const Tab = () => {
           리뷰
         </TabsTrigger>
       </TabsListStyled>
-      <SelectStyled value={sortOrder} onChange={handleSelectChange}>
+      <SelectStyled aria-label="정렬 기준" value={sortOrder} onChange={handleSelectChange}>
         <option value="recent">최신 순</option>
         <option value="views">조회수 순</option>
       </SelectStyled>
