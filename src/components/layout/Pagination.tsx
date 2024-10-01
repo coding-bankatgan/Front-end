@@ -71,7 +71,20 @@ const Pagination = ({ pagination, onPageChange }: PaginationProps) => {
 };
 
 const PaginationLayoutStyled = styled(PaginationLayout)`
+  display: flex;
+  justify-content: center;
   margin-top: 20px;
+  width: 100%;
+
+  ul {
+    width: 100%;
+
+    li {
+      display: flex;
+      justify-content: center;
+      width: 24px;
+    }
+  }
 `;
 
 const PaginationPreviousStyled = styled(PaginationPrevious)<{
