@@ -45,6 +45,7 @@ const Router = ({ showAlert }: RouterProps) => {
     '/announcement',
     'faq',
     '/report',
+    '/drink-page',
   ];
 
   const isHideHeader = hideHeaderPaths.some(path => location.pathname.startsWith(path));

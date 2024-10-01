@@ -7,16 +7,15 @@ import styled from '@emotion/styled';
 import dayjs from 'dayjs';
 import PrevBtn from '@/components/layout/PrevBtn';
 import Pagination from './../../layout/Pagination';
-// import { getRoleFromToken } from '@/auth'; // 경로를 알맞게 수정하세요
+import useMemberStore from '@/store/useMemberStore';
 
 interface ReportListProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
 }
 
 const ReportBoard = ({ showAlert }: ReportListProps) => {
-  console.log(showAlert);
-
   const navigate = useNavigate();
+  const { members } = useMemberStore();
   const { declarations, pagination, fetchDeclarations } = useDeclarationStore(state => ({
     declarations: state.declarations,
     pagination: state.pagination,
@@ -32,11 +31,12 @@ const ReportBoard = ({ showAlert }: ReportListProps) => {
     fetchDeclarations(newPage, pagination.size);
   };
 
+  const isManager = members[0].role === 'MANAGER';
   const handleItemClick = (id: number) => {
-    // if (role !== 'MANAGER') {
-    //   showAlert('error', '권한이 없습니다.');
-    //   return;
-    // }
+    if (!isManager) {
+      showAlert('error', '권한이 없습니다.');
+      return;
+    }
     navigate(`/report/reported-post/${id}`);
   };
 

@@ -1,15 +1,18 @@
 import { useLocation } from 'react-router-dom';
+import { NoFooterLayout } from '@/styles/CommonStyles';
 import styled from '@emotion/styled';
 import { Textarea } from '@/components/ui/textarea';
 import { mapDrinkType } from '@/data/drinkTypes';
+import PrevBtn from '@/components/layout/PrevBtn';
 
 const DrinkPage = () => {
   const location = useLocation();
   const { drinkData } = location.state || {};
 
   return (
-    <DrinkDetailLayout>
+    <NoFooterLayoutStyled>
       <HeaderStyled>
+        <PrevBtn />
         <h1>{drinkData?.name}</h1>
       </HeaderStyled>
       <ImgStyled>
@@ -43,29 +46,30 @@ const DrinkPage = () => {
         <Label htmlFor="text">특산주 정보</Label>
         <TextareaStyled value={drinkData?.description} readOnly />
       </ContentStyled>
-    </DrinkDetailLayout>
+    </NoFooterLayoutStyled>
   );
 };
 
-const DrinkDetailLayout = styled.div`
-  display: flex;
+const NoFooterLayoutStyled = styled(NoFooterLayout)`
   flex-direction: column;
-  justify-content: center;
   align-items: flex-start;
-  width: 100%;
-  height: auto;
-  padding-top: 60px;
   background-color: ${({ theme }) => theme.colors.brightGray};
   color: ${({ theme }) => theme.colors.black};
 `;
 
 const HeaderStyled = styled.div`
+  display: flex;
   width: 100%;
   padding: 20px;
   background-color: ${({ theme }) => theme.colors.white};
 
+  section {
+    margin-bottom: 0;
+  }
+
   h1 {
     width: 100%;
+    margin-left: 8px;
     color: ${({ theme }) => theme.colors.black};
     font-size: ${({ theme }) => theme.fontSizes.medium};
     font-weight: bold;
