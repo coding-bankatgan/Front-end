@@ -129,7 +129,7 @@ const useRegistrationStore = create<RegistrationState>(set => ({
                 ? `전달주신 ${drinkName} 특산주 정보 확인되어 등록 완료되었습니다! :D`
                 : `전달주신 ${drinkName} 정보가 확인되지 않습니다. 재등록 또는 반려 사유의 경우 매니저에게 문의 바랍니다.`,
             createdAt: new Date().toISOString(),
-            isNew: true,
+            readStatus: true,
           };
 
           useNotificationStore.getState().addNewNotification(notification);
