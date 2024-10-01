@@ -108,7 +108,7 @@ const Notification = () => {
               onClick={() => handleNotificationClick(notification)}
             >
               <NoticeTop>
-                {notification.readStatus && <Badge variant="outline">New</Badge>}
+                {!notification.readStatus && <Badge variant="outline">New</Badge>}
                 <span>{dayjs(notification.createdAt).format('YYYY.MM.DD')}</span>
               </NoticeTop>
               <NoticeTitle>{getNotificationTitle(notification.type)}</NoticeTitle>

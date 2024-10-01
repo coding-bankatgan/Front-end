@@ -51,7 +51,7 @@ const useNotificationStore = create<NotificationState>(set => ({
       if (data) {
         const notifications = data.content.map((notification: Notification) => ({
           ...notification,
-          isNew: notification.readStatus ?? true,
+          readStatus: notification.readStatus ?? false,
         }));
 
         set({ notifications });
@@ -64,7 +64,7 @@ const useNotificationStore = create<NotificationState>(set => ({
           },
         });
 
-        const newCount = notifications.filter((n: Notification) => n.readStatus).length;
+        const newCount = notifications.filter((n: Notification) => !n.readStatus).length;
         set({ newNotificationCount: newCount });
         return notifications;
       }
@@ -79,20 +79,20 @@ const useNotificationStore = create<NotificationState>(set => ({
   markAsRead: (id: number) => {
     set(state => {
       const updatedNotifications = state.notifications.map(notification =>
-        notification.id === id ? { ...notification, isNew: false } : notification,
+        notification.id === id ? { ...notification, readStatus: true } : notification,
       );
 
-      const newCount = updatedNotifications.filter(n => n.readStatus).length;
+      const newCount = updatedNotifications.filter(n => !n.readStatus).length;
 
       return { notifications: updatedNotifications, newNotificationCount: newCount };
     });
   },
   addNewNotification: (notification: Notification) => {
     set(state => {
-      const updatedNotifications = [{ ...notification, isNew: true }, ...state.notifications].slice(
-        0,
-        20,
-      );
+      const updatedNotifications = [
+        { ...notification, readStatus: false },
+        ...state.notifications,
+      ].slice(0, 20);
 
       const newCount = updatedNotifications.filter(n => n.readStatus).length;
 
