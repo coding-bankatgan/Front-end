@@ -92,14 +92,7 @@ const Post = ({ showAlert }: PostProps) => {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = post.content;
 
-    // const innerText = tempDiv.innerText || tempDiv.textContent;
-    // console.log(innerText);
-
-    // const textContent = innerText ? innerText.replace(/<br\s*\/?>/gi, '\n') : '';
-
-    const textContent = tempDiv.innerHTML
-      .replace(/<br\s*\/?>/gi, '\n') // <br>를 줄 바꿈 문자로 변환
-      .replace(/&nbsp;/g, ' ');
+    const textContent = tempDiv.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/&nbsp;/g, ' ');
     console.log(textContent);
     setText(textContent);
   }, [post.content]);
