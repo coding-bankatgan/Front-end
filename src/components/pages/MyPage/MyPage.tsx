@@ -118,6 +118,7 @@ const BadgeWrapper = styled.div`
 const BadgeScrollContainer = styled.div`
   mid-width: 60%;
   max-width: 70%;
+  margin-left: 4px;
   overflow-x: scroll;
   white-space: nowrap;
   scrollbar-width: none;

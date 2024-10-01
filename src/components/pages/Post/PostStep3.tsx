@@ -8,6 +8,7 @@ import ReactStars from 'react-stars';
 import { useEffect, useRef, useState } from 'react';
 import { Drink } from './PostStep2';
 import { alcoholsData } from '@/data/alcoholsData';
+import { Slider } from '@/components/ui/slider';
 // import useMemberStore from '@/store/useMemberStore';
 // import useNotificationStore from '@/store/useNotificationStore';
 import CloseIcon from './../../../assets/icons/CloseIcon';
@@ -64,8 +65,6 @@ const PostStep3 = ({
     }
     setRating(newRating);
   };
-
-  const level = Math.round(drinkData.sweetness / 2);
 
   const [tagValue, setTagValue] = useState('');
 
@@ -187,16 +186,19 @@ const PostStep3 = ({
         <div>
           <Label htmlFor="sweetness">당도</Label>
           <SweetContainer>
+            <StyledSpan>
+              <span>쓰다</span>
+              <span>달다</span>
+            </StyledSpan>
             <div id="sweetness">
-              {[...Array(5)].map((_, idx) => (
-                <>
-                  {idx > 0 && <Line />}
-                  <Circle isActive={level === idx + 1}>
-                    {idx === 0 && <span>쓰다</span>}
-                    {idx === 4 && <span>달다</span>}
-                  </Circle>
-                </>
-              ))}
+              <CustomSlider
+                defaultValue={[drinkData.sweetness ?? 1]}
+                min={1}
+                max={10}
+                step={1}
+                disabled
+              ></CustomSlider>
+              <SliderValue>{drinkData.sweetness}</SliderValue>
             </div>
           </SweetContainer>
         </div>
@@ -341,36 +343,42 @@ const BadgeStyled = styled(Badge)`
 
 const SweetContainer = styled.div`
   width: 100%;
-`;
-
-interface CircleProps {
-  isActive: boolean;
-}
-
-const Circle = styled.span<CircleProps>`
-  width: 25px;
-  height: 25px;
-  border: 4px solid white;
-  background-color: ${({ isActive, theme }) =>
-    isActive ? theme.colors.point : theme.colors.white};
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  span {
-    font-size: ${({ theme }) => theme.fontSizes.small};
-    min-width: 25px;
-    transform: translateY(-32px);
+  #sweetness {
+    padding: 8px;
   }
 `;
 
-const Line = styled.span`
-  width: 30px;
-  height: 4px;
-  background-color: white;
+const StyledSpan = styled.span`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  margin-right: 28px;
+  margin-bottom: 0;
+  margin-left: 12px;
+  font-size: ${({ theme }) => theme.fontSizes.small};
+  color: ${({ theme }) => theme.colors.darkGray};
+`;
 
-  transform: translateY(11px);
+const SliderValue = styled.span`
+  margin-left: 10px;
+  font-size: ${({ theme }) => theme.fontSizes.small};
+`;
+
+const CustomSlider = styled(Slider)`
+  > span:nth-of-type(1) {
+    background-color: ${({ theme }) => theme.colors.white};
+  }
+  span {
+    span {
+      background-color: ${({ theme }) => theme.colors.primary};
+      &:focus,
+      &:active {
+        border-color: ${({ theme }) => theme.colors.focusShadowOrange};
+        box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowOrange};
+        outline: none;
+      }
+    }
+  }
 `;
 
 const PostTitle = styled.b`
