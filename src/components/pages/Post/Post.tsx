@@ -23,7 +23,6 @@ import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
 import useMemberStore from '@/store/useMemberStore';
 import { Button } from '@/components/ui/button';
-import useRegistrationStore from '@/store/useRegistrationStore';
 
 const typeMap = {
   AD: '광고',
@@ -39,7 +38,7 @@ const Post = ({ showAlert }: PostProps) => {
   const [commentCount, setCommentCount] = useState<number | null>(null);
   const { postsDetail, fetchPostsDetail, togglePostLike } = usePostsStore();
   const { members } = useMemberStore();
-  const { registrations } = useRegistrationStore();
+
   const { id } = useParams();
   const postId = Number(id);
 
@@ -79,15 +78,8 @@ const Post = ({ showAlert }: PostProps) => {
 
   const post = postsDetail;
   const handleButtonClick = () => {
-    const matchedRegistration = registrations.find(
-      registration => registration.drinkName === post.drink.name,
-    );
-
-    if (matchedRegistration) {
-      navigate(`/specialty-drink/${matchedRegistration.id}`);
-    } else {
-      showAlert('error', '오류가 발생하였습니다. 다시 시도해주세요.');
-    }
+    const drinkData = postsDetail.drink;
+    navigate(`/drink-page/${drinkData.id}`, { state: { drinkData } });
   };
 
   if (!post) {
