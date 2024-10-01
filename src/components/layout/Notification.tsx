@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/sheet';
 import BellIcon from '@/assets/icons/BellIcon';
 import dayjs from 'dayjs';
-import { Badge } from '@/components/ui/badge';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useNotificationStore from '@/store/useNotificationStore';
@@ -46,8 +45,7 @@ const getNotificationTitle = (type: Notification['type']) => {
 
 const Notification = () => {
   const navigate = useNavigate();
-  const { notifications, newNotificationCount, fetchNotifications, markAsRead } =
-    useNotificationStore();
+  const { notifications, fetchNotifications, markAsRead } = useNotificationStore();
   const { members } = useMemberStore();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
@@ -91,14 +89,11 @@ const Notification = () => {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen} aria-label="알림">
       <SheetTriggerStyled aria-label="알림 열기">
-        {newNotificationCount > 0 && <span />} {/* 새로운 알림이 있으면 빨간 점 */}
         <BellIcon />
       </SheetTriggerStyled>
       <SheetContentStyled>
         <SheetHeaderStyled>
-          <SheetTitle>
-            알림 <span>(새로운 알림 {newNotificationCount}개)</span>
-          </SheetTitle>
+          <SheetTitle>알림 {/* <span>(새로운 알림 {newNotificationCount}개)</span> */}</SheetTitle>
           <SheetDescriptionStyled>※ 알림은 최대 20개까지만 보여집니다.</SheetDescriptionStyled>
         </SheetHeaderStyled>
         <NoticeWrapper>
@@ -108,7 +103,6 @@ const Notification = () => {
               onClick={() => handleNotificationClick(notification)}
             >
               <NoticeTop>
-                {notification.isNew && <Badge variant="outline">New</Badge>}
                 <span>{dayjs(notification.createdAt).format('YYYY.MM.DD')}</span>
               </NoticeTop>
               <NoticeTitle>{getNotificationTitle(notification.type)}</NoticeTitle>
@@ -182,7 +176,7 @@ const NoticeWrapper = styled.div`
 `;
 
 const NoticeSection = styled.div`
-  padding: 15px 5px;
+  padding: 8px 5px;
   border-top: 1px solid ${({ theme }) => theme.colors.lightGray};
 `;
 
@@ -190,15 +184,9 @@ const NoticeTop = styled.span`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
   color: ${({ theme }) => theme.colors.gray};
   font-size: ${({ theme }) => theme.fontSizes.xsmall};
-
-  > div {
-    background-color: ${({ theme }) => theme.colors.primary};
-    color: ${({ theme }) => theme.colors.white};
-    font-weight: normal;
-  }
 
   > span {
     margin-left: auto;
