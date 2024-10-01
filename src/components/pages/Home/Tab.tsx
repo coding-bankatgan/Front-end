@@ -12,20 +12,18 @@ const Tab = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const [isContentVisible, setIsContentVisible] = useState(false); // 데이터 받아올 때 애니메이션 상태
+  const [isContentVisible, setIsContentVisible] = useState(false); //
 
   const loadingRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     clearPosts();
-    setPage(0);
     setHasMore(true);
+    setPage(0);
   }, [selectedTab, sortOrder]);
 
   const handleObserver: IntersectionObserverCallback = entries => {
-    if (!hasMore) {
-      return;
-    }
+    if (!hasMore) return;
     const target = entries[0];
     if (target.isIntersecting) {
       setPage(prevPage => prevPage + 1);
@@ -54,13 +52,16 @@ const Tab = () => {
   useEffect(() => {
     if (!hasMore) return;
 
-    setIsContentVisible(false);
-
     const fetchData = async () => {
       setIsLoading(true);
+
       try {
         const sortBy = sortOrder === 'recent' ? 'createdAt' : 'viewCount';
-        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        if (selectedTab === 'all') {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
         await fetchPosts(sortBy, page);
       } catch (error) {
         setHasMore(false);
@@ -121,7 +122,7 @@ const Tab = () => {
               </div>
             ))}
           </SkeWrapper>
-        ) : filteredPosts.length > 0 ? (
+        ) : filteredPosts.length > -1 ? (
           <ContentWrapper className={isContentVisible ? 'visible' : ''}>
             {filteredPosts.map(post => (
               <CardItem key={post.id} post={post} />
@@ -131,10 +132,10 @@ const Tab = () => {
           <NoPostMessage>작성된 게시글이 없습니다</NoPostMessage>
         )}
       </TabsContentStyled>
-      {filteredPosts.length === 0 ? null : hasMore && filteredPosts.length >= 8 ? (
+      {hasMore ? (
         <div ref={loadingRef} />
       ) : (
-        <LastPostMessage>마지막 게시글 입니다.</LastPostMessage>
+        <LastPostMessage ref={loadingRef}>마지막 게시글 입니다.</LastPostMessage>
       )}
     </TabsStyled>
   );
