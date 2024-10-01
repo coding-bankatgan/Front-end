@@ -133,7 +133,6 @@ const ListItem = styled(Button)`
     object-fit: cover;
     border-radius: 10px;
     margin-right: 10px;
-    background: red;
   }
 `;
 
