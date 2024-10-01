@@ -22,6 +22,8 @@ import { usePostsStore } from '@/store/usePostsStore';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
 import useMemberStore from '@/store/useMemberStore';
+import { Button } from '@/components/ui/button';
+import useRegistrationStore from '@/store/useRegistrationStore';
 
 const typeMap = {
   AD: '광고',
@@ -37,6 +39,7 @@ const Post = ({ showAlert }: PostProps) => {
   const [commentCount, setCommentCount] = useState<number | null>(null);
   const { postsDetail, fetchPostsDetail, togglePostLike } = usePostsStore();
   const { members } = useMemberStore();
+  const { registrations } = useRegistrationStore();
   const { id } = useParams();
   const postId = Number(id);
 
@@ -75,6 +78,17 @@ const Post = ({ showAlert }: PostProps) => {
   }
 
   const post = postsDetail;
+  const handleButtonClick = () => {
+    const matchedRegistration = registrations.find(
+      registration => registration.drinkName === post.drink.name,
+    );
+
+    if (matchedRegistration) {
+      navigate(`/specialty-drink/${matchedRegistration.id}`);
+    } else {
+      showAlert('error', '오류가 발생하였습니다. 다시 시도해주세요.');
+    }
+  };
 
   if (!post) {
     return <p>게시글을 찾을 수 없습니다.</p>;
@@ -159,6 +173,9 @@ const Post = ({ showAlert }: PostProps) => {
           </span>
           <span>
             <ChatIcon /> {commentCount?.toLocaleString()}
+          </span>
+          <span>
+            <Button onClick={handleButtonClick}>특산주 설명 보러가기 {'> '} </Button>
           </span>
         </Interactions>
         <Desc dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}></Desc>
@@ -323,11 +340,12 @@ const Interactions = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin: 10px 0 10px 20px;
+  margin: 10px 20px 10px 20px;
+  width: 90%;
 
   > span {
     display: flex;
-    justify-content: flex-start;
+
     align-items: center;
     font-size: ${({ theme }) => theme.fontSizes.small};
 
@@ -346,6 +364,18 @@ const Interactions = styled.div`
       svg {
         color: ${({ theme }) => theme.colors.darkGray};
       }
+    }
+  }
+
+  > span:nth-of-type(3) {
+    margin-left: auto;
+    button {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: ${({ theme }) => theme.fontSizes.small};
+      text-decoration: underline;
+      color: ${({ theme }) => theme.colors.darkGray};
     }
   }
 `;
