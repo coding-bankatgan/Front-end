@@ -8,19 +8,24 @@ import SettingIcon from '@/assets/icons/SettingIcon';
 import { useMemberStore } from '@/store/useMemberStore';
 import { alcoholsData } from '@/data/alcoholsData';
 import handleImg from '../../../assets/img/handimg.png';
+import { useEffect } from 'react';
 
 const MyPage = () => {
   /** 유저 정보 */
-  const { members } = useMemberStore();
+  const { members, fetchMembers } = useMemberStore();
   const navigate = useNavigate();
   const favorDrink = members[0]?.favorDrinkType as Array<keyof typeof alcoholsData>;
+
+  useEffect(() => {
+    fetchMembers();
+  }, []);
 
   return (
     <PageLayout>
       <ContentWrapper>
         <ImgWrapper>
-          {members[0].imageUrl ? (
-            <img src={members[0].imageUrl} alt="프로필 사진" />
+          {members[0]?.imageUrl ? (
+            <img src={members[0]?.imageUrl} alt="프로필 사진" />
           ) : (
             <ExProfileImg aria-label="기본 프로필 이미지" />
           )}
