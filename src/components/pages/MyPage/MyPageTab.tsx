@@ -24,8 +24,6 @@ const MyPageTab = () => {
       return;
     }
     const fetchData = async () => {
-      console.log('실행');
-
       setIsLoading(false);
       const sortBy = sortOrder;
       try {
@@ -34,7 +32,6 @@ const MyPageTab = () => {
           setPage(prev => prev + 1);
         }, 50);
       } catch (error) {
-        console.log('끝');
         setHasMore(false);
       }
 
