@@ -92,6 +92,7 @@ const PaginationLayoutStyled = styled(PaginationLayout)`
 
   ul {
     width: 100%;
+    justify-content: center;
 
     li {
       display: flex;

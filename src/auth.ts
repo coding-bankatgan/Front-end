@@ -5,7 +5,6 @@ import api from './api/axios';
 export const login = async (email: string, password: string) => {
   try {
     const response = await api.post('/members/signin', { email, password });
-    console.log(response.data.accessToken);
 
     const accessToken = response.data.accessToken;
     const refreshToken = response.data.refreshToken;
@@ -13,13 +12,10 @@ export const login = async (email: string, password: string) => {
     Cookies.remove('access_token');
     Cookies.remove('refresh_token');
     const cookie = Cookies.get('access_token');
-    console.log(cookie);
 
     if (cookie === undefined) {
       Cookies.set('access_token', accessToken, { expires: 7 });
       Cookies.set('refresh_token', refreshToken, { expires: 7 });
-
-      console.log('로그인 성공! 토큰이 저장되었습니다.');
     }
   } catch (error) {
     console.error('로그인 실패:', error);
