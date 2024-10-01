@@ -25,6 +25,9 @@ const Tab = () => {
   const handleObserver: IntersectionObserverCallback = entries => {
     if (!hasMore) return;
     const target = entries[0];
+    if (selectedTab === 'all' && window.scrollY === 0) {
+      return;
+    }
     if (target.isIntersecting) {
       setPage(prevPage => prevPage + 1);
     }
