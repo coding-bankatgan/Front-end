@@ -86,6 +86,17 @@ const Post = ({ showAlert }: PostProps) => {
     return <p>게시글을 찾을 수 없습니다.</p>;
   }
 
+  const [text, setText] = useState('');
+
+  useEffect(() => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = post.content;
+
+    const textContent = tempDiv.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/&nbsp;/g, ' ');
+    console.log(textContent);
+    setText(textContent);
+  }, [post.content]);
+
   return (
     <PostLayout>
       <PostTitleSection>
@@ -113,7 +124,7 @@ const Post = ({ showAlert }: PostProps) => {
                           postId: post.id,
                           category: post.type,
                           initialTags: post.tags.map(tag => tag.tagName),
-                          initialContent: post.content,
+                          initialContent: text ? text : '',
                           initialImageUrl: post.imageUrl,
                           initialRating: post.rating,
                           drinkId: post.drink.id,
