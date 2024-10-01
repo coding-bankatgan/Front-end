@@ -199,6 +199,10 @@ const NoticeTop = styled.span`
     color: ${({ theme }) => theme.colors.white};
     font-weight: normal;
   }
+
+  > span {
+    margin-left: auto;
+  }
 `;
 
 const NoticeTitle = styled.b`

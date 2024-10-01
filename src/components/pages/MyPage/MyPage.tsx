@@ -33,11 +33,13 @@ const MyPage = () => {
         </UserNameWrapper>
         <BadgeWrapper>
           <img src={handleImg} alt="선호 주종 리스트" />
-          {favorDrink?.map((alcohol, idx) => (
-            <BadgeStyled key={idx} aria-label="선호 주종">
-              {alcoholsData[alcohol]}
-            </BadgeStyled>
-          ))}
+          <BadgeScrollContainer>
+            {favorDrink?.map((alcohol, idx) => (
+              <BadgeStyled key={idx} aria-label="선호 주종">
+                {alcoholsData[alcohol]}
+              </BadgeStyled>
+            ))}
+          </BadgeScrollContainer>
         </BadgeWrapper>
         <MyPageTab />
       </ContentWrapper>
@@ -105,7 +107,19 @@ const BadgeWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
+`;
+
+const BadgeScrollContainer = styled.div`
+  mid-width: 60%;
+  max-width: 70%;
+  overflow-x: scroll;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const BadgeStyled = styled(Badge)`
