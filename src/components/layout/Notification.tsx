@@ -23,7 +23,7 @@ interface Notification {
   type: string;
   content: string;
   createdAt: string;
-  isNew: boolean;
+  readStatus: boolean;
 }
 
 const getNotificationTitle = (type: Notification['type']) => {
@@ -108,7 +108,7 @@ const Notification = () => {
               onClick={() => handleNotificationClick(notification)}
             >
               <NoticeTop>
-                {notification.isNew && <Badge variant="outline">New</Badge>}
+                {notification.readStatus && <Badge variant="outline">New</Badge>}
                 <span>{dayjs(notification.createdAt).format('YYYY.MM.DD')}</span>
               </NoticeTop>
               <NoticeTitle>{getNotificationTitle(notification.type)}</NoticeTitle>

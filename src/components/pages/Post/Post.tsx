@@ -86,16 +86,28 @@ const Post = ({ showAlert }: PostProps) => {
     return <p>게시글을 찾을 수 없습니다.</p>;
   }
 
-  const [text, setText] = useState('');
-
-  useEffect(() => {
+  const handleNavigate = async () => {
+    await fetchPostsDetail(Number(id));
     const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = post.content;
-
+    tempDiv.innerHTML = postsDetail.content;
     const textContent = tempDiv.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/&nbsp;/g, ' ');
-    console.log(textContent);
-    setText(textContent);
-  }, [post.content]);
+    navigate('/create-post', {
+      state: {
+        postId: postsDetail.id,
+        category: postsDetail.type,
+        initialTags: postsDetail.tags.map(tag => tag.tagName),
+        initialContent: textContent,
+        initialImageUrl: postsDetail.imageUrl,
+        initialRating: postsDetail.rating,
+        drinkId: postsDetail.drink.id,
+        drinkType: postsDetail.drink.type,
+        degree: postsDetail.drink.degree,
+        sweetness: postsDetail.drink.sweetness,
+        drinkName: postsDetail.drink.name,
+        step: 3,
+      },
+    });
+  };
 
   return (
     <PostLayout>
@@ -117,28 +129,7 @@ const Post = ({ showAlert }: PostProps) => {
                   <EllipsisHorizontalIcon />
                 </DropdownMenuTrigger>
                 <DropdownMenuContentStyled>
-                  <DropdownMenuItem
-                    onClick={() =>
-                      navigate('/create-post', {
-                        state: {
-                          postId: post.id,
-                          category: post.type,
-                          initialTags: post.tags.map(tag => tag.tagName),
-                          initialContent: text ? text : '',
-                          initialImageUrl: post.imageUrl,
-                          initialRating: post.rating,
-                          drinkId: post.drink.id,
-                          drinkType: post.drink.type,
-                          degree: post.drink.degree,
-                          sweetness: post.drink.sweetness,
-                          drinkName: post.drink.name,
-                          step: 3,
-                        },
-                      })
-                    }
-                  >
-                    수정
-                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleNavigate}>수정</DropdownMenuItem>
                   <DropdownMenuItem>
                     <DeletePost postId={postId} showAlert={showAlert} />
                   </DropdownMenuItem>

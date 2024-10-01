@@ -8,7 +8,7 @@ interface Notification {
   type: string;
   content: string;
   createdAt: string;
-  isNew: boolean;
+  readStatus: boolean;
 }
 
 interface NotificationState {
@@ -40,16 +40,18 @@ const useNotificationStore = create<NotificationState>(set => ({
   },
   setPagination: pagination => set({ pagination }),
   setNotifications: notifications => {
-    const newCount = notifications.filter(n => n.isNew).length;
+    const newCount = notifications.filter(n => n.readStatus).length;
     set({ notifications, newNotificationCount: newCount });
   },
   fetchNotifications: async () => {
     try {
       const data = await fetchNotificationsApi();
+      console.log(data);
+
       if (data) {
         const notifications = data.content.map((notification: Notification) => ({
           ...notification,
-          isNew: notification.isNew ?? true,
+          isNew: notification.readStatus ?? true,
         }));
 
         set({ notifications });
@@ -62,7 +64,7 @@ const useNotificationStore = create<NotificationState>(set => ({
           },
         });
 
-        const newCount = notifications.filter((n: Notification) => n.isNew).length;
+        const newCount = notifications.filter((n: Notification) => n.readStatus).length;
         set({ newNotificationCount: newCount });
         return notifications;
       }
@@ -80,7 +82,7 @@ const useNotificationStore = create<NotificationState>(set => ({
         notification.id === id ? { ...notification, isNew: false } : notification,
       );
 
-      const newCount = updatedNotifications.filter(n => n.isNew).length;
+      const newCount = updatedNotifications.filter(n => n.readStatus).length;
 
       return { notifications: updatedNotifications, newNotificationCount: newCount };
     });
@@ -92,7 +94,7 @@ const useNotificationStore = create<NotificationState>(set => ({
         20,
       );
 
-      const newCount = updatedNotifications.filter(n => n.isNew).length;
+      const newCount = updatedNotifications.filter(n => n.readStatus).length;
 
       return { notifications: updatedNotifications, newNotificationCount: newCount };
     });

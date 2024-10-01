@@ -100,7 +100,7 @@ const useDeclarationStore = create<DeclarationState>(set => ({
             type: 'DECLARATION',
             content: '신고 요청이 승인되어 게시글 삭제되었습니다.',
             createdAt: new Date().toISOString(),
-            isNew: true,
+            readStatus: true,
           });
 
           addNewNotification({
@@ -110,7 +110,7 @@ const useDeclarationStore = create<DeclarationState>(set => ({
             type: 'REMOVED',
             content: `${type} 사유로 인한 ${content}의 문제로 게시글이 삭제 처리되었습니다.`,
             createdAt: new Date().toISOString(),
-            isNew: true,
+            readStatus: true,
           });
         } else {
           // 신고 반려 시
@@ -121,7 +121,7 @@ const useDeclarationStore = create<DeclarationState>(set => ({
             type: 'REJECTION',
             content: `${declaration.cancelType} 사유로 인해 신고 반려되었습니다.`,
             createdAt: new Date().toISOString(),
-            isNew: true,
+            readStatus: true,
           });
         }
       }
