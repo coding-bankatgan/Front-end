@@ -6,9 +6,7 @@ import Loading from '@/assets/icons/Loading';
 import { Skeleton } from '@/components/ui/skeleton';
 import api from '@/api/axios';
 import { alcoholsData } from '@/data/alcoholsData';
-import useRegistrationStore from '@/store/useRegistrationStore';
 import { useNavigate } from 'react-router-dom';
-import CustomAlert from '@/components/layout/CustomAlert';
 
 const Daily = () => {
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -31,24 +29,12 @@ const Daily = () => {
     description: '',
   });
 
-  const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
-  const showAlert = (type: 'success' | 'error', message: string) => {
-    setAlert({ type, message });
-    setTimeout(() => setAlert(null), 2000);
-  };
-
-  const { registrations } = useRegistrationStore();
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    const matchedRegistration = registrations.find(
-      registration => registration.drinkName === dailyData.name,
-    );
-
-    if (matchedRegistration) {
-      navigate(`/specialty-drink/${matchedRegistration.id}`);
-    } else {
-      showAlert('error', '오류가 발생하였습니다. 다시 시도해주세요.');
+    if (dailyData.cost !== 0) {
+      const drinkData = dailyData;
+      navigate(`/drink-page/${drinkData.id}`, { state: { drinkData } });
     }
   };
 
@@ -101,9 +87,6 @@ const Daily = () => {
   }, [latitude, longitude]);
   return (
     <DailySection>
-      {alert && (
-        <CustomAlert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />
-      )}
       <DailyTop>
         <strong>오늘의 데일리 추천이에요.</strong>
         <span>

@@ -26,6 +26,7 @@ import {
 } from '../components/pages';
 import SearchPassword from '@/components/pages/SearchPassword/SearchPassword';
 import SearchPassword2 from '@/components/pages/SearchPassword/SearchPassword2';
+import DrinkPage from '@/components/pages/DrinkPage';
 
 interface RouterProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -84,6 +85,7 @@ const Router = ({ showAlert }: RouterProps) => {
           path="/specialty-drink/form"
           element={<SpecialtyDrinkForm showAlert={showAlert} />}
         />
+        <Route path="/drink-page/:id" element={<DrinkPage />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
