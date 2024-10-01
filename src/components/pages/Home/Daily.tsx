@@ -8,12 +8,9 @@ import api from '@/api/axios';
 import { alcoholsData } from '@/data/alcoholsData';
 import useRegistrationStore from '@/store/useRegistrationStore';
 import { useNavigate } from 'react-router-dom';
+import CustomAlert from '@/components/layout/CustomAlert';
 
-interface DailyProps {
-  showAlert: (type: 'success' | 'error', message: string) => void;
-}
-
-const Daily = ({ showAlert }: DailyProps) => {
+const Daily = () => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +30,13 @@ const Daily = ({ showAlert }: DailyProps) => {
     id: 0,
     description: '',
   });
-  console.log(dailyData);
+
+  const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const showAlert = (type: 'success' | 'error', message: string) => {
+    setAlert({ type, message });
+    setTimeout(() => setAlert(null), 2000);
+  };
+
   const { registrations } = useRegistrationStore();
   const navigate = useNavigate();
 
@@ -98,6 +101,9 @@ const Daily = ({ showAlert }: DailyProps) => {
   }, [latitude, longitude]);
   return (
     <DailySection>
+      {alert && (
+        <CustomAlert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />
+      )}
       <DailyTop>
         <strong>오늘의 데일리 추천이에요.</strong>
         <span>
