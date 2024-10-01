@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Container, Header, ScrollCont, Wrapper } from './SignUpStep1';
 import { Button } from './SignUp';
 import { alcoholsData } from '@/data/alcoholsData';
+import { alcoholsImg } from '@/data/alcoholsImg';
 
 const SignUpStep2 = ({
   handleSubmit,
@@ -35,7 +36,7 @@ const SignUpStep2 = ({
                 onClick={() => handleSelect(alcohol)}
                 aria-label={`주종 선택: ${alcoholsName[idx]}`}
               >
-                {alcoholsName[idx]}
+                <img src={alcoholsImg[alcohol]} alt={alcoholsName[idx]} />
               </AlcoholItem>
             ))}
           </AlcoholList>
@@ -43,8 +44,8 @@ const SignUpStep2 = ({
       </ScrollCont>
       <ButtonWrapper>
         <Button onClick={() => handleSubmit()} aria-label="회원가입 데이터 제출">
-        완료
-      </Button>
+          완료
+        </Button>
       </ButtonWrapper>
     </Wrapper>
   );
@@ -78,10 +79,10 @@ interface AlcoholItemProps {
 const AlcoholItem = styled.button<AlcoholItemProps>`
   width: 90px;
   height: 90px;
-  background-color: ${({ isSelected, theme }) =>
-    isSelected ? theme.colors.tertiary : theme.colors.brightGray};
+  background-color: ${({ theme }) => theme.colors.white};
+  border: 3px solid
+    ${({ isSelected, theme }) => (isSelected ? theme.colors.tertiary : theme.colors.brightGray)};
   border-radius: 10px;
-  border: none;
   display: flex;
   justify-content: center;
   align-items: center;

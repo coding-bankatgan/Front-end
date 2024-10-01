@@ -250,6 +250,7 @@ const Img = styled.div`
   overflow: hidden;
 
   img {
+    border-radius: 5px;
     height: 100%;
   }
   div {

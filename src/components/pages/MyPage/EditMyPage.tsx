@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useSpecialtyStore } from '@/store/useSpecialtyStore';
 import { useMemberStore } from '@/store/useMemberStore';
-import { mapDrinkType } from '@/data/drinkTypes';
 import ExProfileImg from '@/assets/ExProfileImg';
 import styled from '@emotion/styled';
 import CustomAlert from '@/components/layout/CustomAlert';
@@ -25,6 +24,7 @@ import WithDraw from './WithDraw';
 import { fetchMemberWriteApi } from '@/api/postApi';
 
 import { alcoholsData } from '@/data/alcoholsData';
+import { alcoholsImg } from '@/data/alcoholsImg';
 
 import CloseIcon from '@/assets/icons/CloseIcon';
 import api from '@/api/axios';
@@ -109,7 +109,10 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
   }, [name, newPassword, confirmPassword]);
 
   /** 선호주종 목데이터 import 및 선호주종 변경 적용 */
-  const { alldrinks, selectedDrinks, fetchDrinks, toggleDrinkSelection, setSelectedDrinks } =
+  const drinks: string[] = Object.keys(alcoholsData);
+  const drinksName: string[] = Object.values(alcoholsData);
+
+  const { selectedDrinks, setSelectedDrinks, fetchDrinks, toggleDrinkSelection } =
     useSpecialtyStore();
 
   useEffect(() => {
@@ -118,13 +121,14 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
 
   useEffect(() => {
     if (members) {
-      const favorDrinks = members[0].favorDrinkType.map(type => mapDrinkType(type));
+      const favorDrinks = members[0].favorDrinkType;
       setSelectedDrinks(favorDrinks);
     }
   }, [members, setSelectedDrinks]);
+  console.log(selectedDrinks);
 
   /** 선호주종 5개 제한 */
-  const handleDrinkSelection = (drink: string) => {
+  const handleSelect = (drink: string) => {
     if (selectedDrinks.includes(drink)) {
       toggleDrinkSelection(drink);
     } else if (selectedDrinks.length < 5) {
@@ -177,11 +181,7 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
     if (canSave) {
       if (id !== null) {
         try {
-          const selectedDrinksName = selectedDrinks
-            .map(value => Object.entries(alcoholsData).find(([_, val]) => val === value)?.[0])
-            .filter(Boolean);
-
-          const response = await fetchMemberWriteApi(name, selectedDrinksName, alarmEnabled);
+          const response = await fetchMemberWriteApi(name, selectedDrinks, alarmEnabled);
 
           if (profileImage === null) {
             await api.put('/members/profile', { url: null });
@@ -327,14 +327,14 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
             />
           )}
           <AlcoholList>
-            {alldrinks.map(drink => (
+            {drinks.map((drink: string, idx: number) => (
               <AlcoholItem
                 key={drink}
                 isSelected={selectedDrinks.includes(drink)}
-                onClick={() => handleDrinkSelection(drink)}
-                aria-label="선호 주종"
+                onClick={() => handleSelect(drink)}
+                aria-label={`주종 선택: ${drinksName[idx]}`}
               >
-                {drink}
+                <img src={alcoholsImg[drink]} alt={drinksName[idx]} />
               </AlcoholItem>
             ))}
           </AlcoholList>
@@ -415,6 +415,7 @@ const DeleteContainer = styled.span`
   right: 0;
   width: 27px;
   height: 27px;
+  border: 1px solid ${({ theme }) => theme.colors.lightGray};
   border-radius: 30px;
   z-index: 15;
 
@@ -424,7 +425,6 @@ const DeleteContainer = styled.span`
     padding: 3px;
     background-color: ${({ theme }) => theme.colors.white};
     color: ${({ theme }) => theme.colors.error};
-    border: 1px solid ${({ theme }) => theme.colors.lightGray};
     border-radius: 30px;
   }
 `;
@@ -534,11 +534,11 @@ const AlcoholList = styled.div`
 const AlcoholItem = styled.button<AlcoholItemProps>`
   width: 90px;
   height: 90px;
-  background-color: ${({ isSelected, theme }) =>
-    isSelected ? theme.colors.tertiary : theme.colors.brightGray};
+  background-color: ${({ theme }) => theme.colors.white};
+  border: 3px solid
+    ${({ isSelected, theme }) => (isSelected ? theme.colors.tertiary : theme.colors.brightGray)};
   color: ${({ theme }) => theme.colors.darkGray};
   border-radius: 10px;
-  border: none;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -6,13 +6,15 @@ import MyPageTab from './MyPageTab';
 import ExProfileImg from '@/assets/ExProfileImg';
 import SettingIcon from '@/assets/icons/SettingIcon';
 import { useMemberStore } from '@/store/useMemberStore';
-import { mapDrinkType } from '@/data/drinkTypes';
+import { alcoholsData } from '@/data/alcoholsData';
 import handleImg from '../../../assets/img/handimg.png';
 
 const MyPage = () => {
   /** 유저 정보 */
   const { members } = useMemberStore();
   const navigate = useNavigate();
+  const favorDrink = members[0]?.favorDrinkType as Array<keyof typeof alcoholsData>;
+  console.log(favorDrink);
 
   return (
     <PageLayout>
@@ -32,9 +34,9 @@ const MyPage = () => {
         </UserNameWrapper>
         <BadgeWrapper>
           <img src={handleImg} alt="선호 주종 리스트" />
-          {members[0]?.favorDrinkType?.map(drinkType => (
-            <BadgeStyled key={drinkType} aria-label="선호 주종">
-              {mapDrinkType(drinkType)}
+          {favorDrink?.map((alcohol, idx) => (
+            <BadgeStyled key={idx} aria-label="선호 주종">
+              {alcoholsData[alcohol]}
             </BadgeStyled>
           ))}
         </BadgeWrapper>

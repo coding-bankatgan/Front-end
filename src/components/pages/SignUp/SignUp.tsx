@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import StepBar from './StepBar';
 import { useNavigate } from 'react-router-dom';
 import api from '@/api/axios';
+import CustomAlert from '@/components/layout/CustomAlert';
 
 const SignUp = () => {
   const [isNext, setIsNext] = useState(true);
@@ -28,6 +29,7 @@ const SignUp = () => {
   const [validatedLoading, setValidatedLoading] = useState(false);
   const [validatedAlcohols, setValidatedAlcohols] = useState(true);
   const [cancelTokenSource, setCancelTokenSource] = useState<CancelTokenSource | null>(null);
+  const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const navigate = useNavigate();
   const checkEmail = async (email: string) => {
@@ -123,7 +125,11 @@ const SignUp = () => {
     if (selectedAlcohols.includes(alcohol)) {
       setSelectedAlcohols(selectedAlcohols.filter(item => item !== alcohol));
     } else {
-      setSelectedAlcohols([...selectedAlcohols, alcohol]);
+      if (selectedAlcohols.length < 5) {
+        setSelectedAlcohols([...selectedAlcohols, alcohol]);
+      } else {
+        setAlert({ type: 'error', message: '주종은 최대 5개까지 선택할 수 있습니다.' });
+      }
     }
   };
   useEffect(() => {
@@ -158,6 +164,13 @@ const SignUp = () => {
   return (
     <SlideWrapper>
       <SlideContainer>
+        {alert && (
+          <CustomAlert
+            type={alert.type}
+            message={alert.message}
+            onClose={() => setAlert(null)} // Alert 닫기
+          />
+        )}
         <AnimatePresence>
           {currentSlide === 1 && (
             <>
