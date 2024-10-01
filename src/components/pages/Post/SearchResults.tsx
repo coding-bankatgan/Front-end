@@ -130,10 +130,10 @@ const ListItem = styled(Button)`
   img {
     width: 50px;
     height: 60px;
-    object-fit: contain;
-    margin-right: 10px;
+    object-fit: cover;
     border-radius: 10px;
-    background-color: ${({ theme }) => theme.colors.white};
+    margin-right: 10px;
+    background: red;
   }
 `;
 
