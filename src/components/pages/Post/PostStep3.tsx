@@ -94,8 +94,6 @@ const PostStep3 = ({
 
       const newFormData = new FormData();
       newFormData.append('multipartFile', file);
-      console.log(newFormData);
-
       setFormData(newFormData);
     }
   };

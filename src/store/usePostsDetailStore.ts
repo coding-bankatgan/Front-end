@@ -33,7 +33,6 @@ export const usePostsDetailStore = create<PostsState>(set => ({
   fetchPostsDetail: async postId => {
     try {
       const data = await fetchPostsDetailApi(postId);
-      console.log('데잍티티티티티티팉', data);
       set({ postsDetail: data });
     } catch (err) {
       console.error('Error fetching posts: ', err);

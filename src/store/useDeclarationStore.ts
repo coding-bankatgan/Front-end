@@ -84,14 +84,12 @@ const useDeclarationStore = create<DeclarationState>(set => ({
       const updatedDeclarations = state.declarations.map(declaration =>
         declaration.id === declarationId ? { ...declaration, approved, rejectReason } : declaration,
       );
-      console.log(updatedDeclarations);
 
       const declaration = updatedDeclarations.find(decl => decl.id === declarationId);
       const { type, content } = declaration || {};
 
       if (declaration) {
         const { addNewNotification } = useNotificationStore.getState();
-        console.log(declaration.memberId);
 
         if (approved === true) {
           // 신고 승인 시

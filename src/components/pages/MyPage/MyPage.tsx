@@ -14,7 +14,6 @@ const MyPage = () => {
   const { members } = useMemberStore();
   const navigate = useNavigate();
   const favorDrink = members[0]?.favorDrinkType as Array<keyof typeof alcoholsData>;
-  console.log(favorDrink);
 
   return (
     <PageLayout>

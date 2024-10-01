@@ -14,7 +14,6 @@ const SpecialtyDrinkDetail = () => {
   const { id } = useParams();
   const registId = Number(id);
   const isManager = members[0].role === 'MANAGER';
-  // console.log(members.find(member => member.role));
 
   const navigate = useNavigate();
 
@@ -30,10 +29,6 @@ const SpecialtyDrinkDetail = () => {
 
   const [selectedApproval, setSelectedApproval] = useState<'true' | 'false' | null>(null);
   const [isSelectDisabled, setIsSelectDisabled] = useState<boolean>(false);
-
-  useEffect(() => {
-    console.log(selectedApproval);
-  }, [selectedApproval]);
 
   useEffect(() => {
     if (registration) {
@@ -53,8 +48,6 @@ const SpecialtyDrinkDetail = () => {
   const handleUpdateClick = async () => {
     if (selectedApproval !== null) {
       updateApprovalStatus(registId, selectedApproval);
-      console.log(registId);
-      console.log(selectedApproval);
 
       if (selectedApproval === 'true') {
         try {

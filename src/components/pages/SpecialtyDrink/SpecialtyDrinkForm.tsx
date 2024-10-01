@@ -42,7 +42,6 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
   const [degree, setDegree] = useState<number | ''>('');
   const [sweetness, setSweetness] = useState<number>(1);
   const [cost, setCost] = useState<number | undefined>(undefined);
-  // console.log(img);
 
   const addRegistration = useRegistrationStore(state => state.addRegistration);
   const navigate = useNavigate();
@@ -75,12 +74,6 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
     }
   };
 
-  useEffect(() => {
-    if (imageUrl) {
-      console.log('현재 저장된 이미지 URL:', imageUrl);
-    }
-  }, [imageUrl]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const regionId = getRegionId();
@@ -102,9 +95,7 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
       return;
     } else {
       try {
-        // let imageUrl = 'https://thesool.com/common/imageView.do?targetId=PR00000697&targetNm=PRODUCT';
         const mappedType = mapDrinkTypeToEnglish(type);
-        console.log(mappedType);
 
         const degreeAsNumber = typeof degree === 'number' ? degree : 0;
 
@@ -127,7 +118,6 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
         );
 
         if (response && response.data) {
-          console.log(response.data);
           const newRegistration = {
             ...response.data,
             memberId: 1,

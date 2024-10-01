@@ -26,7 +26,6 @@ const DeleteAnnouncement = ({ announcementId, showAlert }: DeleteAnnouncementPro
   /** 삭제 */
   const handleDelete = async () => {
     try {
-      console.log('공지 삭제 중...');
       await fetchAnnouncementDelete(announcementId);
       showAlert('success', '공지사항이 정상적으로 삭제되었습니다.');
       navigate('/announcement');

@@ -20,8 +20,6 @@ const FollowTagList = () => {
 
   const removeFollowTag = async (followId: number, tagName: string) => {
     try {
-      console.log(followId);
-      console.log(tagName);
       const response = await fetchTagDeleteApi(followId);
 
       if (response) {

@@ -59,8 +59,8 @@ const Search = () => {
   const [searchResults, setSearchResults] = useState<Post[]>([]);
   const [page, setPage] = useState(0);
   const [size, _setSize] = useState(10);
-  const [totalElements, setTotalElements] = useState();
-  const [totalPages, setTotalPages] = useState();
+  const [_totalElements, setTotalElements] = useState();
+  const [_totalPages, setTotalPages] = useState();
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoadingResults, setIsLoadingResults] = useState(false); // 검색 결과 로딩
   const [isLoadingTagRemove, setIsLoadingTagRemove] = useState(false); // 태그 삭제 로딩
@@ -103,8 +103,6 @@ const Search = () => {
   }, [loadingRef, hasMore]);
 
   useEffect(() => {
-    console.log(totalElements);
-    console.log(totalPages);
     setPage(0);
     setHasMore(true);
   }, [inputValue]);
@@ -289,14 +287,13 @@ const Search = () => {
         try {
           if (searchType === 'tag') {
             const results = await fetchTagResultsApi(tagNamesWithoutHash, page, size);
-            console.log(results);
 
             setSearchResults(results.content);
             setTotalElements(results.totalElements);
             setTotalPages(results.totalPages);
           } else if (searchType === 'drink') {
             const results = await fetchDrinkResultsApi(drinkSearchTerm, page, size);
-            console.log(results);
+
             setSearchResults(results.content);
             setTotalElements(results.totalElements);
             setTotalPages(results.totalPages);
@@ -366,11 +363,10 @@ const Search = () => {
       if (page > 0) {
         const fetchData = async () => {
           if (searchType === 'tag') {
-            console.log(tags);
             const tagNames = tags.map(tag => tag.name.replace('#', ''));
             const results = await fetchTagResultsApi(tagNames, page, size);
             const data: Post[] = [...searchResults, ...results.content];
-            console.log();
+
             if (results.content.length === 0) {
               throw new Error('Max Page');
             }
@@ -381,7 +377,7 @@ const Search = () => {
             const drinkNames = tags[0].name;
             const results = await fetchDrinkResultsApi(drinkNames, page, size);
             const data: Post[] = [...searchResults, ...results.content];
-            console.log();
+
             if (results.content.length === 0) {
               throw new Error('Max Page');
             }
@@ -403,15 +399,11 @@ const Search = () => {
     }
   }, [page]);
 
-  useEffect(() => {
-    console.log(searchType);
-  }, [searchType]);
-
   return (
     <SearchLayout>
       <SearchFixed>
         <SearchTop>
-          <span onClick={prevBtn} aria-label="이전 페이지로 돌아가기">
+          <span onClick={prevBtn}>
             <ArrowLeftIcon />
           </span>
           검색하기
@@ -422,11 +414,11 @@ const Search = () => {
             onValueChange={value => setSearchType(value as 'tag' | 'drink')}
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="tag" id="tag" />
+              <RadioGroupItem value="tag" id="tag" aria-label="태그 검색" />
               <Label htmlFor="tag">태그 검색</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="drink" id="drink" />
+              <RadioGroupItem value="drink" id="drink" aria-label="특산주 검색" />
               <Label htmlFor="drink">특산주 검색</Label>
             </div>
           </RadioGroupStyled>

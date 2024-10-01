@@ -28,7 +28,6 @@ export const useSpecialtyStore = create<SpecialtyState>((set, get) => ({
 
   toggleDrinkSelection: (drink: string) => {
     const { selectedDrinks } = get();
-    console.log(selectedDrinks);
 
     if (selectedDrinks.includes(drink)) {
       set({

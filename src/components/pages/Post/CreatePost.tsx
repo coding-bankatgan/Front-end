@@ -33,24 +33,6 @@ const CreatePost = () => {
   const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [initialImageUrl] = useState(postToEdit?.initialImageUrl || '');
 
-  useEffect(() => {
-    if (postToEdit) {
-      return;
-    }
-    const tagsWithoutHash = tags.map(tag => tag.replace('#', ''));
-    console.log(tagsWithoutHash);
-
-    const data = {
-      drinkId: drinkData.id,
-      type: category,
-      content: formattedContent,
-      rating: rating,
-      tag: tagsWithoutHash,
-      imageUrl: 'url',
-    };
-    console.log(data);
-  }, [tags, postToEdit]);
-
   const submitPost = async () => {
     if (tags.length < 1) {
       setAlert({ type: 'error', message: '태그는 최소 1개 이상 작성해주세요.' });
@@ -68,7 +50,6 @@ const CreatePost = () => {
             'Content-Type': 'multipart/form-data',
           },
         });
-        console.log(imageUrl);
 
         await api.post('/posts', {
           drinkId: drinkData.id,
@@ -78,17 +59,7 @@ const CreatePost = () => {
           tag: tagsWithoutHash,
           imageUrl: imageUrl.data,
         });
-
-        console.log({
-          drinkId: drinkData.id,
-          type: category,
-          content: formattedContent,
-          rating: rating,
-          tag: tagsWithoutHash,
-          imageUrl: imageUrl.data,
-        });
         if (isEditMode) {
-          console.log('put');
           await api.put(`/posts/${postToEdit.postId}`, {
             drinkId: drinkData.id,
             type: category,
@@ -97,12 +68,9 @@ const CreatePost = () => {
             tag: tagsWithoutHash,
             imageUrl: imageUrl.data,
           });
-          console.log(tagsWithoutHash);
-          console.log('Post updated successfully');
         }
       } else {
         if (isEditMode) {
-          console.log('put');
           await api.put(`/posts/${postToEdit.postId}`, {
             drinkId: drinkData.id,
             type: category,
@@ -111,10 +79,7 @@ const CreatePost = () => {
             tag: tagsWithoutHash,
             imageUrl: initialImageUrl,
           });
-          console.log(tagsWithoutHash);
-          console.log('success');
         } else {
-          console.log('post');
           await api.post('/posts', {
             drinkId: drinkData.id,
             type: category,
@@ -123,7 +88,6 @@ const CreatePost = () => {
             tag: tagsWithoutHash,
             imageUrl: drinkData.imageUrl,
           });
-          console.log('post success');
         }
       }
       navigate('/');
@@ -138,19 +102,13 @@ const CreatePost = () => {
   };
 
   useEffect(() => {
-    for (let [key, value] of formData.entries()) {
-      console.log(key);
+    for (let [_key, value] of formData.entries()) {
       if (value instanceof File) {
         setImageName(value.name);
-      } else {
-        console.log(value); // 문자열 값
       }
     }
   }, [formData]);
 
-  useEffect(() => {
-    console.log(imageName);
-  }, [imageName]);
   const [drinkData, setDrinkData] = useState<Drink>({
     averageRating: 0,
     cost: 0,
@@ -165,10 +123,6 @@ const CreatePost = () => {
     sweetness: postToEdit?.sweetness || 0,
   });
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log(category);
-  }, [category]);
 
   const prevBtn = () => {
     setIsNext(false);
@@ -211,6 +165,7 @@ const CreatePost = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: isNext ? -100 : 100 }}
                 transition={{ duration: 0.4 }}
+                aria-label="게시글 작성 진행률 1/3"
               >
                 <PostStep1 nextStep={nextStep} setCategory={setCategory} />
               </motion.div>
@@ -225,6 +180,7 @@ const CreatePost = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: isNext ? -100 : 100 }}
                 transition={{ duration: 0.4 }}
+                aria-label="게시글 작성 진행률 2/3"
               >
                 <PostStep2 nextStep={nextStep} setDrinkData={setDrinkData} />
               </motion.div>
@@ -239,6 +195,7 @@ const CreatePost = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: isNext ? -100 : 100 }}
                 transition={{ duration: 0.4 }}
+                aria-label="게시글 작성 진행률 3/3"
               >
                 <PostStep3
                   category={category}

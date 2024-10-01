@@ -70,11 +70,12 @@ const SkeletonContainer = styled.div`
   width: 100%;
   height: 80px;
   object-fit: contain;
-  margin: 3px 10px 0 0;
+  margin: 0 10px 5px 0;
   border-radius: 10px;
   > div {
     width: 100%;
     height: 100%;
+    border-radius: 10px;
   }
 `;
 

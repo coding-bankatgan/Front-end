@@ -23,7 +23,6 @@ const Pagination = ({ pagination, onPageChange }: PaginationProps) => {
   const { totalPages, number } = pagination;
 
   const handlePageChange = (page: number) => {
-    console.log('Requested Page!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:', page);
     if (page >= 0 && page < totalPages) {
       onPageChange(page);
     }

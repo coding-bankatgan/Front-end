@@ -26,7 +26,6 @@ const DeletePost = ({ postId, showAlert }: DeletePostProps) => {
   /** 삭제 */
   const handleDelete = async () => {
     try {
-      console.log('게시글 삭제 중...');
       await fetchPostsDelete(postId);
       showAlert('success', '게시글이 정상적으로 삭제되었습니다.');
       navigate('/');

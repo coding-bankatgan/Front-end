@@ -11,7 +11,6 @@ export const fetchPostsApi = async (sortBy: string, page: number = 0, size: numb
         sortBy,
       },
     });
-    console.log('전체 게시글 받아와', response.data);
     return response.data;
   } catch (err) {
     console.error('Error fetching posts: ', err);
@@ -46,20 +45,18 @@ export const fetchPostsModify = async (
       tag,
       imageUrl,
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
-    console.log('Error modifying posts: ', error);
+    console.error('Error modifying posts: ', error);
   }
 };
 
 export const fetchPostsDelete = async (postId: number) => {
   try {
     const response = await api.delete(`/posts/${postId}`);
-    console.log(response);
     return response.data;
   } catch (error) {
-    console.log('Error deleting posts: ', error);
+    console.error('Error deleting posts: ', error);
   }
 };
 
@@ -89,7 +86,6 @@ export const fetchCommentWriteApi = async (postId: number, content: string, anon
         },
       },
     );
-    console.log(response.data);
     return response.data;
   } catch (err) {
     console.error('Error fetching commentWrite: ', err);
@@ -114,7 +110,6 @@ export const fetchCommentsModifyApi = async (id: number, content: string, anonym
       content,
       anonymous,
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error modifying comments: ', error);
@@ -125,7 +120,6 @@ export const fetchCommentsModifyApi = async (id: number, content: string, anonym
 export const fetchCommentsDeleteApi = async (id: number) => {
   try {
     const response = await api.delete(`/comments/${id}`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error deleting comments: ', error);
@@ -238,17 +232,6 @@ export const fetchRegistrationWriteApi = async (
   imageUrl: string,
 ) => {
   try {
-    console.log('API 함수가 호출되었습니다.');
-    console.log('전송할 데이터:', {
-      regionId,
-      drinkName,
-      type,
-      degree,
-      sweetness,
-      cost,
-      description,
-      imageUrl,
-    });
     const response = await api.post(
       '/drinks/registrations',
       {
@@ -267,7 +250,6 @@ export const fetchRegistrationWriteApi = async (
         },
       },
     );
-    console.log(response);
     return response;
   } catch (error) {
     console.error('Error fetching registrationWrite: ', error);
@@ -278,7 +260,6 @@ export const fetchRegistrationWriteApi = async (
 export const fetchRegistrationsApi = async (page: number, size: number) => {
   try {
     const response = await api.get(`/drinks/registrations?page=${page}&size=${size}`);
-    console.log(response);
     return response.data;
   } catch (err) {
     console.error('Error fetching specialtyDrink: ', err);
@@ -289,7 +270,6 @@ export const fetchRegistrationsApi = async (page: number, size: number) => {
 export const fetchRegistrationsDetailApi = async (id: number) => {
   try {
     const response = await api.get(`/drinks/registrations/${id}`);
-    console.log(response);
     return response.data;
   } catch (err) {
     console.error('Error fetching specialtyDrink: ', err);
@@ -324,7 +304,6 @@ export const fetchAnnouncementModify = async (id: number, title: string, content
       title,
       content,
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error modifying announcement: ', error);
@@ -335,7 +314,6 @@ export const fetchAnnouncementModify = async (id: number, title: string, content
 export const fetchAnnouncementDelete = async (id: number) => {
   try {
     const response = await api.delete(`/announcements/${id}`);
-    console.log(response);
     return response.data;
   } catch (error) {
     console.error('Error deleting announcement: ', error);
@@ -427,7 +405,6 @@ export const fetchImageUploadApi = async (file: File) => {
         'Content-Type': 'multipart/form-data',
       },
     });
-    console.log(response);
     return response.data;
   } catch (err) {
     console.error('Error fetching image: ', err);
@@ -462,8 +439,6 @@ export const fetchMemberWriteApi = async (
   alarmEnabled: boolean,
 ) => {
   try {
-    console.log('보내기 직전 : ', favorDrinkType);
-
     const response = await api.post('/members', {
       name: name,
       favorDrinkType: favorDrinkType,
@@ -508,7 +483,6 @@ export const fetchTagApi = async () => {
 /** 태그 팔로우 삭제 API */
 export const fetchTagDeleteApi = async (followId: number) => {
   try {
-    console.log(followId);
     const response = await api.delete(`/tags/follows/${followId}`);
     return response.data;
   } catch (error) {

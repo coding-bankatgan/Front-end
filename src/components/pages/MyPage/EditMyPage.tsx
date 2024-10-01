@@ -125,7 +125,6 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
       setSelectedDrinks(favorDrinks);
     }
   }, [members, setSelectedDrinks]);
-  console.log(selectedDrinks);
 
   /** 선호주종 5개 제한 */
   const handleSelect = (drink: string) => {
@@ -159,14 +158,12 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
     if (file) {
       const newFormData = new FormData();
       newFormData.append('multipartFile', file);
-      console.log(newFormData);
       setFormData(newFormData);
     }
   };
 
   useEffect(() => {
     handleFileChange;
-    console.log(formData);
   }, [fileInputRef]);
 
   /** 저장 */

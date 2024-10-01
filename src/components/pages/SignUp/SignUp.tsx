@@ -126,9 +126,6 @@ const SignUp = () => {
       setSelectedAlcohols([...selectedAlcohols, alcohol]);
     }
   };
-  useEffect(() => {
-    console.log(selectedAlcohols);
-  }, [selectedAlcohols]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const handleSubmit = async () => {
@@ -145,7 +142,6 @@ const SignUp = () => {
       favorDrinkType: selectedAlcohols,
       alarmEnabled: true,
     };
-    console.log(userData);
 
     try {
       await api.post(`/members/signup`, userData);

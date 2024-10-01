@@ -8,8 +8,6 @@ const api = axios.create({
 /**요청 인터셉터: 모든 요청에 Access Token 자동 추가*/
 api.interceptors.request.use(
   config => {
-    console.log(config.url);
-
     if (
       config.url &&
       (config.url.startsWith('/members/signin') ||
@@ -19,8 +17,6 @@ api.interceptors.request.use(
         config.url.startsWith('/members/email') ||
         config.url.startsWith('/members/request-password-reset'))
     ) {
-      console.log('토큰 헤더 생략 성공');
-
       return config;
     }
 
@@ -56,8 +52,6 @@ api.interceptors.response.use(
           {},
           { headers: { 'Refresh-Token': refreshToken } },
         );
-        console.log('access token 재발급');
-
         const newAccessToken = refreshResponse.headers['Access-Token'];
 
         Cookies.set('access_token', newAccessToken);

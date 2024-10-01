@@ -25,8 +25,6 @@ const WithDraw = ({ showAlert }: WithDrawProps) => {
 
   /** 탈퇴 */
   const handleWithdraw = async () => {
-    console.log('회원 탈퇴 처리 중...');
-
     try {
       await api.delete('/members');
       showAlert('success', '회원탈퇴가 완료되었습니다.');

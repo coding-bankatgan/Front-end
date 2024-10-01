@@ -47,9 +47,6 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
           name: searchTerm,
         },
       });
-
-      console.log(response.data);
-
       setSuggestions(response.data || []);
     } catch (error) {
       console.error('Error fetching autocomplete suggestions:', error);
@@ -72,7 +69,6 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
   };
 
   const handleSuggestionClick = (suggestion: string) => {
-    console.log(suggestion);
     setHasMore(true);
     setSearchTerm(suggestion);
     setPoint(prev => prev + 1);
@@ -117,23 +113,26 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
     setLoading(true);
 
     try {
-      const response = await api.get(`/search/drinks`, {
-        params: {
-          regionId: selectedRegionId ? selectedRegionId : 0,
-          drinkName: searchTerm,
-          size: 10,
-          page: page,
-        },
-      });
+      const response = await new Promise<{ data: { content: Drink[] } }>(resolve =>
+        setTimeout(async () => {
+          const res = await api.get(`/search/drinks`, {
+            params: {
+              regionId: selectedRegionId ? selectedRegionId : 0,
+              drinkName: searchTerm,
+              size: 10,
+              page: page,
+            },
+          });
+          resolve(res); // 요청 완료 후 응답 반환
+        }, 1000),
+      );
 
       const data = [response.data];
-      console.log('data : ', data);
       setSearchResults(prevResults => {
         const isDuplicate = data[0].content.some((newItem: Drink) =>
           prevResults.some(prevItem => prevItem.id === newItem.id),
         );
         if (isDuplicate) {
-          console.log('ok');
           return prevResults;
         } else {
           return [...prevResults, ...data[0].content];
@@ -149,17 +148,10 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
   };
 
   useEffect(() => {
-    console.log('page ', searchTerm);
-
     if (searchTerm !== '') {
       fetchSearchResults();
     }
   }, [page]);
-
-  // useEffect(() => {
-  //   setPage(0);
-  //   setHasMore(true);
-  // }, [searchTerm]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
@@ -182,7 +174,6 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
   const handleFocus = () => {
     setHasMore(true);
     setViewAutocomplete(true);
-    console.log(hasMore);
   };
   const handleBlur = () => {
     setTimeout(() => setViewAutocomplete(false), 100);
@@ -244,15 +235,6 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
             <div ref={loadingRef} style={{ height: '20px', background: 'transparent' }}></div>
           </>
         )}
-        {/* {searchResults.map(result => (
-          <div key={result.id}>
-            <h3>{result.name}</h3>
-            <p>{result.description}</p>
-            <img src={result.imageUrl} alt={result.name} />
-          </div>
-        ))}
-        {loading && <p>Loading...</p>}
-        <div ref={loadingRef} style={{ height: '20px', background: 'transparent' }} /> */}
       </ResultsContainer>
     </>
   );

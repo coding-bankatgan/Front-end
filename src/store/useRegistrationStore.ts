@@ -77,7 +77,6 @@ const useRegistrationStore = create<RegistrationState>(set => ({
   fetchRegistrationsDetail: async id => {
     try {
       const data = await fetchRegistrationsDetailApi(id);
-      console.log(data);
       set({ registrationsDetail: data });
     } catch (err) {
       console.error('Error fetching posts: ', err);
@@ -98,7 +97,6 @@ const useRegistrationStore = create<RegistrationState>(set => ({
       };
 
       newRegistId = newRegistration.id;
-      console.log('uuuuuuuu', newRegistration);
 
       return {
         registrations: [...state.registrations, newRegistration],
@@ -133,7 +131,6 @@ const useRegistrationStore = create<RegistrationState>(set => ({
             createdAt: new Date().toISOString(),
             isNew: true,
           };
-          console.log(notification);
 
           useNotificationStore.getState().addNewNotification(notification);
         }

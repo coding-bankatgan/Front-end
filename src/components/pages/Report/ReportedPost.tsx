@@ -67,10 +67,6 @@ const ReportedPost = () => {
     }));
   };
 
-  useEffect(() => {
-    console.log(selectedApproval);
-  }, [selectedApproval]);
-
   /** 링크 연결 */
   const handleInputClick = () => {
     window.open(declaration?.link, '_blank');

@@ -14,7 +14,6 @@ const DeleteComment = ({ commentId, showAlert }: DeletePostProps) => {
   /** 삭제 */
   const handleDelete = async () => {
     try {
-      console.log('댓글 삭제 중...');
       await fetchCommentsDeleteApi(commentId);
       showAlert('success', '댓글이 정상적으로 삭제되었습니다.');
       setTimeout(() => {
