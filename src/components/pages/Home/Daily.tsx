@@ -6,8 +6,14 @@ import Loading from '@/assets/icons/Loading';
 import { Skeleton } from '@/components/ui/skeleton';
 import api from '@/api/axios';
 import { alcoholsData } from '@/data/alcoholsData';
+import useRegistrationStore from '@/store/useRegistrationStore';
+import { useNavigate } from 'react-router-dom';
 
-const Daily = () => {
+interface DailyProps {
+  showAlert: (type: 'success' | 'error', message: string) => void;
+}
+
+const Daily = ({ showAlert }: DailyProps) => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +33,21 @@ const Daily = () => {
     id: 0,
     description: '',
   });
+  console.log(dailyData);
+  const { registrations } = useRegistrationStore();
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    const matchedRegistration = registrations.find(
+      registration => registration.drinkName === dailyData.name,
+    );
+
+    if (matchedRegistration) {
+      navigate(`/specialty-drink/${matchedRegistration.id}`);
+    } else {
+      showAlert('error', '오류가 발생하였습니다. 다시 시도해주세요.');
+    }
+  };
 
   const alcohols = alcoholsData;
 
@@ -84,7 +105,7 @@ const Daily = () => {
         </span>
       </DailyTop>
       <DailyDesc>{!error ? '현재 위치 기반으로 특산주를 추천해드려요 :D' : error}</DailyDesc>
-      <DailyBottom>
+      <DailyBottom onClick={handleButtonClick}>
         {!isVerification ? (
           <ValiText>
             위치정보 제공에 동의해주세요!
