@@ -87,10 +87,6 @@ export const usePostsStore = create<PostsState>((set, get) => ({
     try {
       const data = await fetchPostsApi(sortBy, page, size);
 
-      if (data.totalPages < page) {
-        throw new Error('Max Page');
-      }
-
       set(state => {
         const updatedPosts = page > 0 ? [...state.posts, ...data.content] : data.content;
 
@@ -108,6 +104,10 @@ export const usePostsStore = create<PostsState>((set, get) => ({
           }),
         };
       });
+
+      if (data.totalPages <= page + 1) {
+        throw new Error('Max Page');
+      }
     } catch (err) {
       throw new Error('Max Page');
     }
