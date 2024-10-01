@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import DeleteAnnouncement from './DeleteAnnouncement';
+import useMemberStore from '@/store/useMemberStore';
 
 interface AnnouncementDetailProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -27,6 +28,9 @@ const AnnouncementDetail = ({ showAlert }: AnnouncementDetailProps) => {
 
   const location = useLocation();
   const stateAnnouncement = location.state;
+
+  const { members } = useMemberStore();
+  const isManager = members[0].role === 'MANAGER';
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -45,30 +49,32 @@ const AnnouncementDetail = ({ showAlert }: AnnouncementDetailProps) => {
       <ContentWrapper>
         <OptionWrapper>
           <PrevBtn />
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <EllipsisHorizontalIcon />
-            </DropdownMenuTrigger>
-            <DropdownMenuContentStyled>
-              <DropdownMenuItem
-                onClick={() =>
-                  navigate('/announcement/form', {
-                    state: {
-                      initialTitle: announcement.title,
-                      initialContent: announcement.content,
-                      initialImageUrl: announcement.imageUrl,
-                      announcementId: announcement.id,
-                    },
-                  })
-                }
-              >
-                수정
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <DeleteAnnouncement announcementId={announcementId} showAlert={showAlert} />
-              </DropdownMenuItem>
-            </DropdownMenuContentStyled>
-          </DropdownMenu>
+          {isManager && (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <EllipsisHorizontalIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContentStyled>
+                <DropdownMenuItem
+                  onClick={() =>
+                    navigate('/announcement/form', {
+                      state: {
+                        initialTitle: announcement.title,
+                        initialContent: announcement.content,
+                        initialImageUrl: announcement.imageUrl,
+                        announcementId: announcement.id,
+                      },
+                    })
+                  }
+                >
+                  수정
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <DeleteAnnouncement announcementId={announcementId} showAlert={showAlert} />
+                </DropdownMenuItem>
+              </DropdownMenuContentStyled>
+            </DropdownMenu>
+          )}
         </OptionWrapper>
         <HeaderStyled>
           <div>{announcement?.title}</div>
