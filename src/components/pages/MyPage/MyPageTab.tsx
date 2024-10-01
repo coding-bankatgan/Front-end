@@ -142,7 +142,9 @@ const TabsListStyled = styled(TabsList)`
   }
 `;
 
-const TabsPostContentStyled = styled(TabsContent)<{ isActive: boolean }>`
+const TabsPostContentStyled = styled(TabsContent, {
+  shouldForwardProp: prop => prop !== 'isActive',
+})<{ isActive: boolean }>`
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -154,7 +156,9 @@ const TabsPostContentStyled = styled(TabsContent)<{ isActive: boolean }>`
   overflow: hidden;
 `;
 
-const TabsTagsContentStyled = styled(TabsContent)<{ isActive: boolean }>`
+const TabsTagsContentStyled = styled(TabsContent, {
+  shouldForwardProp: prop => prop !== 'isActive',
+})<{ isActive: boolean }>`
   width: ${({ isActive }) => (isActive ? '100%' : '0')};
   min-height: ${({ isActive }) => (isActive ? '200px' : '0')};
   height: ${({ isActive }) => (isActive ? 'auto' : '0')};
