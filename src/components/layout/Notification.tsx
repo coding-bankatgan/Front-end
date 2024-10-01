@@ -13,7 +13,6 @@ import { Badge } from '@/components/ui/badge';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useNotificationStore from '@/store/useNotificationStore';
-import { useMemberStore } from '@/store/useMemberStore';
 import { useQuery } from '@tanstack/react-query';
 
 interface Notification {
@@ -48,7 +47,6 @@ const Notification = () => {
   const navigate = useNavigate();
   const { notifications, newNotificationCount, fetchNotifications, markAsRead } =
     useNotificationStore();
-  const { members } = useMemberStore();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
@@ -69,18 +67,16 @@ const Notification = () => {
   }, [location.pathname]);
 
   const handleNotificationClick = (notification: Notification) => {
-    const { type, postId, memberId } = notification;
+    const { type, postId } = notification;
     markAsRead(notification.id);
 
     if (type === 'DECLARATION' || type === 'REMOVED' || type === 'REJECTION' || postId === null) {
       return;
     }
     if (type === 'COMMENT') {
-      if (memberId === members[0].id) {
-        navigate(`/post/${postId}`);
-      }
+      navigate(`/post/${postId}`);
     } else if (type === 'REGISTRATION') {
-      navigate(`/specialty-drink/${postId}`);
+      // navigate(`/drink-page/${postId}`, { state: { data: drinkData } });
     } else if (type === 'FOLLOW') {
       navigate(`/post/${postId}`);
     }
