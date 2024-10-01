@@ -97,7 +97,7 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
     ) {
       showAlert('error', '모든 정보를 입력해주세요.');
       return;
-    } else if (description.length < 10) {
+    } else if (description.length < 10 || description.length > 500) {
       showAlert('error', '특산주 설명을 10~500자 사이로 입력해주세요.');
       return;
     } else {
@@ -354,7 +354,7 @@ const SliderValue = styled.span`
 `;
 
 const TextareaStyled = styled(Textarea)`
-  height: 150px;
+  height: 180px;
   background-color: ${({ theme }) => theme.colors.brightGray};
   resize: none;
 `;

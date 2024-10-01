@@ -127,10 +127,10 @@ const Daily = () => {
               ) : (
                 <>
                   <span>
-                    {`${alcohols[dailyData?.type]}`} &nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
-                    {`${dailyData?.degree}%`}
+                    주종: {`${alcohols[dailyData?.type]}`} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                    도수: {`${dailyData?.degree}%`}
                   </span>
-                  <span>{`${dailyData?.cost.toLocaleString()} 원`}</span>
+                  <span>가격: {`${dailyData?.cost.toLocaleString()}원`}</span>
                 </>
               )}
             </ImgDesc>

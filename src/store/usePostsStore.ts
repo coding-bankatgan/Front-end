@@ -86,7 +86,6 @@ export const usePostsStore = create<PostsState>((set, get) => ({
   fetchPosts: async (sortBy = 'createdAt', page = 0, size = 10) => {
     try {
       const data = await fetchPostsApi(sortBy, page, size);
-      console.log(data);
 
       if (data.totalPages < page) {
         throw new Error('Max Page');
