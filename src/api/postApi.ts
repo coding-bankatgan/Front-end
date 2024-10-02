@@ -277,13 +277,18 @@ export const fetchRegistrationsDetailApi = async (id: number) => {
 };
 
 /** 공지사항 등록 API */
-export const fetchAnnouncementWriteApi = async (title: string, content: string) => {
+export const fetchAnnouncementWriteApi = async (
+  title: string,
+  content: string,
+  imageUrl: string,
+) => {
   try {
     const response = await api.post(
       '/announcements',
       {
         title: title,
         content: content,
+        imageUrl: imageUrl,
       },
       {
         headers: {
@@ -298,11 +303,17 @@ export const fetchAnnouncementWriteApi = async (title: string, content: string) 
 };
 
 /** 공지사항 수정 API */
-export const fetchAnnouncementModify = async (id: number, title: string, content: string) => {
+export const fetchAnnouncementModify = async (
+  id: number,
+  title: string,
+  content: string,
+  imageUrl: string,
+) => {
   try {
     const response = await api.put(`/announcements/${id}`, {
       title,
       content,
+      imageUrl: imageUrl,
     });
     return response.data;
   } catch (error) {
@@ -324,6 +335,7 @@ export const fetchAnnouncementDelete = async (id: number) => {
 export const fetchAnnouncementApi = async (page: number, size: number) => {
   try {
     const response = await api.get(`/announcements?page=${page}&size=${size}`);
+    console.log(response.data);
     return response.data;
   } catch (err) {
     console.error('Error fetching announcements: ', err);
@@ -332,6 +344,7 @@ export const fetchAnnouncementApi = async (page: number, size: number) => {
 export const fetchAnnouncementDetailApi = async (id: number) => {
   try {
     const response = await api.get(`/announcements/${id}`);
+    console.log(response.data);
     return response.data;
   } catch (err) {
     console.error('Error fetching announcements: ', err);

@@ -8,11 +8,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchAnnouncementModify, fetchAnnouncementWriteApi } from '@/api/postApi';
 import { fetchImageUploadApi } from '@/api/postApi';
 import PlusIcon from '@/assets/icons/PlusIcon';
-import useImageStore from '@/store/useImageStore';
 
-const writeAnnouncement = async (title: string, content: string) => {
+const writeAnnouncement = async (title: string, content: string, imageUrl: string) => {
   try {
-    const response = await fetchAnnouncementWriteApi(title, content);
+    const response = await fetchAnnouncementWriteApi(title, content, imageUrl);
     return response;
   } catch (err) {
     console.error('Error writing announcement: ', err);
@@ -69,26 +68,23 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = () => {
         uploadedImageUrl = imageResponse;
       }
       if (announcementId) {
-        const response = await fetchAnnouncementModify(announcementId, newTitle, newContent);
+        const response = await fetchAnnouncementModify(
+          announcementId,
+          newTitle,
+          newContent,
+          uploadedImageUrl,
+        );
         const updatedAnnouncement = {
           ...response,
-          imageUrl: uploadedImageUrl,
         };
-
-        const { setImageUrl } = useImageStore.getState();
-        setImageUrl(announcementId, uploadedImageUrl);
 
         navigate(`/announcement/${announcementId}`, { state: updatedAnnouncement });
       } else {
-        const response = await writeAnnouncement(newTitle, newContent);
+        const response = await writeAnnouncement(newTitle, newContent, uploadedImageUrl);
         if (response) {
           const newAnnouncementData = {
             ...response,
-            imageUrl: uploadedImageUrl,
           };
-
-          const { setImageUrl } = useImageStore.getState();
-          setImageUrl(response.id, uploadedImageUrl);
 
           setNewTitle('');
           setNewContent('');
