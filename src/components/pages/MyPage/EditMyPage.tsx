@@ -15,7 +15,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog';
-import { useSpecialtyStore } from '@/store/useSpecialtyStore';
 import { useMemberStore } from '@/store/useMemberStore';
 import ExProfileImg from '@/assets/ExProfileImg';
 import styled from '@emotion/styled';
@@ -112,26 +111,21 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
   const drinks: string[] = Object.keys(alcoholsData);
   const drinksName: string[] = Object.values(alcoholsData);
 
-  const { selectedDrinks, setSelectedDrinks, fetchDrinks, toggleDrinkSelection } =
-    useSpecialtyStore();
-
-  useEffect(() => {
-    fetchDrinks();
-  }, [fetchDrinks]);
+  const [selectedDrinks, setSelectedDrinks] = useState<string[]>([]);
 
   useEffect(() => {
     if (members) {
       const favorDrinks = members[0].favorDrinkType;
       setSelectedDrinks(favorDrinks);
     }
-  }, [members, setSelectedDrinks]);
+  }, [members]);
 
   /** 선호주종 5개 제한 */
   const handleSelect = (drink: string) => {
     if (selectedDrinks.includes(drink)) {
-      toggleDrinkSelection(drink);
+      setSelectedDrinks(selectedDrinks.filter(item => item !== drink));
     } else if (selectedDrinks.length < 5) {
-      toggleDrinkSelection(drink);
+      setSelectedDrinks([...selectedDrinks, drink]);
     } else {
       setAlertVisible(true);
       setTimeout(() => setAlertVisible(false), 1500);

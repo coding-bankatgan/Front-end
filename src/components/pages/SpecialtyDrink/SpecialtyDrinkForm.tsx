@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { useRegionStore } from '@/store/useRegionStore';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import PlusIcon from '@/assets/icons/PlusIcon';
@@ -14,6 +13,15 @@ import { fetchRegistrationWriteApi } from '@/api/postApi';
 import { mapDrinkTypeToEnglish } from '@/data/drinkTypes';
 // import api from '@/api/axios';
 import { fetchImageUploadApi } from '@/api/postApi';
+import api from '@/api/axios';
+
+interface Region {
+  id: number;
+  placeName: string;
+  latitude: number;
+  longitude: number;
+  createAt: string;
+}
 
 interface SpecialtyDrinkFormProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -36,6 +44,7 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
   //** registration 등록 */
   const [imageUrl, setImageUrl] = useState<string>('');
   const [drinkName, setDrinkName] = useState<string>('');
+  const [regions, setRegions] = useState<Region[]>([]);
   const [region, setRegion] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [type, setType] = useState<string>('');
@@ -47,10 +56,19 @@ const SpecialtyDrinkForm = ({ showAlert }: SpecialtyDrinkFormProps) => {
   const navigate = useNavigate();
 
   //** 지역 목데이터 import 및 지역 변경 적용 */
-  const { regions, fetchRegions } = useRegionStore();
+  const fetchRegions = async () => {
+    try {
+      const response = await api.get<Region[]>(`/regions`);
+      console.log(response.data);
+      setRegions(response.data); // 가져온 지역 데이터를 상태에 저장
+    } catch (err) {
+      console.error('Error fetching regions: ', err);
+    }
+  };
+
   useEffect(() => {
     fetchRegions();
-  }, [fetchRegions]);
+  }, []);
 
   const getRegionId = () => {
     const selectedRegion = regions.find(regionItem => regionItem.placeName === region);
