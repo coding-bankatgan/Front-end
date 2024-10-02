@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { fetchRegionApi } from '@/api/postApi';
 
 interface Region {
