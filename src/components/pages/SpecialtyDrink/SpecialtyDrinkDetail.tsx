@@ -10,10 +10,14 @@ import api from '@/api/axios';
 
 const SpecialtyDrinkDetail = () => {
   const { registrations, fetchRegistrationsDetail, updateApprovalStatus } = useRegistrationStore();
-  const { members } = useMemberStore();
+  const { members, fetchMembers } = useMemberStore();
+  useEffect(() => {
+    if (!members[0]) {
+      fetchMembers();
+    }
+  }, []);
   const { id } = useParams();
   const registId = Number(id);
-  const isManager = members[0].role === 'MANAGER';
 
   const navigate = useNavigate();
 
@@ -110,7 +114,7 @@ const SpecialtyDrinkDetail = () => {
         <SelectStyled
           value={selectedApproval ?? ''}
           onChange={handleApprovalChange}
-          disabled={!isManager || isSelectDisabled}
+          disabled={!(members[0]?.role === 'MANAGER') || isSelectDisabled}
         >
           <option value="" disabled hidden>
             {registration?.approved === null
@@ -122,7 +126,10 @@ const SpecialtyDrinkDetail = () => {
         </SelectStyled>
         <ButtonStyled>
           <Button onClick={handleCancelClick}>취소</Button>
-          <Button onClick={handleUpdateClick} disabled={selectedApproval === null || !isManager}>
+          <Button
+            onClick={handleUpdateClick}
+            disabled={selectedApproval === null || !(members[0]?.role === 'MANAGER')}
+          >
             등록
           </Button>
         </ButtonStyled>

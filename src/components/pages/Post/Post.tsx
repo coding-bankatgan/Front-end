@@ -130,7 +130,7 @@ const Post = ({ showAlert }: PostProps) => {
 
           {postsDetail?.memberName}
           <span>
-            {postsDetail?.memberId === members[0].id && (
+            {(postsDetail?.memberId === members[0]?.id || members[0]?.role === 'MANAGER') && (
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <EllipsisHorizontalIcon />

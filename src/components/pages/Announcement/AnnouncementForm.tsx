@@ -89,7 +89,6 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = () => {
 
           const { setImageUrl } = useImageStore.getState();
           setImageUrl(response.id, uploadedImageUrl);
-          console.log(newAnnouncementData);
 
           setNewTitle('');
           setNewContent('');

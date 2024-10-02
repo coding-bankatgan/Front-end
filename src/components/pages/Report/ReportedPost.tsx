@@ -8,9 +8,18 @@ import useDeclarationStore from '@/store/useDeclarationStore';
 import styled from '@emotion/styled';
 import { reportReasons } from '@/components/pages/Report/ReportForm';
 import api from '@/api/axios';
+import useMemberStore from '@/store/useMemberStore';
 
 const ReportedPost = () => {
   const { declarations, fetchDeclarationsDetail, updateApprovalStatus } = useDeclarationStore();
+
+  const { members, fetchMembers } = useMemberStore();
+  useEffect(() => {
+    if (!members[0]) {
+      fetchMembers();
+    }
+  }, []);
+
   const { id } = useParams();
   const declarationId = Number(id);
   const navigate = useNavigate();

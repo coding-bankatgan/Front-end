@@ -31,11 +31,12 @@ const AnnouncementDetail = ({ showAlert }: AnnouncementDetailProps) => {
   const location = useLocation();
   const stateAnnouncement = location.state;
 
-  const { members } = useMemberStore();
-  const isManager = members[0].role === 'MANAGER';
+  const { members, fetchMembers } = useMemberStore();
+  useEffect(() => {
+    fetchMembers();
+  }, []);
 
   const imageUrl = imageUrls[announcementId];
-  console.log(imageUrl);
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -48,14 +49,13 @@ const AnnouncementDetail = ({ showAlert }: AnnouncementDetailProps) => {
 
   const announcement =
     stateAnnouncement || announcements.find(announcement => announcement.id === announcementId);
-  console.log(announcement);
 
   return (
     <NoFooterLayoutSub>
       <ContentWrapper>
         <OptionWrapper>
           <PrevBtn />
-          {isManager && (
+          {members[0]?.role === 'MANAGER' && (
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <EllipsisHorizontalIcon />

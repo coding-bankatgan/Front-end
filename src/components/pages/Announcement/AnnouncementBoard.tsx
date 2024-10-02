@@ -20,6 +20,12 @@ const AnnouncementBoard = () => {
     pagination: state.pagination,
     fetchAnnouncements: state.fetchAnnouncements,
   }));
+  const { members, fetchMembers } = useMemberStore();
+  useEffect(() => {
+    if (!members[0]) {
+      fetchMembers();
+    }
+  }, []);
 
   useEffect(() => {
     fetchAnnouncements(pagination.number, pagination.size);
@@ -33,9 +39,6 @@ const AnnouncementBoard = () => {
     navigate(`/announcement/${id}`);
   };
 
-  const { members } = useMemberStore();
-  const isManager = members[0].role === 'MANAGER';
-
   /** 7일 이내에 생성된 공지인지 확인하는 함수 */
   const isNewAnnouncement = (createdAt: string) => {
     return dayjs().diff(dayjs(createdAt), 'day') <= 7;
@@ -48,19 +51,21 @@ const AnnouncementBoard = () => {
         <TitleStyled>공지사항</TitleStyled>
         <ListContentStyled>
           {announcements.map(announcement => (
-            <li key={announcement.id} onClick={() => handleItemClick(announcement.id)}>
+            <li key={announcement?.id} onClick={() => handleItemClick(announcement?.id)}>
               <div>
-                <TitleSpan>{announcement.title}</TitleSpan>
-                {isNewAnnouncement(announcement.createdAt) && <Badge variant="outline">New!</Badge>}
+                <TitleSpan>{announcement?.title}</TitleSpan>
+                {isNewAnnouncement(announcement?.createdAt) && (
+                  <Badge variant="outline">New!</Badge>
+                )}
               </div>
-              <span>{dayjs(announcement.createdAt).format('YYYY.MM.DD')}</span>
+              <span>{dayjs(announcement?.createdAt).format('YYYY.MM.DD')}</span>
             </li>
           ))}
         </ListContentStyled>
         {announcements.length > 0 && (
           <Pagination pagination={pagination} onPageChange={handlePageChange} />
         )}
-        {isManager && (
+        {members[0]?.role === 'MANAGER' && (
           <EditAnnouncementForm onClick={() => navigate('/announcement/form')}>
             <PlusIcon />
           </EditAnnouncementForm>

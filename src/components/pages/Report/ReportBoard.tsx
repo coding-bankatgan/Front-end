@@ -15,7 +15,12 @@ interface ReportListProps {
 
 const ReportBoard = ({ showAlert }: ReportListProps) => {
   const navigate = useNavigate();
-  const { members } = useMemberStore();
+  const { members, fetchMembers } = useMemberStore();
+  useEffect(() => {
+    if (!members[0]) {
+      fetchMembers();
+    }
+  }, []);
   const { declarations, pagination, fetchDeclarations } = useDeclarationStore(state => ({
     declarations: state.declarations,
     pagination: state.pagination,
@@ -31,9 +36,8 @@ const ReportBoard = ({ showAlert }: ReportListProps) => {
     fetchDeclarations(newPage, pagination.size);
   };
 
-  const isManager = members[0].role === 'MANAGER';
   const handleItemClick = (id: number) => {
-    if (!isManager) {
+    if (!(members[0]?.role === 'MANAGER')) {
       showAlert('error', '권한이 없습니다.');
       return;
     }
@@ -49,20 +53,20 @@ const ReportBoard = ({ showAlert }: ReportListProps) => {
         </ListTitleStyled>
         <ListContentStyled>
           {declarations.map(declaration => (
-            <li key={declaration.id} onClick={() => handleItemClick(declaration.id)}>
+            <li key={declaration?.id} onClick={() => handleItemClick(declaration?.id)}>
               <div>
                 <span>신고합니다!</span>
-                {declaration.approved === null ? (
+                {declaration?.approved === null ? (
                   <Badge variant="outline">New!</Badge>
                 ) : (
-                  <p>Re: {declaration.approved ? '삭제 조치' : '반려 조치'}</p>
+                  <p>Re: {declaration?.approved ? '삭제 조치' : '반려 조치'}</p>
                 )}
               </div>
-              <span>{dayjs(declaration.createdAt).format('YYYY.MM.DD')}</span>
+              <span>{dayjs(declaration?.createdAt).format('YYYY.MM.DD')}</span>
             </li>
           ))}
         </ListContentStyled>
-        {declarations.length > 0 && (
+        {declarations?.length > 0 && (
           <Pagination pagination={pagination} onPageChange={handlePageChange} />
         )}
       </ContentWrapper>

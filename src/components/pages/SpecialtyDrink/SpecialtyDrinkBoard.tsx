@@ -9,6 +9,7 @@ import PlusIcon from '@/assets/icons/PlusIcon';
 import dayjs from 'dayjs';
 import PrevBtn from '@/components/layout/PrevBtn';
 import Pagination from './../../layout/Pagination';
+import useMemberStore from '@/store/useMemberStore';
 
 const SpecialtyDrinkBoard = () => {
   const navigate = useNavigate();
@@ -30,6 +31,12 @@ const SpecialtyDrinkBoard = () => {
   const handleItemClick = (id: number) => {
     navigate(`/specialty-drink/${id}`);
   };
+  const { members, fetchMembers } = useMemberStore();
+  useEffect(() => {
+    if (!members[0]) {
+      fetchMembers();
+    }
+  }, []);
 
   return (
     <NoFooterLayoutSub>
