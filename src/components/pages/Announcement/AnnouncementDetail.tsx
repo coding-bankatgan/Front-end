@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import DeleteAnnouncement from './DeleteAnnouncement';
 import useMemberStore from '@/store/useMemberStore';
+import useImageStore from '@/store/useImageStore';
 
 interface AnnouncementDetailProps {
   showAlert: (type: 'success' | 'error', message: string) => void;
@@ -23,6 +24,7 @@ interface AnnouncementDetailProps {
 const AnnouncementDetail = ({ showAlert }: AnnouncementDetailProps) => {
   const navigate = useNavigate();
   const { announcements, fetchAnnouncementsDetail } = useAnnouncementStore();
+  const { imageUrls } = useImageStore();
   const { id } = useParams();
   const announcementId = Number(id);
 
@@ -31,6 +33,9 @@ const AnnouncementDetail = ({ showAlert }: AnnouncementDetailProps) => {
 
   const { members } = useMemberStore();
   const isManager = members[0].role === 'MANAGER';
+
+  const imageUrl = imageUrls[announcementId];
+  console.log(imageUrl);
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -43,6 +48,7 @@ const AnnouncementDetail = ({ showAlert }: AnnouncementDetailProps) => {
 
   const announcement =
     stateAnnouncement || announcements.find(announcement => announcement.id === announcementId);
+  console.log(announcement);
 
   return (
     <NoFooterLayoutSub>
@@ -82,7 +88,7 @@ const AnnouncementDetail = ({ showAlert }: AnnouncementDetailProps) => {
         </HeaderStyled>
         <Line />
         <BottomStyled>
-          {announcement?.imageUrl ? <img src={announcement.imageUrl} alt="이미지 설명" /> : null}
+          {imageUrl ? <img src={imageUrl} alt="이미지 설명" /> : null}
           <TextareaStyled id="content" value={announcement?.content || ''} readOnly />
         </BottomStyled>
       </ContentWrapper>

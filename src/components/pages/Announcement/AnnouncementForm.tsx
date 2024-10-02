@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchAnnouncementModify, fetchAnnouncementWriteApi } from '@/api/postApi';
 import { fetchImageUploadApi } from '@/api/postApi';
 import PlusIcon from '@/assets/icons/PlusIcon';
+import useImageStore from '@/store/useImageStore';
 
 const writeAnnouncement = async (title: string, content: string) => {
   try {
@@ -60,27 +61,35 @@ const AnnouncementForm: React.FC<AnnouncementFormProps> = () => {
     if (newTitle.trim() === '' || newContent.trim() === '') return;
 
     try {
+      const file = fileInputRef.current?.files?.[0];
+      let uploadedImageUrl = '';
+
+      if (file) {
+        const imageResponse = await fetchImageUploadApi(file);
+        uploadedImageUrl = imageResponse;
+      }
       if (announcementId) {
-        const updatedAnnouncement = await fetchAnnouncementModify(
-          announcementId,
-          newTitle,
-          newContent,
-        );
+        const response = await fetchAnnouncementModify(announcementId, newTitle, newContent);
+        const updatedAnnouncement = {
+          ...response,
+          imageUrl: uploadedImageUrl,
+        };
+
+        const { setImageUrl } = useImageStore.getState();
+        setImageUrl(announcementId, uploadedImageUrl);
+
         navigate(`/announcement/${announcementId}`, { state: updatedAnnouncement });
       } else {
         const response = await writeAnnouncement(newTitle, newContent);
-        const file = fileInputRef.current?.files?.[0];
-        let uploadedImageUrl = '';
-        console.log(uploadedImageUrl);
-        if (file) {
-          const imageResponse = await fetchImageUploadApi(file);
-          uploadedImageUrl = imageResponse;
-        }
-
         if (response) {
           const newAnnouncementData = {
             ...response,
+            imageUrl: uploadedImageUrl,
           };
+
+          const { setImageUrl } = useImageStore.getState();
+          setImageUrl(response.id, uploadedImageUrl);
+          console.log(newAnnouncementData);
 
           setNewTitle('');
           setNewContent('');

@@ -46,7 +46,6 @@ const useNotificationStore = create<NotificationState>(set => ({
   fetchNotifications: async () => {
     try {
       const data = await fetchNotificationsApi();
-      console.log(data);
 
       if (data) {
         const notifications = data.content.map((notification: Notification) => ({
