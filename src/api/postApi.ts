@@ -198,8 +198,8 @@ export const fetchDrinkResultsApi = async (drink: string, page: number, size: nu
 
 /** Kakao 맵 api */
 export const getAddress = async (latitude: number | null, longitude: number | null) => {
-  const apiKey = 'f21248c02fc4d05f9ce83b60e063d55d';
-  const url = `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${longitude}&y=${latitude}`;
+  const apiKey = import.meta.env.VITE_KAKAO_API_KEY;
+  const url = `${import.meta.env.VITE_KAKAO_API_URL}?x=${longitude}&y=${latitude}`;
 
   try {
     const response = await fetch(url, {

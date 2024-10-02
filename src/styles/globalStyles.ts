@@ -11,6 +11,6 @@ export const globalStyles = css`
   }
 
   body {
-    font-family: 'SUIT-Regular', sans-serif;
+    font-family: 'SUIT-Regular', 'Apple SD Gothic Neo', sans-serif;
   }
 `;

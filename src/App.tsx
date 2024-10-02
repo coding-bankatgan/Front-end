@@ -7,7 +7,7 @@ import Router from './router/Router';
 import { BrowserRouter } from 'react-router-dom';
 import { theme } from './styles/theme';
 import ScrollToTop from './utils/ScrollToTop';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import CustomAlert from '@/components/layout/CustomAlert';
 
 function App() {
@@ -17,16 +17,6 @@ function App() {
     setAlert({ type, message });
     setTimeout(() => setAlert(null), 2000);
   };
-
-  useEffect(() => {
-    const isAppleDevice = /Mac|iPhone|iPod|iPad/.test(navigator.userAgent);
-
-    if (isAppleDevice) {
-      document.body.style.fontFamily = 'Apple SD Gothic Neo, sans-serif';
-    } else {
-      document.body.style.fontFamily = 'SUIT-Regular, sans-serif';
-    }
-  }, []);
 
   return (
     <>
