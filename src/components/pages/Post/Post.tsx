@@ -37,10 +37,14 @@ const Post = ({ showAlert }: PostProps) => {
   const navigate = useNavigate();
   const [commentCount, setCommentCount] = useState<number | null>(null);
   const { postsDetail, fetchPostsDetail, togglePostLike } = usePostsStore();
-  const { members } = useMemberStore();
+  const { members, fetchMembers } = useMemberStore();
 
   const { id } = useParams();
   const postId = Number(id);
+
+  useEffect(() => {
+    fetchMembers();
+  }, []);
 
   const handleLikeClick = () => {
     togglePostLike(post.id, post.isLiked);
@@ -49,7 +53,7 @@ const Post = ({ showAlert }: PostProps) => {
   /** 특정 게시글의 댓글 수 가져오는 함수 */
   const fetchCommentCount = async () => {
     try {
-      const commentsData = await fetchCommentsApi(postId, 0, 10);
+      const commentsData = await fetchCommentsApi(Number(id), 0, 10);
       setCommentCount(commentsData.totalElements);
     } catch (err) {
       console.error('Error fetching comments counts: ', err);
@@ -68,9 +72,9 @@ const Post = ({ showAlert }: PostProps) => {
       }, 3000);
       return;
     }
-    fetchPostsDetail(postId);
+    fetchPostsDetail(Number(id));
     fetchCommentCount();
-  }, [fetchPostsDetail, postId]);
+  }, [fetchPostsDetail, id]);
 
   if (!postsDetail) {
     return <p>로딩 중...</p>;
@@ -82,12 +86,11 @@ const Post = ({ showAlert }: PostProps) => {
     navigate(`/drink-page/${drinkData.id}`, { state: { drinkData } });
   };
 
-  if (!post) {
-    return <p>게시글을 찾을 수 없습니다.</p>;
-  }
+  // if (!post) {
+  //   return <p>게시글을 찾을 수 없습니다.</p>;
+  // }
 
   const handleNavigate = async () => {
-    await fetchPostsDetail(Number(id));
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = postsDetail.content;
     const textContent = tempDiv.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/&nbsp;/g, ' ');
@@ -113,17 +116,21 @@ const Post = ({ showAlert }: PostProps) => {
     <PostLayout>
       <PostTitleSection>
         <b>
-          <span>{typeMap[post.type]}</span>
-          {post.drink.name}
+          <span>{typeMap[postsDetail?.type]}</span>
+          {postsDetail?.drink.name}
         </b>
       </PostTitleSection>
       <UserPost>
         <Nickname>
-          {post.memberImageUrl ? <img src={post.memberImageUrl} /> : <ExProfileImg />}
+          {postsDetail?.memberImageUrl ? (
+            <img src={postsDetail?.memberImageUrl} />
+          ) : (
+            <ExProfileImg />
+          )}
 
-          {post.memberName}
+          {postsDetail?.memberName}
           <span>
-            {post.memberId === members[0].id && (
+            {postsDetail?.memberId === members[0].id && (
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <EllipsisHorizontalIcon />
@@ -139,7 +146,7 @@ const Post = ({ showAlert }: PostProps) => {
           </span>
         </Nickname>
         <Img>
-          <img src={post.imageUrl} alt={post.drink.name} />
+          <img src={postsDetail?.imageUrl} alt={postsDetail?.drink.name} />
         </Img>
         <Interactions>
           <span>
@@ -147,8 +154,8 @@ const Post = ({ showAlert }: PostProps) => {
               onClick={handleLikeClick}
               whileTap={{ scale: 1.3 }}
               animate={{
-                scale: post.isLiked ? [1, 1.3, 1] : [1, 1.3, 1],
-                color: post.isLiked ? '#FF3140' : '#4B463F',
+                scale: postsDetail?.isLiked ? [1, 1.3, 1] : [1, 1.3, 1],
+                color: postsDetail?.isLiked ? '#FF3140' : '#4B463F',
               }}
               transition={{
                 type: 'spring',
@@ -184,38 +191,38 @@ const Post = ({ showAlert }: PostProps) => {
           {post.type === 'AD' ? (
             <Info>
               <li>
-                <span>주종:</span> {mapDrinkType(post.drink.type)}
+                <span>주종:</span> {mapDrinkType(postsDetail?.drink.type)}
               </li>
               <li>
-                <span>도수:</span> {post.drink.degree}%
+                <span>도수:</span> {postsDetail?.drink.degree}%
               </li>
               <li>
-                <span>당도:</span> {post.drink.sweetness}
+                <span>당도:</span> {postsDetail?.drink.sweetness}
               </li>
             </Info>
           ) : (
             <Info>
               <li>
-                <span>주종:</span> {mapDrinkType(post.drink.type)}
+                <span>주종:</span> {mapDrinkType(postsDetail?.drink.type)}
               </li>
               <li>
-                <span>도수:</span> {post.drink.degree}%
+                <span>도수:</span> {postsDetail?.drink.degree}%
               </li>
               <li>
-                <span>당도:</span> {post.drink.sweetness}
+                <span>당도:</span> {postsDetail?.drink.sweetness}
               </li>
               <li>
-                <span>평점:</span> {post.rating}
+                <span>평점:</span> {postsDetail?.rating}
               </li>
               <li>
-                <span>평균 평점:</span> {post.drink.averageRating || 0}
+                <span>평균 평점:</span> {postsDetail?.drink.averageRating || 0}
               </li>
             </Info>
           )}
           <MetaData>
-            <span>{dayjs(post?.createdAt).format('YYYY.MM.DD')}</span>
+            <span>{dayjs(postsDetail?.createdAt).format('YYYY.MM.DD')}</span>
             <span>
-              <ViewIcon /> {post?.viewCount.toLocaleString()}
+              <ViewIcon /> {postsDetail?.viewCount.toLocaleString()}
             </span>
           </MetaData>
         </EtcWrap>
