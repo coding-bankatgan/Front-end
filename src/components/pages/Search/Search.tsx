@@ -769,7 +769,7 @@ const RecommendContent = styled.div`
   flex-direction: column;
   flex-wrap: wrap;
   width: 100%;
-  height: 300px;
+  height: 320px;
 
   div {
     display: flex;
