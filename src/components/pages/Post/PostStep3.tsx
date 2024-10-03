@@ -187,7 +187,7 @@ const PostStep3 = ({
           <Label htmlFor="sweetness">당도</Label>
           <SweetContainer>
             <StyledSpan>
-              <span>쓰다</span>
+              <span>드라이하다</span>
               <span>달다</span>
             </StyledSpan>
             <div id="sweetness">
@@ -342,6 +342,7 @@ const BadgeStyled = styled(Badge)`
 `;
 
 const SweetContainer = styled.div`
+  position: relative;
   width: 100%;
   #sweetness {
     padding: 8px;

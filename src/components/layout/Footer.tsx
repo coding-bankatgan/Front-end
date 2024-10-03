@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import HomeIcon from './../../assets/icons/HomeIcon';
 import SearchIcon from './../../assets/icons/SearchIcon';
-import ChatIcon from './../../assets/icons/ChatIcon';
 import UserIcon from './../../assets/icons/UserIcon';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import WriteIcon from '@/assets/icons/WriteIcon';
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const Footer = () => {
         <SearchIcon />
       </IconWrapper>
       <IconWrapper onClick={() => handleClick('create-post')} active={activeIcon === 'create-post'}>
-        <ChatIcon />
+        <WriteIcon />
       </IconWrapper>
       <IconWrapper onClick={() => handleClick('mypage')} active={activeIcon === 'mypage'}>
         <UserIcon />

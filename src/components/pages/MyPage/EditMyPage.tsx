@@ -406,7 +406,6 @@ const DeleteContainer = styled.span`
   right: 0;
   width: 27px;
   height: 27px;
-  border: 1px solid ${({ theme }) => theme.colors.lightGray};
   border-radius: 30px;
   z-index: 15;
 
@@ -511,7 +510,6 @@ const AlcoholList = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  overflow-y: scroll;
   width: 100%;
   gap: 10px;
   scrollbar-width: none;

@@ -88,7 +88,11 @@ const Daily = () => {
   return (
     <DailySection>
       <DailyTop>
-        <strong>오늘의 데일리 추천이에요.</strong>
+        <strong>
+          {userAddress
+            ? `${userAddress.split(' ')[0]}의 추천 특산주를 만나보세요!`
+            : '특산주를 만나보세요!'}
+        </strong>
         <span>
           {userAddress} <MapPinIcon />
         </span>

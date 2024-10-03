@@ -176,7 +176,7 @@ const Post = ({ showAlert }: PostProps) => {
             <ChatIcon /> {commentCount?.toLocaleString()}
           </span>
           <span>
-            <Button onClick={handleButtonClick}>특산주 설명 보러가기 {'> '} </Button>
+            <Button onClick={handleButtonClick}>특산주 설명 보러가기 {'>'}</Button>
           </span>
         </Interactions>
         <Desc dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}></Desc>
@@ -371,12 +371,13 @@ const Interactions = styled.div`
   > span:nth-of-type(3) {
     margin-left: auto;
     button {
-      background: none;
-      border: none;
+      height: 25px;
       padding: 0;
-      font-size: ${({ theme }) => theme.fontSizes.small};
-      text-decoration: underline;
+      background: none;
       color: ${({ theme }) => theme.colors.darkGray};
+      border: none;
+      font-size: ${({ theme }) => theme.fontSizes.xsmall};
+      text-decoration: underline;
     }
   }
 `;
