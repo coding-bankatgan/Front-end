@@ -78,7 +78,14 @@ const ReportForm = ({ showAlert }: ReportFormProps) => {
         <TitleStyled>게시글 신고하기</TitleStyled>
         <Label htmlFor="link">링크</Label>
         <FormHeaderStyled>
-          <Input type="text" id="link" value={postLink} onClick={handleInputClick} readOnly />
+          <Input
+            type="text"
+            id="link"
+            value=""
+            onClick={handleInputClick}
+            placeholder="[신고 게시글 링크]"
+            readOnly
+          />
         </FormHeaderStyled>
         <FormContentStyled>
           <Label htmlFor="type">신고 사유</Label>
@@ -128,6 +135,13 @@ const FormHeaderStyled = styled.div`
   border-radius: 5px;
   border: 1px solid ${({ theme }) => theme.colors.lightGray};
   overflow: hidden;
+
+  > input {
+    &:focus {
+      border-color: ${({ theme }) => theme.colors.focusShadowGray};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.focusShadowGray};
+    }
+  }
 `;
 
 const Label = styled.label`

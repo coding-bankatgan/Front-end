@@ -123,8 +123,9 @@ const ReportedPost = () => {
             <Input
               type="text"
               id="link"
-              value={declaration?.link || ''}
+              value=""
               onClick={handleInputClick}
+              placeholder="[신고 게시글 링크]"
               readOnly
             />
             <Label>신고 사유</Label>
