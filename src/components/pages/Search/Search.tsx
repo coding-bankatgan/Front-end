@@ -187,16 +187,6 @@ const Search = () => {
     }
   };
 
-  /** 자동완성 항목 클릭 시 # 추가 */
-  const handleAutoCompleteClick = (item: string) => {
-    if (searchType === 'tag') {
-      setInputValue(`#${item}`);
-    } else {
-      setInputValue(item);
-    }
-    setIsAutoVisible(false);
-  };
-
   /* 태그 추가 (=뱃지 변환) */
   const handleTagAdd = () => {
     const trimmedInput = inputValue.trim();
@@ -333,6 +323,27 @@ const Search = () => {
     });
   };
 
+  const handleAutoClick = (item: string) => {
+    const newTagName = searchType === 'tag' ? `#${item as string}` : (item as string);
+
+    setTags(prevTags => {
+      if (
+        (searchType === 'tag' && prevTags.length >= 3) ||
+        (searchType === 'drink' && prevTags.length >= 1)
+      ) {
+        return [...prevTags];
+      }
+
+      if (prevTags.some(tag => tag.name === newTagName)) return prevTags;
+
+      const updatedTags = [...prevTags, { id: Date.now(), name: newTagName }];
+      searchByResults(updatedTags);
+      return updatedTags;
+    });
+    searchType === 'tag' ? setInputValue('#') : setInputValue('');
+    setIsAutoVisible(false);
+  };
+
   /** Top15 항목 클릭 시 검색 결과 */
   const searchByResults = async (tags: Tag[]) => {
     try {
@@ -449,7 +460,7 @@ const Search = () => {
                 {autoCompleteData.map((item, idx) => (
                   <AutoCompleteItem
                     key={idx}
-                    onClick={() => handleAutoCompleteClick(item)}
+                    onClick={() => handleAutoClick(item)}
                     aria-label={`자동완성: ${item}`}
                   >
                     {item}

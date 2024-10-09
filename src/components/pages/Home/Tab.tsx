@@ -53,8 +53,6 @@ const Tab = () => {
   }, [loadingRef, hasMore]);
 
   useEffect(() => {
-    if (!hasMore) return;
-
     const fetchData = async () => {
       setIsLoading(true);
 

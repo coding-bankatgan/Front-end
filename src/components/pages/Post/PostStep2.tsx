@@ -92,17 +92,12 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
 
   useEffect(() => {
     setHasMore(true);
-    const handler = setTimeout(() => {
-      if (searchTerm) {
-        setPage(0);
-        setSearchResults([]);
-        fetchSearchResults();
-      }
-    }, 800);
 
-    return () => {
-      clearTimeout(handler);
-    };
+    if (searchTerm) {
+      setPage(0);
+      setSearchResults([]);
+      fetchSearchResults();
+    }
   }, [searchTerm, point]);
 
   const loadingRef = useRef<HTMLDivElement | null>(null);
@@ -113,35 +108,30 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
     setLoading(true);
 
     try {
-      const response = await new Promise<{ data: { content: Drink[] } }>(resolve =>
-        setTimeout(async () => {
-          const res = await api.get(`/search/drinks`, {
-            params: {
-              regionId: selectedRegionId ? selectedRegionId : 0,
-              drinkName: searchTerm,
-              size: 10,
-              page: page,
-            },
-          });
-          resolve(res); // 요청 완료 후 응답 반환
-        }, 1000),
-      );
+      const response = await api.get(`/search/drinks`, {
+        params: {
+          regionId: selectedRegionId ? selectedRegionId : 0,
+          drinkName: searchTerm,
+          size: 10,
+          page: page,
+        },
+      });
 
-      const data = [response.data];
+      const data = [response?.data];
       setSearchResults(prevResults => {
-        const isDuplicate = data[0].content.some((newItem: Drink) =>
-          prevResults.some(prevItem => prevItem.id === newItem.id),
+        const isDuplicate = data[0]?.content?.some((newItem: Drink) =>
+          prevResults?.some(prevItem => prevItem.id === newItem.id),
         );
         if (isDuplicate) {
           return prevResults;
         } else {
-          return [...prevResults, ...data[0].content];
+          return [...prevResults, ...data[0]?.content];
         }
       });
-      setHasMore(data[0].content.length >= 10);
     } catch (error) {
-      console.error('Error fetching search results:', error);
+      console.error('Error caught:', error);
       setHasMore(false);
+      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -208,7 +198,7 @@ const PostStep2 = ({ nextStep, setDrinkData }: PostStep2Props) => {
           />
           <SearchIcon />
         </Search>
-        {viewAutocomplete && suggestions.length > 0 && (
+        {viewAutocomplete && suggestions?.length > 0 && (
           <AutocompleteList>
             {suggestions.map((suggestion, idx) => (
               <AutocompleteItem

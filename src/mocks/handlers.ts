@@ -6,7 +6,6 @@ import comments from './data/comments.json';
 import commentWrite from './data/commentWrite.json';
 import { Comment, CommentRequestBody } from '@/types/comment';
 import member from './data/member.json';
-import { MemberRequestBody } from '@/types/member';
 import tag from './data/tag.json';
 import { Tag, TagRequestBody } from '@/types/tag';
 import announcements from './data/announcement.json';
@@ -17,8 +16,6 @@ import declarationWrite from './data/reportWrite.json';
 import { Declaration, DeclarationRequestBody } from '@/types/declaration';
 import suggestedTags from './data/suggestedTags.json';
 import suggestedDrinks from './data/suggestedDrinks.json';
-import autoCompleteTag from './data/autoCompleteTag.json';
-import autoCompleteDrink from './data/autoCompleteDrink.json';
 import searchByTag from './data/searchByTag.json';
 import searchByDrink from './data/searchByDrink.json';
 import notifications from './data/notification.json';
@@ -29,12 +26,6 @@ import { Registration, RegistrationRequestBody } from '@/types/registration';
 
 const mockJwtToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-/** 받아올 내용
-{
-  "sub": "1234567890",
-  "name": "John Doe",
-  "admin": true
-}*/
 
 let commentsData: Comment[] = [...commentWrite];
 let announcementData: Announcement[] = [...announcementWrite];
@@ -43,11 +34,11 @@ let registrationData: Registration[] = [...registrationWrite];
 let tagData: Tag[] = [...tag];
 
 export const handlers = [
-  /** 로그인 테스트 API */
-  http.post('/login', async ({ request }) => {
+  /** 로그인 테스트  */
+  http.post('/api/members/signin', async ({ request }) => {
     const { email, password } = (await request.json()) as { email: string; password: string };
 
-    if (email === 'man@naver.com' && password === 'man123456') {
+    if (email !== 'man@naver.com' && password !== 'man123456') {
       return HttpResponse.json({ accessToken: mockJwtToken, refreshToken: mockJwtToken });
     } else {
       throw new HttpResponse(null, {
@@ -56,19 +47,45 @@ export const handlers = [
     }
   }),
 
-  /** 전체 게시글 조회 API */
+  /** 전체 게시글 조회 */
   http.get('api/posts', async () => {
-    return HttpResponse.json(cardItem);
+    return HttpResponse.json({
+      content: [...cardItem.slice(0, 10)],
+      pageable: {
+        pageNumber: 0,
+        pageSize: 10,
+        sort: {
+          empty: true,
+          sorted: false,
+          unsorted: true,
+        },
+        offset: 0,
+        paged: true,
+        unpaged: false,
+      },
+      last: true,
+      totalPages: 1,
+      totalElements: 20,
+      first: true,
+      size: 10,
+      number: 0,
+      sort: {
+        empty: true,
+        sorted: false,
+        unsorted: true,
+      },
+      numberOfElements: 1,
+      empty: false,
+    });
   }),
 
-  /** 특정 게시글 조회 API */
-  http.get('api/posts/:postId', async ({ params }) => {
-    Number(params.postId);
-    return HttpResponse.json(cardItemDetail);
+  /** 특정 게시글 조회 */
+  http.get('/api/post/:postId', async ({ params }) => {
+    return HttpResponse.json(cardItemDetail[Number(params.postId) - 1]);
   }),
 
-  /** 특정 게시글 댓글 작성 API */
-  http.post('api/comments', async ({ request }) => {
+  /** 특정 게시글 댓글 작성 */
+  http.post('/api/comments', async ({ request }) => {
     const requestBody = (await request.json()) as CommentRequestBody;
 
     const { postId, content, anonymous } = requestBody;
@@ -78,8 +95,8 @@ export const handlers = [
       memberId: 10,
       memberName: '멤버 A',
       postId: postId,
-      content,
-      anonymous,
+      content: content,
+      anonymous: anonymous,
       createdAt: new Date().toISOString(),
       updatedAt: null,
     };
@@ -89,7 +106,7 @@ export const handlers = [
     return HttpResponse.json(newComment);
   }),
 
-  /** 특정 게시글 댓글 조회 API */
+  /** 특정 게시글 댓글 조회 */
   http.get('/api/:postId/comments', async ({ params, request }) => {
     const postId = Number(params.postId);
     const url = new URL(request.url);
@@ -119,35 +136,27 @@ export const handlers = [
     });
   }),
 
-  /** 검색페이지 태그 추천 API */
+  /** 검색페이지 태그 추천 */
   http.get('api/suggest/tags', async () => {
     return HttpResponse.json(suggestedTags);
   }),
 
-  /** 검색페이지 특산주 이름 추천 API */
+  /** 검색페이지 특산주 이름 추천 */
   http.get('api/suggest/drinks', async () => {
     return HttpResponse.json(suggestedDrinks);
   }),
 
-  /** 검색페이지 태그 자동완성 API */
-  http.get('/api/auto-complete/tag', async ({ request }) => {
-    const url = new URL(request.url);
-    const name = url.searchParams.get('name');
-    const filteredTags = autoCompleteTag.filter(tag => tag.includes(name ?? ''));
-
-    return HttpResponse.json(filteredTags);
+  /** 검색페이지 태그 자동완성 */
+  http.get('/api/auto-complete/tag', async () => {
+    return HttpResponse.json(['msw mock', '고소', '풍미', '달달']);
   }),
 
-  /** 검색페이지 특산주 이름 자동완성 API */
-  http.get('/api/auto-complete/drink', async ({ request }) => {
-    const url = new URL(request.url);
-    const name = url.searchParams.get('name');
-    const filteredDrinks = autoCompleteDrink.filter(drink => drink.includes(name ?? ''));
-
-    return HttpResponse.json(filteredDrinks);
+  /** 검색페이지 특산주 이름 자동완성 */
+  http.get('/api/auto-complete/drink', async () => {
+    return HttpResponse.json(['msw mock', '미나리싱싱주', '독산 30', '참주가 서해밤바다']);
   }),
 
-  /** 검색페이지 태그로 게시글 검색 API */
+  /** 검색페이지 태그로 게시글 검색 */
   http.post('/api/search/post/tags', async ({ request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('page')) || 0;
@@ -173,7 +182,7 @@ export const handlers = [
     });
   }),
 
-  /** 검색페이지 특산주 이름으로 게시글 검색 API */
+  /** 검색페이지 특산주 이름으로 게시글 검색 */
   http.post('/api/search/post/drinks', async ({ request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('page')) || 0;
@@ -209,42 +218,29 @@ export const handlers = [
     });
   }),
 
-  /** 회원정보 조회 API */
+  /** 회원정보 조회 */
   http.get('/api/members', async () => {
-    return HttpResponse.json(member);
+    return HttpResponse.json(member[1]);
   }),
 
-  /** 회원정보 수정 API */
-  http.post('/api/members', async ({ request }) => {
-    const requestBody = (await request.json()) as MemberRequestBody;
-
-    const { id, name, favorDrink, alarmEnabled } = requestBody;
-    const memberIndex = member.findIndex(member => member.id === id);
-
-    const updatedMember = {
-      ...member[memberIndex],
-      name: name || member[memberIndex].name,
-      favorDrink: favorDrink || member[memberIndex].favorDrinkType,
-      alarmEnabled:
-        typeof alarmEnabled === 'boolean' ? alarmEnabled : member[memberIndex].alarmEnabled,
-    };
-
-    console.log(updatedMember);
-    member[memberIndex] = updatedMember;
-    return HttpResponse.json(member);
+  /** 회원정보 수정 */
+  http.post('/api/members', async () => {
+    return HttpResponse.json('member');
+  }),
+  http.put('/api/members/profile', () => {
+    return new Response();
   }),
 
-  /** 태그 팔로우 목록 조회 API */
+  /** 태그 팔로우 목록 조회 */
   http.get('/api/members/tags/follows', async () => {
     return HttpResponse.json(tag);
   }),
 
-  /** 태그 팔로우 추가 API */
+  /** 태그 팔로우 추가 */
   http.post('/api/tags/follows', async ({ request }) => {
     const requestBody = (await request.json()) as TagRequestBody;
 
-    const { tagId, tagName } = requestBody;
-    console.log(tagId);
+    const { tagName } = requestBody;
 
     const addTag: Tag = {
       id: 1,
@@ -254,13 +250,11 @@ export const handlers = [
       tagName: tagName,
     };
     tagData = [...tagData, addTag];
-    console.log(tagData);
+
     return HttpResponse.json(addTag);
   }),
 
-  /** 태그 팔로우 삭제 API */
-
-  /** 특산주 등록 신청 API */
+  /** 특산주 등록 신청 */
   http.post('/drinks/registrations', async ({ request }) => {
     const requestBody = (await request.json()) as RegistrationRequestBody;
 
@@ -291,15 +285,14 @@ export const handlers = [
     return HttpResponse.json(newRegistration);
   }),
 
-  /** 특산주 신청 목록 조회 API */
-  http.get('/drinks/registrations', async ({ request }) => {
+  /** 특산주 신청 목록 조회 */
+  http.get('/api/drinks/registrations', async ({ request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('number')) || 0;
     const size = Number(url.searchParams.get('size')) || 10;
 
     const filteredRegistration = registrations.flatMap(registration => registration.content);
 
-    // 페이지네이션
     const start = Number(page) * Number(size);
     const end = start + Number(size);
     const paginatedRegistrations = filteredRegistration.slice(start, end);
@@ -315,8 +308,8 @@ export const handlers = [
     });
   }),
 
-  /** 특산주 신청 글 조회 API */
-  http.get('/drinks/registrations/:id', async ({ params }) => {
+  /** 특산주 신청 글 조회 */
+  http.get('/api/drinks/registrations/:id', async ({ params }) => {
     Number(params.id);
     return HttpResponse.json(registrations);
   }),
@@ -335,8 +328,8 @@ export const handlers = [
     });
   }),
 
-  /** 공지사항 등록 API */
-  http.post('/announcements', async ({ request }) => {
+  /** 공지사항 등록 */
+  http.post('/api/announcements', async ({ request }) => {
     const requestBody = (await request.json()) as AnnouncementRequestBody;
 
     const { title, content } = requestBody;
@@ -356,15 +349,14 @@ export const handlers = [
     return HttpResponse.json(newAnnouncement);
   }),
 
-  /** 공지사항 조회 API */
-  http.get('/announcements', async ({ request }) => {
+  /** 공지사항 조회 */
+  http.get('/api/announcements', async ({ request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('number')) || 0;
     const size = Number(url.searchParams.get('size')) || 10;
 
     const filteredAnnouncements = announcements.flatMap(announcement => announcement.content);
 
-    // 페이지네이션
     const start = Number(page) * Number(size);
     const end = start + Number(size);
     const paginatedAnnouncements = filteredAnnouncements.slice(start, end);
@@ -379,12 +371,12 @@ export const handlers = [
       content: paginatedAnnouncements,
     });
   }),
-  http.get('/announcements/:id', async ({ params }) => {
+  http.get('/api/announcements/:id', async ({ params }) => {
     Number(params.id);
     return HttpResponse.json(announcements);
   }),
 
-  /** 신고 제출 API */
+  /** 신고 제출 */
   http.post('/api/declarations', async ({ request }) => {
     const requestBody = (await request.json()) as DeclarationRequestBody;
 
@@ -406,7 +398,7 @@ export const handlers = [
     return HttpResponse.json(newDeclaration);
   }),
 
-  /** 신고글 목록 조회 API */
+  /** 신고글 목록 조회 */
   http.get('/api/declarations', async ({ request }) => {
     const url = new URL(request.url);
     const page = Number(url.searchParams.get('number')) || 0;
@@ -414,7 +406,6 @@ export const handlers = [
 
     const filteredDeclarations = declarations.flatMap(declaration => declaration.content);
 
-    // 페이지네이션
     const start = Number(page) * Number(size);
     const end = start + Number(size);
     const paginatedDeclarations = filteredDeclarations.slice(start, end);
@@ -430,13 +421,13 @@ export const handlers = [
     });
   }),
 
-  /** 신고글 조회 API */
+  /** 신고글 조회 */
   http.get('/api/declarations/:declarationId', async ({ params }) => {
     Number(params.declarationId);
     return HttpResponse.json(declarations);
   }),
 
-  /** 알림 API */
+  /** 알림 */
   http.get('/api/notifications', async () => {
     const filteredNotifications = notifications.flatMap(notification => notification.content);
 
@@ -455,16 +446,16 @@ export const handlers = [
     });
   }),
 
-  /** 지역 목록 조회 API */
+  /** 지역 목록 조회*/
   http.get('/api/regions', async () => {
     return HttpResponse.json(regions);
   }),
 
-  /** 아이디 중복 검사 API */
-  http.post('/api/email', async ({ request }) => {
-    const { email } = (await request.json()) as { email: string };
+  /** 아이디 중복 검사 */
+  http.get('/api/members/email/:email/validation', async ({ params }) => {
+    const { email } = params;
 
-    await delay(2000);
+    await delay(800);
 
     if (email === 'man@naver.com') {
       throw new HttpResponse(null, {
@@ -476,67 +467,53 @@ export const handlers = [
       message: '사용 가능한 아이디 입니다.',
     });
   }),
-  /** 데일리 추천 api */
-  http.get(`/suggest/drink`, ({ request }) => {
-    console.log(request);
-
-    const requestUrl = new URL(request.url);
-    const lat = requestUrl.searchParams.get('lat');
-    const lon = requestUrl.searchParams.get('lon');
-
-    const answer = {
-      drink_id: 1,
-      name: '독산 30',
-      place_name: '서울시',
-      image_url: 'https://thesool.com/common/imageView.do?targetId=PR00000957&targetNm=PRODUCT',
-      lat,
-      lon,
-    };
-
+  /** 데일리 추천 */
+  http.get(`/api/suggest/drink`, () => {
     return HttpResponse.json({
-      answer,
+      id: 1,
+      placeName: '서울특별시',
+      name: '독산 30',
+      type: 'LIQUEUR',
+      degree: 30,
+      sweetness: 5,
+      cost: 30000,
+      averageRating: null,
+      description: '초콜릿으로 만든 맥주',
+      imageUrl: 'https://thesool.com/common/imageView.do?targetId=PR00000957&targetNm=PRODUCT',
+      createdAt: '2024-09-26T02:17:18.562793',
     });
   }),
 
-  /**회원가입 post Test  */
-  http.post(`api/members/signup`, async ({ request }) => {
-    const requestBody = await request.json();
-    console.log(requestBody);
+  /**회원가입  */
+  http.post(`/api/members/signup`, async () => {
     return new Response();
   }),
 
+  /** 특산주 찾기 */
   http.get(`/api/search/drinks`, ({ request }) => {
     const requestUrl = new URL(request.url);
-    const regionId = requestUrl.searchParams.get('regionId');
-    const drinkName = requestUrl.searchParams.get('drinkName');
     const page = requestUrl.searchParams.get('page');
 
-    const data = searchDrink.filter(item => item.number === Number(page));
-    const emptyData = searchDrink.filter(item => item.number === Number(page) + 100);
-    console.log(regionId);
-
-    if (drinkName === '1') {
+    if (page === '0') {
       return HttpResponse.json({
-        data: emptyData,
+        ...searchDrink[0],
+      });
+    } else {
+      return new HttpResponse(null, {
+        status: 403,
       });
     }
-
-    return HttpResponse.json({
-      data,
-    });
   }),
-  http.post(`/api/image`, ({ request }) => {
-    delay(200);
-    console.log(request.headers);
 
+  /** 이미지 링크 반환 */
+  http.post(`/api/image`, () => {
     return HttpResponse.json(
       'https://thesool.com/common/imageView.do?targetId=PR00000941&targetNm=PRODUCT',
     );
   }),
-  http.post('/api/post', async ({ request }) => {
-    console.log(request.headers);
-    const requestBody = await request.json();
-    console.log(requestBody);
+
+  /** 게시글 작성 */
+  http.post('/api/posts', async () => {
     return new Response();
   }),
 ];

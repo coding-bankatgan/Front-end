@@ -1,62 +1,62 @@
 [
   {
-    "drinkId": 1,
-    "drinkName": "이강주"
+    "id": 1,
+    "name": "이강주"
   },
   {
-    "drinkId": 2,
-    "drinkName": "문배주"
+    "id": 2,
+    "name": "문배주"
   },
   {
-    "drinkId": 3,
-    "drinkName": "한산소곡주"
+    "id": 3,
+    "name": "한산소곡주"
   },
   {
-    "drinkId": 4,
-    "drinkName": "안동소주"
+    "id": 4,
+    "name": "안동소주"
   },
   {
-    "drinkId": 5,
-    "drinkName": "경주법주"
+    "id": 5,
+    "name": "경주법주"
   },
   {
-    "drinkId": 6,
-    "drinkName": "백련막걸리"
+    "id": 6,
+    "name": "백련막걸리"
   },
   {
-    "drinkId": 7,
-    "drinkName": "산사춘"
+    "id": 7,
+    "name": "산사춘"
   },
   {
-    "drinkId": 8,
-    "drinkName": "감홍로"
+    "id": 8,
+    "name": "감홍로"
   },
   {
-    "drinkId": 9,
-    "drinkName": "죽력고"
+    "id": 9,
+    "name": "죽력고"
   },
   {
-    "drinkId": 10,
-    "drinkName": "청주"
+    "id": 10,
+    "name": "청주"
   },
   {
-    "drinkId": 11,
-    "drinkName": "백화수복"
+    "id": 11,
+    "name": "백화수복"
   },
   {
-    "drinkId": 12,
-    "drinkName": "솔송주"
+    "id": 12,
+    "name": "솔송주"
   },
   {
-    "drinkId": 13,
-    "drinkName": "대나무술"
+    "id": 13,
+    "name": "대나무술"
   },
   {
-    "drinkId": 14,
-    "drinkName": "오메기술"
+    "id": 14,
+    "name": "오메기술"
   },
   {
-    "drinkId": 15,
-    "drinkName": "두견주"
+    "id": 15,
+    "name": "두견주"
   }
 ]

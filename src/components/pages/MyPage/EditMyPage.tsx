@@ -64,8 +64,6 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
 
   const navigate = useNavigate();
 
-  /** 수정사항 post */
-
   /** 위치정보 제공 동의 */
   const agreeToggle = () => {
     setIsAgreeChecked(!isAgreeChecked);
@@ -81,13 +79,10 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
     }
   }, [members]);
 
-  /** 유효성 검사 */
   /** 닉네임 */
   const validateName = (name: string) => {
     return name.length >= 2 && name.length <= 7;
   };
-
-  /** 현재 패스워드 */
 
   /** 신규 패스워드 */
   const validateNewPassword = (password: string) => {
@@ -173,6 +168,7 @@ const EditMyPage = ({ showAlert }: EditMyPageProps) => {
       if (id !== null) {
         try {
           const response = await fetchMemberWriteApi(name, selectedDrinks, alarmEnabled);
+          console.log('pi : ', profileImage);
 
           if (profileImage === null) {
             await api.put('/members/profile', { url: null });

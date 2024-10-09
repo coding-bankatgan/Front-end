@@ -40,8 +40,8 @@ const SearchResults = ({ nextStep, setDrinkData, contents, loading }: SearchResu
         <ResultsWrapper>
           {loading
             ? Array.from({ length: 9 }, (_, index) => (
-                <SkeletonContainer>
-                  <Skeleton key={index} />
+                <SkeletonContainer key={index}>
+                  <Skeleton />
                 </SkeletonContainer>
               ))
             : contents.map((item, idx) => (

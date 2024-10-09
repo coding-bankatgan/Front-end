@@ -7,7 +7,7 @@
       "id": 1,
       "placeName": "서울",
       "name": "미나리싱싱주",
-      "drinkType": "MAKGEOLLI",
+      "type": "MAKGEOLLI",
       "degree": 7,
       "sweetness": 3,
       "cost": 12000,
@@ -37,7 +37,7 @@
         "tagName": "달달"
       }
     ],
-    "likeCount": 50,
+    "likeCount": 0,
     "commentCount": 10,
     "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00000874&targetNm=PRODUCT",
     "viewCount": 50,
@@ -52,9 +52,9 @@
       "id": 2,
       "placeName": "서울",
       "name": "독산 30",
-      "drinkType": "MAKGEOLLI",
-      "degree": 7,
-      "sweetness": 3,
+      "type": "MAKGEOLLI",
+      "degree": 30,
+      "sweetness": 5,
       "cost": 12000,
       "averageRating": 4.8,
       "description": "신선한 쌀과 효모 프리미엄 막걸리입니다.",
@@ -78,7 +78,7 @@
         "tagName": "과일향"
       }
     ],
-    "likeCount": 150,
+    "likeCount": 0,
     "commentCount": 1010,
     "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00000957&targetNm=PRODUCT",
     "viewCount": 20,
@@ -93,7 +93,7 @@
       "id": 3,
       "placeName": "서울",
       "name": "참주가 서해밤바다",
-      "drinkType": "MAKGEOLLI",
+      "type": "MAKGEOLLI",
       "degree": 7,
       "sweetness": 3,
       "cost": 12000,
@@ -115,7 +115,7 @@
         "tagName": "달달"
       }
     ],
-    "likeCount": 200,
+    "likeCount": 0,
     "commentCount": 210,
     "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00000941&targetNm=PRODUCT",
     "viewCount": 1050,
@@ -130,7 +130,7 @@
       "id": 4,
       "placeName": "서울",
       "name": "만월 24/40",
-      "drinkType": "MAKGEOLLI",
+      "type": "MAKGEOLLI",
       "degree": 7,
       "sweetness": 3,
       "cost": 12000,
@@ -160,7 +160,7 @@
         "tagName": "조화로운"
       }
     ],
-    "likeCount": 3,
+    "likeCount": 0,
     "commentCount": 5,
     "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00001147&targetNm=PRODUCT",
     "viewCount": 20,
@@ -175,7 +175,7 @@
       "id": 5,
       "placeName": "서울",
       "name": "스파클링와인 오미로제 결",
-      "drinkType": "MAKGEOLLI",
+      "type": "MAKGEOLLI",
       "degree": 7,
       "sweetness": 3,
       "cost": 12000,
@@ -201,7 +201,7 @@
         "tagName": "상큼"
       }
     ],
-    "likeCount": 6,
+    "likeCount": 0,
     "commentCount": 7,
     "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00000415&targetNm=PRODUCT",
     "viewCount": 1200,
@@ -216,7 +216,7 @@
       "id": 6,
       "placeName": "서울",
       "name": "맵시 막걸리 화이트",
-      "drinkType": "MAKGEOLLI",
+      "type": "MAKGEOLLI",
       "degree": 7,
       "sweetness": 3,
       "cost": 12000,
@@ -242,7 +242,7 @@
         "tagName": "씁쓸"
       }
     ],
-    "likeCount": 77,
+    "likeCount": 0,
     "commentCount": 80,
     "imageUrl": "https://thesool.com/common/imageView.do?targetId=PR00001216&targetNm=PRODUCT",
     "viewCount": 50,
